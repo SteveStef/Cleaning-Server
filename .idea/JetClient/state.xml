@@ -61,6 +61,25 @@
               <option name="name" value="Admin Details" />
               <option name="url" value="http://localhost:9080/service-details" />
             </requestState>
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="NO_AUTH" />
+                </authState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="disabled" value="true" />
+                    <option name="key" value="X-CSRF-TOKEN" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="25168c4e-d259-4576-8303-a0bc6cd2f529" />
+              <option name="method" value="GET" />
+              <option name="name" value="Auth" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
           </list>
         </option>
       </draftsState>

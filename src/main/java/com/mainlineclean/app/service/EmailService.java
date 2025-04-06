@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Random;
 
 @Service
 public class EmailService {
@@ -26,11 +27,32 @@ public class EmailService {
     private String mailgunURL;
 
     private final AdminDetailsService adminDetailsService;
-
     private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
     public EmailService(AdminDetailsService adminDetailsService) {
         this.adminDetailsService = adminDetailsService;
+    }
+
+    private String generateAuthCode() {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for(int i = 0; i < 6; i++) sb.append(random.nextInt(10));
+        return sb.toString();
+    }
+
+    public void sendVerificationCode() throws EmailException {
+        String auth = "api:" + apiKey;
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+        String senderEmail = adminDetailsService.getAdminEmail();
+        String code = generateAuthCode();
+
+        String from = "Mainline Clean <" +  senderEmail + ">";
+        String clientSubject = "Here is your admin verification code";
+        String clientText = "Your verification code is: " + code + " (Note if this is not you then someone knows your password and you should change it. (talk to the developer of the website)";
+
+        sendEmail(encodedAuth, from, senderEmail, clientSubject, clientText);
+
+        adminDetailsService.setVerificationCode(code);
     }
 
     /**
@@ -98,7 +120,6 @@ public class EmailService {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("response: " + response.body());
             if (response.statusCode() / 100 != 2) {
                 throw new EmailException("Got a non-200 response: " + response.statusCode());
             }
@@ -117,7 +138,6 @@ public class EmailService {
                 " sent you a message via Main Line Cleaners";
         String text = userInfo.getMessage() + "\n\nPhone: " + userInfo.getPhone() + "\n";
 
-        // Utilize the sendEmail helper method
         sendEmail(encodedAuth, from, senderEmail, subject, text);
     }
 }

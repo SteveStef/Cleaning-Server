@@ -25,6 +25,9 @@ public class AdminDetails {
     @Column(name = "email")
     private String email;
 
+    @JsonIgnore
+    @Column(name = "code")
+    private String code;
 
     public String getEmail() {
         return email;
@@ -63,5 +66,13 @@ public class AdminDetails {
 
     public void setRegularPrice(String regularPrice) {
         this.regularPrice = regularPrice;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

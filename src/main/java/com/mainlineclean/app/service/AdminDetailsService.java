@@ -1,8 +1,10 @@
 package com.mainlineclean.app.service;
 
+import com.mainlineclean.app.dto.LoginForm;
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.repository.AdminDetailsRepo;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -10,6 +12,12 @@ import java.util.Optional;
 @Service
 public class AdminDetailsService {
     AdminDetailsRepo adminDetailsRepo;
+
+    @Value("${spring.security.user.name}")
+    private String username;
+
+    @Value("${spring.security.user.password}")
+    private String password;
 
     public AdminDetailsService(AdminDetailsRepo adminDetailsRepo){
         this.adminDetailsRepo = adminDetailsRepo;
@@ -42,5 +50,23 @@ public class AdminDetailsService {
         AdminDetails existing = this.getAdminDetails();
         existing.setEmail(email);
         return adminDetailsRepo.save(existing);
+    }
+
+    public boolean verifyCredentials(LoginForm form) {
+        return form.getUsername().equals(username) && form.getPassword().equals(password);
+    }
+
+    public void setVerificationCode(String code) {
+        AdminDetails existing = this.getAdminDetails();
+        existing.setCode(code);
+        adminDetailsRepo.save(existing);
+    }
+
+    public boolean verifyCode(String code) {
+        AdminDetails existing = this.getAdminDetails();
+        if(!existing.getCode().equals(code)) return false;
+        existing.setCode("");
+        adminDetailsRepo.save(existing);
+        return true;
     }
 }

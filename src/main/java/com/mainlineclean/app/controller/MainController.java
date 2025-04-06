@@ -1,9 +1,12 @@
 package com.mainlineclean.app.controller;
 
+import com.mainlineclean.app.dto.LoginForm;
 import com.mainlineclean.app.entity.*;
 import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.dto.RequestQuote;
 import com.mainlineclean.app.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,11 @@ public class MainController {
     this.availabilityService = availabilityService;
     this.emailService = emailService;
     this.adminDetailsService = adminDetailsService;
+  }
+
+  @GetMapping("/")
+  public ResponseEntity<String> welcome(HttpServletRequest request){
+    return ResponseEntity.ok("Welcome to the server! " + request.getSession().getId());
   }
 
   @GetMapping("/reviews")
@@ -96,14 +104,26 @@ public class MainController {
     return ResponseEntity.ok(details);
   }
 
-  // THIS NEEDS TO BE PROTECTED
   @PutMapping("/update-admin-pricing")
   public ResponseEntity<AdminDetails> updateAdminPricing(@RequestBody AdminDetails details) {
     return ResponseEntity.ok(adminDetailsService.updatePricing(details));
   }
-  // THIS NEEDS TO BE PROTECTED
+
   @PutMapping("/update-admin-email")
   public ResponseEntity<AdminDetails> updateAdminEmail(@RequestBody String email) {
     return ResponseEntity.ok(adminDetailsService.updateEmail(email));
+  }
+
+  @PostMapping("/verify-credentials")
+  public ResponseEntity<String> verifyCredentials(@RequestBody LoginForm form) {
+    if(!adminDetailsService.verifyCredentials(form)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    emailService.sendVerificationCode();
+    return ResponseEntity.ok("Verification code has been send to your admin email");
+  }
+
+  @PostMapping("/verify-code")
+  public ResponseEntity<String> verifyCode(@RequestBody String code) {
+    if(!adminDetailsService.verifyCode(code)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    return ResponseEntity.ok("OK");
   }
 }
