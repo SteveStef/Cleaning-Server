@@ -25,12 +25,13 @@ public class EmailService {
     @Value("${mailgun.http-endpoint}")
     private String mailgunURL;
 
-    @Value("${mailgun.sender-email}")
-    private String senderEmail;
+    private final AdminDetailsService adminDetailsService;
 
     private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
-    public EmailService() {}
+    public EmailService(AdminDetailsService adminDetailsService) {
+        this.adminDetailsService = adminDetailsService;
+    }
 
     /**
      * Sends two emails when an appointment is booked: one confirmation email to the client,
@@ -41,9 +42,10 @@ public class EmailService {
     public void notifyAppointment(Appointment appointment) throws EmailException {
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+        String senderEmail = adminDetailsService.getAdminEmail();
 
         // Email to the client
-        String from = "Mainline Clean <" + senderEmail + ">";
+        String from = "Mainline Clean <" +  senderEmail + ">";
         String clientTo = appointment.getEmail();
         String clientSubject = "Appointment Confirmation for " + appointment.getService();
         String clientText = "Dear " + appointment.getClientName() + ",\n\n"
@@ -59,6 +61,7 @@ public class EmailService {
         String adminSubject = "New Appointment Booked: " + appointment.getService();
         String adminText = "A new appointment has been booked with the following details:\n\n"
                 + "Client Name: " + appointment.getClientName() + "\n"
+                + "Booking ID: " + appointment.getBookingId() + "\n"
                 + "Email: " + appointment.getEmail() + "\n"
                 + "Phone: " + appointment.getPhone() + "\n"
                 + "Service: " + appointment.getService() + "\n"
@@ -107,14 +110,14 @@ public class EmailService {
     public void sendQuote(RequestQuote userInfo) throws EmailException {
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+        String senderEmail = adminDetailsService.getAdminEmail();
 
         String from = userInfo.getEmail();
-        String to = senderEmail;
         String subject = userInfo.getFirstName() + " " + userInfo.getLastName() +
                 " sent you a message via Main Line Cleaners";
         String text = userInfo.getMessage() + "\n\nPhone: " + userInfo.getPhone() + "\n";
 
         // Utilize the sendEmail helper method
-        sendEmail(encodedAuth, from, to, subject, text);
+        sendEmail(encodedAuth, from, senderEmail, subject, text);
     }
 }

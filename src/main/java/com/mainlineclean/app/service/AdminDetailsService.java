@@ -5,6 +5,8 @@ import com.mainlineclean.app.repository.AdminDetailsRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AdminDetailsService {
     AdminDetailsRepo adminDetailsRepo;
@@ -15,6 +17,15 @@ public class AdminDetailsService {
 
     public AdminDetails getAdminDetails() {
         return adminDetailsRepo.findById((long) 1).orElseThrow(() -> new EntityNotFoundException("Admin details not found"));
+    }
+
+    public String getAdminEmail() {
+        Optional<AdminDetails> details = adminDetailsRepo.findById(1L);
+        if(details.isPresent()) {
+            return details.get().getEmail();
+        } else {
+            throw new EntityNotFoundException("No admin email found in the database");
+        }
     }
 
     public AdminDetails updatePricing(AdminDetails details) {

@@ -2,11 +2,15 @@ package com.mainlineclean.app.config;
 
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.repository.AdminDetailsRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdminDetailsInit implements CommandLineRunner {
+
+    @Value("${mailgun.sender-email}")
+    private String adminEmail;
 
     final private AdminDetailsRepo adminDetailsRepo;
 
@@ -21,7 +25,7 @@ public class AdminDetailsInit implements CommandLineRunner {
             details.setRegularPrice("150.00");
             details.setMoveInOutPrice("250.00");
             details.setDeepCleanPrice("350.00");
-            details.setEmail("stevestef226@gmail.com");
+            details.setEmail(adminEmail);
             adminDetailsRepo.save(details);
         }
     }
