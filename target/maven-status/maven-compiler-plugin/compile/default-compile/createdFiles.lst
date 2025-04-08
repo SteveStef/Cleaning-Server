@@ -23,7 +23,6 @@ com/mainlineclean/app/service/EmailService.class
 com/mainlineclean/app/config/Security.class
 com/mainlineclean/app/controller/MainController.class
 com/mainlineclean/app/entity/PaymentIntent.class
-com/mainlineclean/app/config/WebConfig.class
 com/mainlineclean/app/repository/AdminDetailsRepo.class
 com/mainlineclean/app/dto/Amount.class
 com/mainlineclean/app/exception/EmailException.class
