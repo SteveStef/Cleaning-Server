@@ -2,6 +2,7 @@ package com.mainlineclean.app.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.mainlineclean.app.entity.AdminDetails;
+import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
 import com.mainlineclean.app.repository.PaymentIntentRepo;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,62 @@ public class PaymentIntentService {
   public PaymentIntentService (PaymentIntentRepo paymentIntentRepo, AdminDetailsService adminDetailsService) {
     this.paymentIntentRepo = paymentIntentRepo;
     this.adminDetailsService = adminDetailsService;
+  }
+
+  /**
+   * Cancels (refunds) the given payment intent by calling PayPal's refund API.
+   * This implementation constructs the refund request payload,
+   * includes all required headers, sends the POST request, checks for errors,
+   * and then deletes the PaymentIntent record from the repository.
+   *
+   * @param paymentIntent the payment to be refunded
+   * @return the response body returned by PayPal upon a successful refund
+   * @throws PaymentException if any errors occur during the refund process
+   */
+  public String cancelPayment(Appointment appointment) throws PaymentException {
+    Optional<PaymentIntent> paymentIntentOp = Optional.ofNullable(paymentIntentRepo.findByOrderId(appointment.getOrderId()));
+    if(paymentIntentOp.isEmpty()) {
+      throw new PaymentException("There is no PaymentIntent anymore");
+    }
+    PaymentIntent paymentIntent = paymentIntentOp.get();
+    String accessToken = getAccessToken();
+
+    String refundUrl = "https://api-m.sandbox.paypal.com/v2/payments/captures/"
+            + paymentIntent.getOrderId() + "/refund";
+
+    Map<String, Object> payloadMap = new HashMap<>();
+    Map<String, String> amount = new HashMap<>();
+    amount.put("value", paymentIntent.getPrice());
+    amount.put("currency_code", "USD");
+    payloadMap.put("amount", amount);
+
+    String jsonPayload;
+    try {
+      jsonPayload = objectMapper.writeValueAsString(payloadMap);
+    } catch (Exception e) {
+      throw new PaymentException("Failed to serialize refund payload", e);
+    }
+
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(refundUrl))
+            .header("Content-Type", "application/json")
+            .header("Authorization", "Bearer " + accessToken)
+            .header("PayPal-Request-Id", paymentIntent.getRequestId())
+            //.header("PayPal-Auth-Assertion", paypalAuthAssertion)
+            //.header("PayPal-Partner-Attribution-Id", paypalPartnerAttributionId)
+            .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
+            .build();
+
+    try {
+      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+      if (response.statusCode() / 100 != 2) {
+        throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
+      }
+      paymentIntentRepo.deleteById(paymentIntent.getId());
+      return response.body();
+    } catch (Exception e) {
+      throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
+    }
   }
 
   public PaymentIntent createOrder(String serviceType) throws PaymentException {

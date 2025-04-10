@@ -47,7 +47,7 @@ public class Appointment {
   @Column(name = "address")
   private String address;
 
-  @Column(name = "notes")
+  @Column(name="notes", columnDefinition="TEXT")
   private String notes;
 
   @Column(name = "orderId")
