@@ -1,5 +1,6 @@
 com/mainlineclean/app/service/AvailabilityService.class
 com/mainlineclean/app/service/PaymentIntentService.class
+com/mainlineclean/app/config/JwtAuthenticationFilter.class
 com/mainlineclean/app/entity/Review.class
 com/mainlineclean/app/dto/LoginForm.class
 com/mainlineclean/app/repository/ReviewRepo.class
@@ -24,6 +25,7 @@ com/mainlineclean/app/config/Security.class
 com/mainlineclean/app/controller/MainController.class
 com/mainlineclean/app/entity/PaymentIntent.class
 com/mainlineclean/app/repository/AdminDetailsRepo.class
+com/mainlineclean/app/utils/JwtUtil.class
 com/mainlineclean/app/dto/Amount.class
 com/mainlineclean/app/exception/EmailException.class
 com/mainlineclean/app/repository/AvailabilityRepo.class

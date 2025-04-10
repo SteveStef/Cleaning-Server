@@ -5,6 +5,7 @@ import com.mainlineclean.app.entity.*;
 import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.dto.RequestQuote;
 import com.mainlineclean.app.service.*;
+import com.mainlineclean.app.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +25,18 @@ public class MainController {
   private final AvailabilityService availabilityService;
   private final EmailService emailService;
   private final AdminDetailsService adminDetailsService;
+  private final JwtUtil jwtUtil;
 
   public MainController(AppointmentService appointmentService, ReviewService reviewService,
                         PaymentIntentService paymentIntentService, AvailabilityService availabilityService,
-                        EmailService emailService, AdminDetailsService adminDetailsService) {
+                        EmailService emailService, AdminDetailsService adminDetailsService, JwtUtil jwtUtil) {
     this.appointmentService = appointmentService;
     this.reviewService = reviewService;
     this.paymentIntentService = paymentIntentService;
     this.availabilityService = availabilityService;
     this.emailService = emailService;
     this.adminDetailsService = adminDetailsService;
+    this.jwtUtil = jwtUtil;
   }
 
   @GetMapping("/")
@@ -124,6 +127,14 @@ public class MainController {
   @PostMapping("/verify-code")
   public ResponseEntity<String> verifyCode(@RequestBody String code) {
     if(!adminDetailsService.verifyCode(code)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    String token = jwtUtil.generateToken();
+    return ResponseEntity.ok(token);
+  }
+
+  @GetMapping("/authenticate")
+  public ResponseEntity<String> authenticate() {
     return ResponseEntity.ok("OK");
   }
+
 }
+

@@ -3,14 +3,16 @@ package com.mainlineclean.app.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,17 +27,54 @@ public class Security {
     @Value("${client.origin}")
     private String allowedOrigin;
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public Security(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+    @Order(1)
+    public SecurityFilterChain basicAuthSecurityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+        return http
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(request -> request
-                                .requestMatchers(HttpMethod.POST, "/availability").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/update-admin-pricing").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/update-admin-email").authenticated()
-                                .anyRequest().permitAll()
-                )
+                .securityMatcher(new AntPathRequestMatcher("/verify-code", "POST"))
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain jwtSecurityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+        return http
+                .cors(Customizer.withDefaults())
+                .securityMatcher(new OrRequestMatcher(
+                        new AntPathRequestMatcher("/authenticate", "GET"),
+                        new AntPathRequestMatcher("/availability", "POST"),
+                        new AntPathRequestMatcher("/update-admin-pricing", "PUT"),
+                        new AntPathRequestMatcher("/update-admin-email", "PUT"),
+                        new AntPathRequestMatcher("/appointments", "GET")
+                ))
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    // Chain 3: Default chain that permits all other requests.
+    @Bean
+    @Order(3)
+    public SecurityFilterChain defaultSecurityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+        return http
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
@@ -53,19 +92,4 @@ public class Security {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http.csrf(AbstractHttpConfigurer::disable)
-//                .cors(Customizer.withDefaults())
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers(HttpMethod.POST, "/availability").authenticated()
-//                        .requestMatchers(HttpMethod.PUT, "/update-admin-pricing").authenticated()
-//                        .requestMatchers(HttpMethod.PUT, "/update-admin-email").authenticated()
-//                        .anyRequest().permitAll()
-//                )
-//                .formLogin(Customizer.withDefaults())
-//                .httpBasic(Customizer.withDefaults())
-//                .build();
-//    }
-
 }

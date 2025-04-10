@@ -1,5 +1,6 @@
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/MainLineCleanersApplication.java
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/config/AdminDetailsInit.java
+/home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/config/JwtAuthenticationFilter.java
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/config/Security.java
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/controller/MainController.java
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/dto/Amount.java
@@ -26,3 +27,4 @@
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/service/EmailService.java
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/service/PaymentIntentService.java
 /home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/service/ReviewService.java
+/home/stevestef/Desktop/MainLine-Cleaners/server/src/main/java/com/mainlineclean/app/utils/JwtUtil.java

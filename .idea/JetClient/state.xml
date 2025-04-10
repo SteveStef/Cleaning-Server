@@ -32,6 +32,16 @@
               <option name="url" value="http://localhost:9080/paypal/captureOrder" />
             </requestState>
             <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="bearer">
+                    <pE>
+                      <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZS5nZW51aW5lY29kZXIuY2tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDI5ODAzMywiZXhwIjoxNzQ0Mjk5ODMzfQ.Mnb0-jlQNECTQ7uC2Vxgfgy9fHq_3uBvB37r2tPlhOSjM_6ECbXawDDz4Jswh4Ymq5sPpgPbFJtBrOuF2RDGpQ" />
+                    </pE>
+                  </option>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
               <option name="body">
                 <bodyState>
                   <option name="raw" value="[&#10;  {&#10;    afternoon: true,&#10;    available: true,&#10;    date:&quot;2025-04-04&quot;,&#10;    morning:true,&#10;    night: true&#10;  },&#10;  {&#10;    afternoon: true,&#10;    available: true,&#10;    date:&quot;2025-04-03&quot;,&#10;    morning:true,&#10;    night: true&#10;  },&#10;  {&#10;    afternoon: true,&#10;    available: true,&#10;    date:&quot;2025-03-03&quot;,&#10;    morning:true,&#10;    night: true&#10;  }&#10;]" />
@@ -64,7 +74,12 @@
             <requestState>
               <option name="auth">
                 <authState>
-                  <option name="type" value="NO_AUTH" />
+                  <option name="bearer">
+                    <pE>
+                      <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
+                    </pE>
+                  </option>
+                  <option name="type" value="BEARER" />
                 </authState>
               </option>
               <option name="headers">
@@ -78,7 +93,7 @@
               <option name="id" value="25168c4e-d259-4576-8303-a0bc6cd2f529" />
               <option name="method" value="GET" />
               <option name="name" value="Auth" />
-              <option name="url" value="http://localhost:9080/availability" />
+              <option name="url" value="http://localhost:9080/authenticate" />
             </requestState>
           </list>
         </option>
