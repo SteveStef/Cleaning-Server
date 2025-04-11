@@ -18,7 +18,7 @@ public class JwtUtil {
 
     @Value("${spring.security.jwt.secret}")
     private String SECRET;
-    private static final long VALIDITY = TimeUnit.MINUTES.toMillis(25);
+    private static final long VALIDITY = TimeUnit.MINUTES.toMillis(120);
 
     public String generateToken() {
         Map<String, String> claims = new HashMap<>();

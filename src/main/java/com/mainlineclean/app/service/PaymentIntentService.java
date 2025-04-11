@@ -23,6 +23,8 @@ public class PaymentIntentService {
 
   private final PaymentIntentRepo paymentIntentRepo;
   private final AdminDetailsService adminDetailsService;
+  private final AppointmentService appointmentService;
+
   private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -38,36 +40,25 @@ public class PaymentIntentService {
   @Value("${paypal.checkout-base-url}")
   private String PAYPAL_CHECKOUT_URL;
 
+  @Value("${paypal.payment-base-url}")
+  private String PAYPAL_PAYMENT_URL;
+
   // Constructor
-  public PaymentIntentService (PaymentIntentRepo paymentIntentRepo, AdminDetailsService adminDetailsService) {
+  public PaymentIntentService (PaymentIntentRepo paymentIntentRepo, AdminDetailsService adminDetailsService, AppointmentService appointmentService) {
     this.paymentIntentRepo = paymentIntentRepo;
     this.adminDetailsService = adminDetailsService;
+    this.appointmentService = appointmentService;
   }
 
-  /**
-   * Cancels (refunds) the given payment intent by calling PayPal's refund API.
-   * This implementation constructs the refund request payload,
-   * includes all required headers, sends the POST request, checks for errors,
-   * and then deletes the PaymentIntent record from the repository.
-   *
-   * @param paymentIntent the payment to be refunded
-   * @return the response body returned by PayPal upon a successful refund
-   * @throws PaymentException if any errors occur during the refund process
-   */
-  public String cancelPayment(Appointment appointment) throws PaymentException {
-    Optional<PaymentIntent> paymentIntentOp = Optional.ofNullable(paymentIntentRepo.findByOrderId(appointment.getOrderId()));
-    if(paymentIntentOp.isEmpty()) {
-      throw new PaymentException("There is no PaymentIntent anymore");
-    }
-    PaymentIntent paymentIntent = paymentIntentOp.get();
-    String accessToken = getAccessToken();
 
-    String refundUrl = "https://api-m.sandbox.paypal.com/v2/payments/captures/"
-            + paymentIntent.getOrderId() + "/refund";
+  public String cancelPayment(Appointment appointmentInput) throws PaymentException {
+    Appointment appointment = appointmentService.findById(appointmentInput.getId());
+    String accessToken = getAccessToken();
+    String refundUrl = PAYPAL_PAYMENT_URL + appointment.getCaptureId() + "/refund";
 
     Map<String, Object> payloadMap = new HashMap<>();
     Map<String, String> amount = new HashMap<>();
-    amount.put("value", paymentIntent.getPrice());
+    amount.put("value", appointment.getNetAmount().split(" ")[0]); // this is in the form "122.45 USD"
     amount.put("currency_code", "USD");
     payloadMap.put("amount", amount);
 
@@ -82,18 +73,15 @@ public class PaymentIntentService {
             .uri(URI.create(refundUrl))
             .header("Content-Type", "application/json")
             .header("Authorization", "Bearer " + accessToken)
-            .header("PayPal-Request-Id", paymentIntent.getRequestId())
-            //.header("PayPal-Auth-Assertion", paypalAuthAssertion)
-            //.header("PayPal-Partner-Attribution-Id", paypalPartnerAttributionId)
+            .header("PayPal-Request-Id", UUID.randomUUID().toString())
             .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
             .build();
-
     try {
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
       if (response.statusCode() / 100 != 2) {
         throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       }
-      paymentIntentRepo.deleteById(paymentIntent.getId());
+      appointmentService.updateStatus(appointment, "CANCELED");
       return response.body();
     } catch (Exception e) {
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);

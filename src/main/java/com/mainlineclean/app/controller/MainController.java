@@ -138,7 +138,8 @@ public class MainController {
 
   @PostMapping("/cancel-appointment")
   public ResponseEntity<String> cancelAppointment(@RequestBody Appointment appointment) {
-    paymentIntentService.cancelPayment(appointment);
+    String res = paymentIntentService.cancelPayment(appointment);
+    System.out.println(res);
     return ResponseEntity.ok("OK");
   }
 

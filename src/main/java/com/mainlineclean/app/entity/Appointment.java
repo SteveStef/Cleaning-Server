@@ -53,6 +53,9 @@ public class Appointment {
   @Column(name = "orderId")
   private String orderId;
 
+  @Column(name = "captureId")
+  private String captureId;
+
   @Column(name = "chargedAmount")
   private String chargedAmount;
 
@@ -93,7 +96,7 @@ public class Appointment {
   public Appointment(String clientName, String email, String phone, String service,
                      Date appointmentDate, Date createdAt, String time, String status,
                      String address, String notes, String orderId, String chargedAmount,
-                     String paypalFee, String netAmount) {
+                     String paypalFee, String netAmount, String captureId) {
     this.clientName = clientName;
     this.email = email;
     this.phone = phone;
@@ -109,6 +112,7 @@ public class Appointment {
     this.paypalFee = paypalFee;
     this.netAmount = netAmount;
     this.bookingId = generateBookingId();
+    this.captureId = captureId;
   }
 
   // Getters and Setters
@@ -234,6 +238,14 @@ public class Appointment {
 
   public void setNetAmount(String netAmount) {
     this.netAmount = netAmount;
+  }
+
+  public String getCaptureId() {
+    return captureId;
+  }
+
+  public void setCaptureId(String captureId) {
+    this.captureId = captureId;
   }
 
   @Override
