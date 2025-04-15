@@ -36,7 +36,7 @@ public class AvailabilityService {
 
   public void updateAvailability(Appointment app) throws AvailabilityException {
     Date date = app.getAppointmentDate();
-    String time = app.getTime(); // expected values: "morning", "afternoon", "night"
+    String time = app.getTime().toLowerCase(); // expected values: "morning, 8:am-11am", "afternoon", "night"
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String formattedDate = sdf.format(date);
     Optional<Availability> availabilityOpt = availabilityRepo.findById(formattedDate);
@@ -44,11 +44,11 @@ public class AvailabilityService {
       throw new AvailabilityException("No availability found for date: " + formattedDate);
     }
     Availability availability = availabilityOpt.get();
-    if ("morning".equalsIgnoreCase(time)) {
+    if (time.contains("morning")) {
       availability.setMorning(false);
-    } else if ("afternoon".equalsIgnoreCase(time)) {
+    } else if (time.contains("afternoon")) {
       availability.setAfternoon(false);
-    } else if ("night".equalsIgnoreCase(time)) {
+    } else if (time.contains("night")) {
       availability.setNight(false);
     }
     if (!availability.isMorning() && !availability.isAfternoon() && !availability.isNight()) {

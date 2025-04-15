@@ -51,7 +51,7 @@ public class PaymentIntentService {
   }
 
 
-  public String cancelPayment(Appointment appointmentInput) throws PaymentException {
+  public void cancelPayment(Appointment appointmentInput) throws PaymentException {
     Appointment appointment = appointmentService.findById(appointmentInput.getId());
     String accessToken = getAccessToken();
     String refundUrl = PAYPAL_PAYMENT_URL + appointment.getCaptureId() + "/refund";
@@ -82,7 +82,6 @@ public class PaymentIntentService {
         throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       }
       appointmentService.updateStatus(appointment, "canceled");
-      return response.body();
     } catch (Exception e) {
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
     }
