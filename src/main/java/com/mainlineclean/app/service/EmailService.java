@@ -48,7 +48,7 @@ public class EmailService {
 
         String from = "Mainline Clean <" +  senderEmail + ">";
         String clientSubject = "Here is your admin verification code";
-        String clientText = "Your verification code is: " + code + " (Note if this is not you then someone knows your password and you should change it. (talk to the developer of the website)";
+        String clientText = "Your verification code is: " + code;
 
         sendEmail(encodedAuth, from, senderEmail, clientSubject, clientText);
 
@@ -148,7 +148,8 @@ public class EmailService {
 
         String from = "Mainline Clean <" +  senderEmail + ">";
         String subject = "Your cleaning appointment has been canceled";
-        String text = "Your cleaning appointment with booking ID: " + appointment.getBookingId() + " has been canceled. You have been refunded $" + appointment.getNetAmount() + "USD";
+        String text = "Your cleaning appointment with booking ID: " + appointment.getBookingId()
+                + " has been canceled. You have been refunded $" + appointment.getNetAmount();
 
         sendEmail(encodedAuth, from, senderEmail, subject, text);
     }
