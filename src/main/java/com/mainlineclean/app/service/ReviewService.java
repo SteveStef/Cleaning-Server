@@ -20,7 +20,7 @@ public class ReviewService {
   }
 
   public List<Review> getAllReviews() {
-    return reviewRepo.findAll();
+    return reviewRepo.findByStarsGreaterThanEqual(3);
   }
 
 }
