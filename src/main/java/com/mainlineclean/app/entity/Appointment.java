@@ -251,21 +251,23 @@ public class Appointment {
   @Override
   public String toString() {
     return "Appointment{" +
-           "id=" + id +
-           ", clientName='" + clientName + '\'' +
-           ", email='" + email + '\'' +
-           ", phone='" + phone + '\'' +
-           ", service='" + service + '\'' +
-           ", appointmentDate=" + appointmentDate +
-           ", createdAt=" + createdAt +
-           ", time='" + time + '\'' +
-           ", status='" + status + '\'' +
-           ", address='" + address + '\'' +
-           ", notes='" + notes + '\'' +
-           ", orderId='" + orderId + '\'' +
-           ", chargedAmount='" + chargedAmount + '\'' +
-           ", paypalFee='" + paypalFee + '\'' +
-           ", netAmount='" + netAmount + '\'' +
-           '}';
+            "id=" + id +
+            ", clientName='" + clientName + '\'' +
+            ", email='" + email + '\'' +
+            ", phone='" + phone + '\'' +
+            ", service='" + service + '\'' +
+            ", appointmentDate=" + appointmentDate +
+            ", createdAt=" + createdAt +
+            ", time='" + time + '\'' +
+            ", status='" + status + '\'' +
+            ", address='" + address + '\'' +
+            ", notes='" + notes + '\'' +
+            ", orderId='" + orderId + '\'' +
+            ", captureId='" + captureId + '\'' +
+            ", chargedAmount='" + chargedAmount + '\'' +
+            ", paypalFee='" + paypalFee + '\'' +
+            ", netAmount='" + netAmount + '\'' +
+            ", bookingId='" + bookingId + '\'' +
+            '}';
   }
 }

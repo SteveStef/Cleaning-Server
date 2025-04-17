@@ -50,7 +50,6 @@ public class PaymentIntentService {
     this.appointmentService = appointmentService;
   }
 
-
   public void cancelPayment(Appointment appointmentInput) throws PaymentException {
     Appointment appointment = appointmentService.findById(appointmentInput.getId());
     String accessToken = getAccessToken();

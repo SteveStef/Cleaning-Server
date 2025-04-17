@@ -103,4 +103,17 @@ public class Review {
   public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
   }
+
+  @Override
+  public String toString() {
+    return "Review{" +
+            "id=" + id +
+            ", clientName='" + clientName + '\'' +
+            ", stars=" + stars +
+            ", location='" + location + '\'' +
+            ", service='" + service + '\'' +
+            ", content='" + content + '\'' +
+            ", createdAt=" + createdAt +
+            '}';
+  }
 }

@@ -97,13 +97,13 @@ public class Availability {
   @Override
   public String toString() {
     return "Availability{" +
-      "date='" + date + '\'' +
-      ", expirationDate=" + expirationDate +
-      ", morning=" + morning +
-      ", afternoon=" + afternoon +
-      ", night=" + night +
-      ", isAvailable=" + isAvailable +
-      '}';
+            "date='" + date + '\'' +
+            ", expirationDate=" + expirationDate +
+            ", morning=" + morning +
+            ", afternoon=" + afternoon +
+            ", night=" + night +
+            ", isAvailable=" + isAvailable +
+            '}';
   }
 
   // This method will be called before the entity is persisted or updated.

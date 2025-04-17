@@ -64,10 +64,10 @@ public class PaymentIntent {
   @Override
   public String toString() {
     return "PaymentIntent{" +
-      "id=" + id +
-      ", orderId='" + orderId + '\'' +
-      ", requestId='" + requestId + '\'' +
-      ", price='" + price + '\'' +
-      '}';
+            "id=" + id +
+            ", orderId='" + orderId + '\'' +
+            ", requestId='" + requestId + '\'' +
+            ", price='" + price + '\'' +
+            '}';
   }
 }

@@ -75,4 +75,16 @@ public class AdminDetails {
     public void setCode(String code) {
         this.code = code;
     }
+
+    @Override
+    public String toString() {
+        return "AdminDetails{" +
+                "id=" + id +
+                ", regularPrice='" + regularPrice + '\'' +
+                ", moveInOutPrice='" + moveInOutPrice + '\'' +
+                ", deepCleanPrice='" + deepCleanPrice + '\'' +
+                ", email='" + email + '\'' +
+                ", code='" + code + '\'' +
+                '}';
+    }
 }

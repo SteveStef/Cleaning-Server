@@ -1,4 +1,5 @@
 package com.mainlineclean.app.utils;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -16,13 +17,17 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtUtil {
 
+    @Value("${client.origin}")
+    private String CLIENT_ORIGIN;
+
     @Value("${spring.security.jwt.secret}")
     private String SECRET;
+
     private static final long VALIDITY = TimeUnit.MINUTES.toMillis(120);
 
     public String generateToken() {
         Map<String, String> claims = new HashMap<>();
-        claims.put("iss", "https://mainlinecleaners.com");
+        claims.put("iss", CLIENT_ORIGIN);
         return Jwts.builder()
                 .claims(claims)
                 .subject("Admin User")
