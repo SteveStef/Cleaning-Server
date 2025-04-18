@@ -40,6 +40,10 @@ public class AppointmentService {
     appointmentRepo.save(appointment);
   }
 
+  public List<Appointment> getAllSuccessfulAppointments() {
+    return appointmentRepo.findByStatusNot("canceled");
+  }
+
   public void updateAmountsPaid(Appointment appointment, String responseFromPaymentApi) throws AppointmentException {
     ObjectMapper objectMapper = new ObjectMapper();
     try {

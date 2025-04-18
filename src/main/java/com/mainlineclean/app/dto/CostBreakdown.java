@@ -14,7 +14,6 @@ public class CostBreakdown {
     @JsonProperty("net_amount")
     private Amount netAmount;
 
-    // Getters and setters
     public Amount getGrossAmount() {
         return grossAmount;
     }
@@ -32,5 +31,14 @@ public class CostBreakdown {
     }
     public void setNetAmount(Amount netAmount) {
         this.netAmount = netAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "CostBreakdown{" +
+                "grossAmount=" + grossAmount +
+                ", paypalFee=" + paypalFee +
+                ", netAmount=" + netAmount +
+                '}';
     }
 }

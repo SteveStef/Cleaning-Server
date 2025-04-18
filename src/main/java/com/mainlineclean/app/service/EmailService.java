@@ -35,7 +35,7 @@ public class EmailService {
         this.adminDetailsService = adminDetailsService;
     }
 
-    private String generateAuthCode() {
+    public String generateAuthCode() {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for(int i = 0; i < 6; i++) sb.append(random.nextInt(10));

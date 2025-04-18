@@ -95,7 +95,10 @@ public class PaymentIntentService {
     else if(serviceType.equals("move")) price = details.getMoveInOutPrice();
     else price = details.getRegularPrice();
 
-    pi.setPrice(price);
+    // add sales tax
+    double totalPrice = Double.parseDouble(price) + (0.06) * Double.parseDouble(price);
+
+    pi.setPrice(Double.toString(totalPrice));
     String orderId = createOrder(pi);
     pi.setOrderId(orderId);
     return paymentIntentRepo.save(pi);

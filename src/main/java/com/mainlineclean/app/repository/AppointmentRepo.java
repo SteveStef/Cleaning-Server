@@ -5,5 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.mainlineclean.app.entity.Appointment;
 
+import java.util.List;
+
 @Repository
-public interface AppointmentRepo extends JpaRepository<Appointment, Long> {}
+public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
+    List<Appointment> findByStatusNot(String status);
+}

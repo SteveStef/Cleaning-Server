@@ -71,7 +71,7 @@ public class Appointment {
   @PrePersist
   protected void onCreate() {
     this.createdAt = new Date();
-    this.status = "Confirmed";
+    this.status = "confirmed";
     this.bookingId = this.generateBookingId();
   }
 

@@ -1,7 +1,9 @@
 package com.mainlineclean.app.controller;
+import com.mainlineclean.app.dto.RevenueDetails;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
 import com.mainlineclean.app.exception.PaymentException;
+import com.mainlineclean.app.utils.Finances;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,12 +18,14 @@ public class PaypalController {
     private final AvailabilityService availabilityService;
     private final AppointmentService appointmentService;
     private final EmailService emailService;
+    private final Finances financesUtil;
 
-    public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService) {
+    public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService, Finances financesUtil) {
         this.paymentIntentService = paymentIntentService;
         this.availabilityService = availabilityService;
         this.appointmentService = appointmentService;
         this.emailService = emailService;
+        this.financesUtil = financesUtil;
     }
 
     @PostMapping("/paypal/createOrder")
@@ -49,8 +53,8 @@ public class PaypalController {
         return ResponseEntity.ok("OK");
     }
 
-//    @GetMapping("/paypal-info")
-//    public ResponseEntity<PaypalStats> getPaypalStats() {
-//        return ResponseEntity.ok(paypalUtil.getDetails());
-//    }
+    @GetMapping("/paypal-info")
+    public ResponseEntity<RevenueDetails> getPaypalStats() {
+        return ResponseEntity.ok(financesUtil.financeDetails());
+    }
 }

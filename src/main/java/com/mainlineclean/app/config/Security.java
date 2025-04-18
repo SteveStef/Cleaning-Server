@@ -57,7 +57,8 @@ public class Security {
                         new AntPathRequestMatcher("/update-admin-pricing", "PUT"),
                         new AntPathRequestMatcher("/update-admin-email", "PUT"),
                         new AntPathRequestMatcher("/cancel-appointment", "POST"),
-                        new AntPathRequestMatcher("/appointments", "GET")
+                        new AntPathRequestMatcher("/appointments", "GET"),
+                        new AntPathRequestMatcher("/paypal-info", "GET")
                 ))
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)

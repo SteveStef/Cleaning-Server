@@ -2,3 +2,4 @@ application.properties
 application-prod.properties
 target/
 .DS_Store
+test/
