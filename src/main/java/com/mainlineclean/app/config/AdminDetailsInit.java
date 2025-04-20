@@ -22,9 +22,19 @@ public class AdminDetailsInit implements CommandLineRunner {
     public void run(String... args) {
         if(!adminDetailsRepo.existsById((long)1)) {
             AdminDetails details = new AdminDetails();
-            details.setRegularPrice("150.00");
-            details.setMoveInOutPrice("350.00");
-            details.setDeepCleanPrice("250.00");
+            details.setRegularPrice("200.00");
+            details.setMoveInOutPrice("200.00");
+            details.setEnvironmentPrice("200.00");
+            details.setFirePrice("200.00");
+            details.setWaterPrice("200.00");
+            details.setDeceasedPrice("200.00");
+            details.setHazmat("200.00");
+            details.setExplosiveResidue("200.00");
+            details.setMoldPrice("200.00");
+            details.setConstructionPrice("200.00");
+            details.setCommercialPrice("200.00");
+            details.setDeepCleanPrice("200.00");
+
             details.setEmail(adminEmail);
             details.setCode("");
             adminDetailsRepo.save(details);

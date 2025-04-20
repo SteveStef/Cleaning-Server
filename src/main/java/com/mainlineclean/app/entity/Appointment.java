@@ -3,13 +3,10 @@ package com.mainlineclean.app.entity;
 import java.util.Date;
 import java.util.Random;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.Status;
+import com.mainlineclean.app.model.Time;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "appointment")
@@ -29,8 +26,9 @@ public class Appointment {
   @Column(name = "phone")
   private String phone;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "service")
-  private String service;
+  private ServiceType service;
 
   @Column(name = "appointment_date")
   private Date appointmentDate;
@@ -38,11 +36,14 @@ public class Appointment {
   @Column(name = "created_at")
   private Date createdAt;
 
-  @Column(name = "time")
-  private String time;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "time")
+  private Time time;
+
+  @Enumerated(EnumType.STRING)
   @Column(name = "status")
-  private String status;
+  private Status status;
 
   @Column(name = "address")
   private String address;
@@ -71,7 +72,7 @@ public class Appointment {
   @PrePersist
   protected void onCreate() {
     this.createdAt = new Date();
-    this.status = "confirmed";
+    this.status = Status.CONFIRMED;
     this.bookingId = this.generateBookingId();
   }
 
@@ -92,11 +93,9 @@ public class Appointment {
   // Default constructor
   public Appointment() {}
 
-  // All-arguments constructor including all variables
-  public Appointment(String clientName, String email, String phone, String service,
-                     Date appointmentDate, Date createdAt, String time, String status,
-                     String address, String notes, String orderId, String chargedAmount,
-                     String paypalFee, String netAmount, String captureId) {
+
+  public Appointment(Long id, String clientName, String email, String phone, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId) {
+    this.id = id;
     this.clientName = clientName;
     this.email = email;
     this.phone = phone;
@@ -108,11 +107,11 @@ public class Appointment {
     this.address = address;
     this.notes = notes;
     this.orderId = orderId;
+    this.captureId = captureId;
     this.chargedAmount = chargedAmount;
     this.paypalFee = paypalFee;
     this.netAmount = netAmount;
-    this.bookingId = generateBookingId();
-    this.captureId = captureId;
+    this.bookingId = bookingId;
   }
 
   // Getters and Setters
@@ -152,12 +151,12 @@ public class Appointment {
     this.phone = phone;
   }
 
-  public String getService() {
+  public ServiceType getService() {
     return service;
   }
 
-  public void setService(String service) {
-    this.service = service;
+  public void setService(ServiceType serviceType) {
+    this.service = serviceType;
   }
 
   public Date getAppointmentDate() {
@@ -176,19 +175,19 @@ public class Appointment {
     this.createdAt = createdAt;
   }
 
-  public String getTime() {
+  public Time getTime() {
     return time;
   }
 
-  public void setTime(String time) {
+  public void setTime(Time time) {
     this.time = time;
   }
 
-  public String getStatus() {
+  public Status getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Status status) {
     this.status = status;
   }
 

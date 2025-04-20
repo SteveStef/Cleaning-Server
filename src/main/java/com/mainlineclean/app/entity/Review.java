@@ -1,6 +1,8 @@
 package com.mainlineclean.app.entity;
 
 import java.util.Date;
+
+import com.mainlineclean.app.model.ServiceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +31,7 @@ public class Review {
   private String location;
 
   @Column(name = "service")
-  private String service;
+  private ServiceType service;
 
   @Lob
   @Column(name = "content", columnDefinition = "LONGTEXT")
@@ -80,11 +82,11 @@ public class Review {
     this.location = location;
   }
 
-  public String getService() {
+  public ServiceType getService() {
     return service;
   }
 
-  public void setService(String service) {
+  public void setService(ServiceType service) {
     this.service = service;
   }
 

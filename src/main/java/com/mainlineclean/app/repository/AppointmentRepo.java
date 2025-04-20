@@ -1,5 +1,6 @@
 package com.mainlineclean.app.repository;
 
+import com.mainlineclean.app.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
-    List<Appointment> findByStatusNot(String status);
+    List<Appointment> findByStatusNot(Status status);
 }

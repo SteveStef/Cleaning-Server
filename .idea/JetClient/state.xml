@@ -93,7 +93,7 @@
               <option name="id" value="25168c4e-d259-4576-8303-a0bc6cd2f529" />
               <option name="method" value="GET" />
               <option name="name" value="Auth" />
-              <option name="url" value="http://localhost:9080/authenticate" />
+              <option name="url" value="http://localhost:9080/appointments" />
             </requestState>
             <requestState>
               <option name="auth">
@@ -106,10 +106,16 @@
                   <option name="type" value="BEARER" />
                 </authState>
               </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;clientName&quot;: &quot;John Doe&quot;,&#10;  &quot;email&quot;: &quot;johndoe@example.com&quot;,&#10;  &quot;phone&quot;: &quot;+1-555-123-4567&quot;,&#10;  &quot;service&quot;: &quot;REGULAR&quot;,&#10;  &quot;appointmentDate&quot;: &quot;2025-05-01T09:00:00.000Z&quot;,&#10;  &quot;createdAt&quot;: &quot;2025-04-20T11:30:45.000Z&quot;,&#10;  &quot;time&quot;: &quot;09:00 AM&quot;,&#10;  &quot;address&quot;: &quot;123 Main St, Springfield, IL 62704&quot;,&#10;  &quot;notes&quot;: &quot;Customer requests eco-friendly products.&quot;,&#10;  &quot;captureId&quot;: &quot;CAP-ABC123XYZ&quot;,&#10;  &quot;bookingId&quot;: &quot;BK-20250420-0001&quot;&#10;}&#10;&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
               <option name="id" value="3974c98f-e964-427f-b900-43f2bb60af37" />
-              <option name="method" value="GET" />
+              <option name="method" value="POST" />
               <option name="name" value="Draft" />
-              <option name="url" value="http://localhost:9080/paypal-info" />
+              <option name="url" value="http://localhost:9080/test" />
             </requestState>
           </list>
         </option>

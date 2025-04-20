@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
+import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.repository.PaymentIntentRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,20 +82,32 @@ public class PaymentIntentService {
       if (response.statusCode() / 100 != 2) {
         throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       }
-      appointmentService.updateStatus(appointment, "canceled");
+      appointmentService.updateStatus(appointment, Status.CANCELED);
     } catch (Exception e) {
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
     }
   }
 
-  public PaymentIntent createOrder(String serviceType) throws PaymentException {
+  public PaymentIntent createOrder(ServiceType serviceType) throws PaymentException, EnumConstantNotPresentException {
     PaymentIntent pi = new PaymentIntent();
     AdminDetails details = adminDetailsService.getAdminDetails();
-    String price;
 
-    if(serviceType.equals("deep")) price = details.getDeepCleanPrice();
-    else if(serviceType.equals("move")) price = details.getMoveInOutPrice();
-    else price = details.getRegularPrice();
+    String price = switch (serviceType) {
+      case DEEP               -> details.getDeepCleanPrice();
+      case MOVE_IN_OUT        -> details.getMoveInOutPrice();
+      case FIRE               -> details.getFirePrice();
+      case REGULAR            -> details.getRegularPrice();
+      case COMMERCIAL         -> details.getCommercialPrice();
+      case CONSTRUCTION       -> details.getConstructionPrice();
+      case DECEASED           -> details.getDeceasedPrice();
+      case ENVIRONMENT        -> details.getEnvironmentPrice();
+      case EXPLOSIVE_RESIDUE  -> details.getExplosiveResidue();
+      case HAZMAT             -> details.getHazmat();
+      case MOLD               -> details.getMoldPrice();
+      case WATER              -> details.getWaterPrice();
+      default -> throw new IllegalArgumentException(
+              "Unknown service type: " + serviceType);
+    };
 
     // add sales tax
     double totalPrice = Double.parseDouble(price) + (0.06) * Double.parseDouble(price);

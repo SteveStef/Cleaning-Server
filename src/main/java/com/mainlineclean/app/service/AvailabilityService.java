@@ -1,5 +1,6 @@
 package com.mainlineclean.app.service;
 
+import com.mainlineclean.app.model.Time;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mainlineclean.app.entity.Availability;
@@ -36,7 +37,7 @@ public class AvailabilityService {
 
   public void updateAvailability(Appointment app) throws AvailabilityException {
     Date date = app.getAppointmentDate();
-    String time = app.getTime().toLowerCase(); // expected values: "morning, 8:am-11am", "afternoon", "night"
+    Time time = app.getTime();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String formattedDate = sdf.format(date);
     Optional<Availability> availabilityOpt = availabilityRepo.findById(formattedDate);
@@ -44,11 +45,11 @@ public class AvailabilityService {
       throw new AvailabilityException("No availability found for date: " + formattedDate);
     }
     Availability availability = availabilityOpt.get();
-    if (time.contains("morning")) {
+    if (time == Time.MORNING) {
       availability.setMorning(false);
-    } else if (time.contains("afternoon")) {
+    } else if (time == Time.AFTERNOON) {
       availability.setAfternoon(false);
-    } else if (time.contains("night")) {
+    } else if (time == Time.NIGHT) {
       availability.setNight(false);
     }
     if (!availability.isMorning() && !availability.isAfternoon() && !availability.isNight()) {

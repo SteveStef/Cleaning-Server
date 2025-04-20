@@ -3,6 +3,7 @@ package com.mainlineclean.app.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.exception.AppointmentException;
+import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.repository.AppointmentRepo;
 import com.mainlineclean.app.dto.CostBreakdown;
 
@@ -35,13 +36,13 @@ public class AppointmentService {
     return appointmentRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("No appointment found with ID of" + id));
   }
 
-  public void updateStatus(Appointment appointment, String status) {
+  public void updateStatus(Appointment appointment, Status status) {
     appointment.setStatus(status);
     appointmentRepo.save(appointment);
   }
 
   public List<Appointment> getAllSuccessfulAppointments() {
-    return appointmentRepo.findByStatusNot("canceled");
+    return appointmentRepo.findByStatusNot(Status.CANCELED);
   }
 
   public void updateAmountsPaid(Appointment appointment, String responseFromPaymentApi) throws AppointmentException {
