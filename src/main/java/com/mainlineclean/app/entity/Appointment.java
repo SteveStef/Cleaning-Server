@@ -26,6 +26,9 @@ public class Appointment {
   @Column(name = "phone")
   private String phone;
 
+  @Column(name = "city")
+  private String city;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "service")
   private ServiceType service;
@@ -94,7 +97,7 @@ public class Appointment {
   public Appointment() {}
 
 
-  public Appointment(Long id, String clientName, String email, String phone, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId) {
+  public Appointment(Long id, String clientName, String email, String phone, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, String city) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
@@ -112,6 +115,7 @@ public class Appointment {
     this.paypalFee = paypalFee;
     this.netAmount = netAmount;
     this.bookingId = bookingId;
+    this.city = city;
   }
 
   // Getters and Setters
@@ -247,6 +251,16 @@ public class Appointment {
     this.captureId = captureId;
   }
 
+  public String getCity() {
+    return city;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+  }
+
+
+
   @Override
   public String toString() {
     return "Appointment{" +
@@ -267,6 +281,7 @@ public class Appointment {
             ", paypalFee='" + paypalFee + '\'' +
             ", netAmount='" + netAmount + '\'' +
             ", bookingId='" + bookingId + '\'' +
+            ", city='" + city + '\'' +
             '}';
   }
 }

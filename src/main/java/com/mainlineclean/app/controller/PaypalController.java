@@ -42,7 +42,7 @@ public class PaypalController {
         String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi);
         appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse);
         availabilityService.updateAvailability(appointment);
-        Appointment createdAppointment = appointmentService.createAppointment(appointment);
+        Appointment createdAppointment = appointmentService.createAppointment(appointment); // put this on line 42
         emailService.notifyAppointment(createdAppointment);
         return ResponseEntity.ok(createdAppointment);
     }

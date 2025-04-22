@@ -42,6 +42,15 @@ public class AdminDetailsService {
         existing.setDeepCleanPrice(details.getDeepCleanPrice());
         existing.setRegularPrice(details.getRegularPrice());
         existing.setMoveInOutPrice(details.getMoveInOutPrice());
+        existing.setCommercialPrice(details.getCommercialPrice());
+        existing.setDeceasedPrice(details.getDeceasedPrice());
+        existing.setFirePrice(details.getFirePrice());
+        existing.setExplosiveResidue(details.getExplosiveResidue());
+        existing.setEnvironmentPrice(details.getEnvironmentPrice());
+        existing.setWaterPrice(details.getWaterPrice());
+        existing.setMoldPrice(details.getMoldPrice());
+        existing.setHazmat(details.getHazmat());
+        existing.setConstructionPrice(details.getConstructionPrice());
 
         return adminDetailsRepo.save(existing);
     }

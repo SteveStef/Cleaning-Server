@@ -110,7 +110,9 @@ public class PaymentIntentService {
     };
 
     // add sales tax
-    double totalPrice = Double.parseDouble(price) + (0.06) * Double.parseDouble(price);
+    double priceVal = Double.parseDouble(price);
+    double totalPrice = priceVal * 1.06;
+    totalPrice = Math.round(totalPrice * 100.0) / 100.0;
 
     pi.setPrice(Double.toString(totalPrice));
     String orderId = createOrder(pi);
