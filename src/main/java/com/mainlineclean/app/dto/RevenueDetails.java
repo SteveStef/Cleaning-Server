@@ -1,16 +1,25 @@
 package com.mainlineclean.app.dto;
 
+import com.mainlineclean.app.utils.Finances;
+
+import java.util.ArrayList;
+
 public class RevenueDetails {
+
     private double profit;
     private double gross;
     private double paypalFee;
     private double salesTax;
+    private ArrayList<Finances.YearlyEntry> yearlyRevenue;
+    private ArrayList<Finances.RevenueEntry> monthlyRevenue;
 
-    public RevenueDetails(double profit, double gross, double salesTax, double paypalFee) {
+    public RevenueDetails(double profit, double gross, double paypalFee, double salesTax, ArrayList<Finances.YearlyEntry> yearlyRevenue, ArrayList<Finances.RevenueEntry> monthlyRevenue) {
         this.profit = profit;
         this.gross = gross;
         this.paypalFee = paypalFee;
         this.salesTax = salesTax;
+        this.yearlyRevenue = yearlyRevenue;
+        this.monthlyRevenue = monthlyRevenue;
     }
 
     public double getProfit() {
@@ -43,5 +52,33 @@ public class RevenueDetails {
 
     public void setSalesTax(double salesTax) {
         this.salesTax = salesTax;
+    }
+
+    public ArrayList<Finances.YearlyEntry> getYearlyRevenue() {
+        return yearlyRevenue;
+    }
+
+    public void setYearlyRevenue(ArrayList<Finances.YearlyEntry> yearlyRevenue) {
+        this.yearlyRevenue = yearlyRevenue;
+    }
+
+    public ArrayList<Finances.RevenueEntry> getMonthlyRevenue() {
+        return monthlyRevenue;
+    }
+
+    public void setMonthlyRevenue(ArrayList<Finances.RevenueEntry> monthlyRevenue) {
+        this.monthlyRevenue = monthlyRevenue;
+    }
+
+    @Override
+    public String toString() {
+        return "RevenueDetails{" +
+                "profit=" + profit +
+                ", gross=" + gross +
+                ", paypalFee=" + paypalFee +
+                ", salesTax=" + salesTax +
+                ", yearlyRevenue=" + yearlyRevenue +
+                ", monthlyRevenue=" + monthlyRevenue +
+                '}';
     }
 }

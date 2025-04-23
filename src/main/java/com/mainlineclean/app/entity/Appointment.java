@@ -39,7 +39,6 @@ public class Appointment {
   @Column(name = "created_at")
   private Date createdAt;
 
-
   @Enumerated(EnumType.STRING)
   @Column(name = "time")
   private Time time;
