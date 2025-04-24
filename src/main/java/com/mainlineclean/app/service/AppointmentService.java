@@ -24,6 +24,10 @@ public class AppointmentService {
     this.appointmentRepo = appointmentRepository;
   }
 
+  public void deleteAppointment(Appointment appointment) {
+    this.appointmentRepo.delete(appointment);
+  }
+
   public Appointment createAppointment(Appointment appointment) {
     return appointmentRepo.save(appointment);
   }

@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
 @Component
 public class Finances {
     public record RevenueEntry(String month, double revenue){

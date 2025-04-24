@@ -37,13 +37,20 @@ public class PaypalController {
 
     @PostMapping("/paypal/captureOrder")
     public ResponseEntity<Appointment> captureOrder(@RequestBody Appointment appointment) throws PaymentException, EmailException {
-        availabilityService.isAvailableAt(appointment.getAppointmentDate()); // throws exception if not available
+        availabilityService.isAvailableAt(appointment.getAppointmentDate()); // throws if not available
+
+        Appointment createdAppointment = appointmentService.createAppointment(appointment);
         PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(appointment.getOrderId());
-        String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi);
-        appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse);
-        availabilityService.updateAvailability(appointment);
-        Appointment createdAppointment = appointmentService.createAppointment(appointment); // put this on line 42
-        emailService.notifyAppointment(createdAppointment);
+        try {
+            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi);
+            appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse);
+            availabilityService.updateAvailability(appointment);
+            emailService.notifyAppointment(createdAppointment);
+        } catch(PaymentException e) {
+            appointmentService.deleteAppointment(createdAppointment);
+            throw new PaymentException("The payment was not valid");
+        }
+
         return ResponseEntity.ok(createdAppointment);
     }
 
