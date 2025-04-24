@@ -1,7 +1,6 @@
 package com.mainlineclean.app.entity;
 
 import java.util.Date;
-import java.util.Random;
 
 import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.Status;
@@ -9,7 +8,7 @@ import com.mainlineclean.app.model.Time;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "appointment")
+@Table(name = "appointment", uniqueConstraints = @UniqueConstraint(columnNames = "bookingId"))
 public class Appointment {
 
   @Id
@@ -68,33 +67,11 @@ public class Appointment {
   @Column(name = "netAmount")
   private String netAmount;
 
-  @Column(name = "bookingId")
+  @Column(name = "bookingId", nullable = false, unique = true)
   private String bookingId;
-
-  @PrePersist
-  protected void onCreate() {
-    this.createdAt = new Date();
-    this.status = Status.CONFIRMED;
-    this.bookingId = this.generateBookingId();
-  }
-
-  private String generateBookingId() {
-    StringBuilder bID = new StringBuilder("BK-");
-    String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    Random random = new Random();
-    for (int i = 0; i < 5; i++) {
-        bID.append(chars.charAt(random.nextInt(chars.length())));
-    }
-    bID.append("-");
-    for (int i = 0; i < 3; i++) {
-      bID.append(chars.charAt(random.nextInt(chars.length())));
-    }
-    return bID.toString();
-  }
 
   // Default constructor
   public Appointment() {}
-
 
   public Appointment(Long id, String clientName, String email, String phone, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, String city) {
     this.id = id;

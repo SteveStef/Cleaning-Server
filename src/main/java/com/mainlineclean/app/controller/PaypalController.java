@@ -61,6 +61,12 @@ public class PaypalController {
         return ResponseEntity.ok("OK");
     }
 
+    @PostMapping("/customer-cancel-appointment")
+    public ResponseEntity<String> customerCancelAppointment(@RequestBody Appointment appointment) {
+        // validate the date is in the future by atleast 24 hours
+        return ResponseEntity.ok("OK");
+    }
+
     @GetMapping("/paypal-info")
     public ResponseEntity<RevenueDetails> getPaypalStats() {
         return ResponseEntity.ok(financesUtil.financeDetails());
