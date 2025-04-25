@@ -53,8 +53,9 @@ public class AppointmentService {
     return appointmentRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("No appointment found with ID of" + id));
   }
 
-  public Appointment findByBookingIdAndEmail(String bookingId, String email) {
-    return appointmentRepo.findByBookingIdAndEmail(bookingId, email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment not found"));
+  public Appointment findByBookingIdAndEmailAndStatusNotCancel(String bookingId, String email) {
+    return appointmentRepo.findByBookingIdAndEmailAndStatusNot(bookingId, email, Status.CANCELED)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment not found"));
   }
 
   public void updateStatus(Appointment appointment, Status status) {

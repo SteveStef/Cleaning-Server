@@ -100,7 +100,7 @@ public class EmailService {
         String from = "Mainline Clean <" +  senderEmail + ">";
         String subject = "Your cleaning appointment has been canceled";
         String text = "Your cleaning appointment with booking ID: " + appointment.getBookingId()
-                + " has been canceled. You have been refunded $" + appointment.getNetAmount();
+                + " has been canceled. You have been refunded $" + appointment.getChargedAmount();
 
         sendEmail(encodedAuth, from, senderEmail, subject, text);
     }

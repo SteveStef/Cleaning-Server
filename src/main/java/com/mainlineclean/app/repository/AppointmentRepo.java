@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
     boolean existsByBookingId(String bookingId);
-    Optional<Appointment> findByBookingIdAndEmail(String bookingId, String email);
+    Optional<Appointment> findByBookingIdAndEmailAndStatusNot(String bookingId, String email, Status status);
 }

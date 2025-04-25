@@ -73,26 +73,20 @@ public class PaypalController {
 
     @PostMapping("/customer-cancel-appointment")
     public ResponseEntity<String> customerCancelAppointment(@RequestBody Records.CustomerCancelAppointmentBody data) {
-        Appointment appt = appointmentService.findByBookingIdAndEmail(data.bookingId(), data.email());
-        // convert to LocalDate in system default zone
+        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancel(data.bookingId(), data.email());
+
         LocalDate apptDate = appt.getAppointmentDate()
                 .toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
         LocalDate today = LocalDate.now();
 
-
         long daysUntil = ChronoUnit.DAYS.between(today, apptDate);
+        if (daysUntil < 0) return ResponseEntity.badRequest().body("Cannot cancel an appointment that has already occurred");
 
-        if (daysUntil < 0) {
-            return ResponseEntity.badRequest().body("Cannot cancel an appointment that has already occurred");
-        }
+        if (daysUntil >= 2)  paymentIntentService.cancelPayment(appt, Double.parseDouble(CANCELLATION_PERCENT));
+        else appointmentService.updateStatus(appt, Status.CANCELED);
 
-        if (daysUntil >= 2) {
-            paymentIntentService.cancelPayment(appt, Double.parseDouble(CANCELLATION_PERCENT));
-        } else {
-            appointmentService.updateStatus(appt, Status.CANCELED);
-        }
         availabilityService.updateAvailability(appt, true);
         return ResponseEntity.ok("OK");
     }

@@ -62,6 +62,7 @@ public class PaymentIntentService {
     Map<String, Object> payloadMap = new HashMap<>();
     Map<String, String> amount = new HashMap<>();
     String chargedAmount = appointment.getChargedAmount().split(" ")[0];
+    String netAmount = appointment.getNetAmount().split(" ")[0]; // this is gross amount
 
     double amt = Double.parseDouble(chargedAmount) * percentBack; //this is 75% of the og price that was charged by customer
     amt = Math.round(amt * 100.0) / 100.0;
@@ -101,7 +102,7 @@ public class PaymentIntentService {
       newChargedAmount = Math.round(newChargedAmount * 100.0) / 100.0;
       appointment.setChargedAmount(newChargedAmount + " USD");
 
-      double newNetAmount = newChargedAmount - (newChargedAmount * 0.06);
+      double newNetAmount = Double.parseDouble(netAmount) - Double.parseDouble(refundedValue);
       newNetAmount = Math.round(newNetAmount * 100.0) / 100.0;
       appointment.setNetAmount(newNetAmount + " USD");
 
