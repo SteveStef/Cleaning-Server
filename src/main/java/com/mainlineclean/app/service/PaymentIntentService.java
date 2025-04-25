@@ -1,6 +1,8 @@
 package com.mainlineclean.app.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mainlineclean.app.dto.Records;
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
@@ -52,14 +54,19 @@ public class PaymentIntentService {
     this.appointmentService = appointmentService;
   }
 
-  public void cancelPayment(Appointment appointmentInput) throws PaymentException {
+  public void cancelPayment(Appointment appointmentInput, double percentBack) throws PaymentException {
     Appointment appointment = appointmentService.findById(appointmentInput.getId());
     String accessToken = getAccessToken();
     String refundUrl = PAYPAL_PAYMENT_URL + appointment.getCaptureId() + "/refund";
 
     Map<String, Object> payloadMap = new HashMap<>();
     Map<String, String> amount = new HashMap<>();
-    amount.put("value", appointment.getNetAmount().split(" ")[0]); // this is in the form "122.45 USD"
+    String chargedAmount = appointment.getChargedAmount().split(" ")[0];
+
+    double amt = Double.parseDouble(chargedAmount) * percentBack; //this is 75% of the og price that was charged by customer
+    amt = Math.round(amt * 100.0) / 100.0;
+    amount.put("value", Double.toString(amt));
+
     amount.put("currency_code", "USD");
     payloadMap.put("amount", amount);
 
@@ -75,6 +82,7 @@ public class PaymentIntentService {
             .header("Content-Type", "application/json")
             .header("Authorization", "Bearer " + accessToken)
             .header("PayPal-Request-Id", UUID.randomUUID().toString())
+            .header("Prefer", "return=representation")
             .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
             .build();
     try {
@@ -82,6 +90,21 @@ public class PaymentIntentService {
       if (response.statusCode() / 100 != 2) {
         throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       }
+
+      String body = response.body();
+      JsonNode root = objectMapper.readTree(body);
+
+      JsonNode amountNode  = root.path("amount");
+      String refundedValue = amountNode.path("value").asText();
+
+      double newChargedAmount = Double.parseDouble(chargedAmount) - Double.parseDouble(refundedValue);
+      newChargedAmount = Math.round(newChargedAmount * 100.0) / 100.0;
+      appointment.setChargedAmount(newChargedAmount + " USD");
+
+      double newNetAmount = newChargedAmount - (newChargedAmount * 0.06);
+      newNetAmount = Math.round(newNetAmount * 100.0) / 100.0;
+      appointment.setNetAmount(newNetAmount + " USD");
+
       appointmentService.updateStatus(appointment, Status.CANCELED);
     } catch (Exception e) {
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);

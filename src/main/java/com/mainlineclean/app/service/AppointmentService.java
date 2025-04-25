@@ -63,7 +63,7 @@ public class AppointmentService {
   }
 
   public List<Appointment> getAllSuccessfulAppointments() {
-    return appointmentRepo.findByStatusNot(Status.CANCELED);
+    return appointmentRepo.findAll();
   }
 
   public void updateAmountsPaid(Appointment appointment, String responseFromPaymentApi) throws AppointmentException {
@@ -91,6 +91,7 @@ public class AppointmentService {
               .path("id").asText();
 
       appointment.setCaptureId(captureId);
+      appointmentRepo.save(appointment);
 
     } catch (JsonProcessingException e) {
       throw new AppointmentException("Failed to update amounts paid", e);

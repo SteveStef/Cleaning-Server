@@ -35,22 +35,22 @@ public class AvailabilityService {
     return availabilityRepo.saveAll(availabilityList);
   }
 
-  public void updateAvailability(Appointment app) throws AvailabilityException {
+  public void updateAvailability(Appointment app, boolean isAvailable) throws AvailabilityException {
     Date date = app.getAppointmentDate();
     Time time = app.getTime();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String formattedDate = sdf.format(date);
     Optional<Availability> availabilityOpt = availabilityRepo.findById(formattedDate);
-    if (availabilityOpt.isEmpty()) {
+    if (availabilityOpt.isEmpty()) { // if we are making less availability and already found no availability
       throw new AvailabilityException("No availability found for date: " + formattedDate);
     }
     Availability availability = availabilityOpt.get();
     if (time == Time.MORNING) {
-      availability.setMorning(false);
+      availability.setMorning(isAvailable);
     } else if (time == Time.AFTERNOON) {
-      availability.setAfternoon(false);
+      availability.setAfternoon(isAvailable);
     } else if (time == Time.NIGHT) {
-      availability.setNight(false);
+      availability.setNight(isAvailable);
     }
     if (!availability.isMorning() && !availability.isAfternoon() && !availability.isNight()) {
       availability.setAvailable(false);

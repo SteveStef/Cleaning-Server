@@ -13,7 +13,7 @@ public class RevenueDetails {
     private ArrayList<Finances.YearlyEntry> yearlyRevenue;
     private ArrayList<Finances.RevenueEntry> monthlyRevenue;
 
-    public RevenueDetails(double profit, double gross, double paypalFee, double salesTax, ArrayList<Finances.YearlyEntry> yearlyRevenue, ArrayList<Finances.RevenueEntry> monthlyRevenue) {
+    public RevenueDetails(double profit, double gross, double salesTax, double paypalFee, ArrayList<Finances.YearlyEntry> yearlyRevenue, ArrayList<Finances.RevenueEntry> monthlyRevenue) {
         this.profit = profit;
         this.gross = gross;
         this.paypalFee = paypalFee;
