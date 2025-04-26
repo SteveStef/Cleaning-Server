@@ -51,7 +51,7 @@ public class Finances {
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
         for (Appointment appointment : appointments) {
-            ZonedDateTime zdt = appointment.getAppointmentDate().toInstant().atZone(ZoneId.systemDefault());
+            ZonedDateTime zdt = appointment.getCreatedAt().toInstant().atZone(ZoneId.systemDefault());
             LocalDate ld = zdt.toLocalDate();
             String month = zdt.format(fmt);
             int year = ld.getYear();

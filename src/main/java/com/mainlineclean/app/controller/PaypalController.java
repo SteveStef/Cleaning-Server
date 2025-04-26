@@ -73,7 +73,7 @@ public class PaypalController {
 
     @PostMapping("/customer-cancel-appointment")
     public ResponseEntity<String> customerCancelAppointment(@RequestBody Records.CustomerCancelAppointmentBody data) {
-        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancel(data.bookingId(), data.email());
+        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(data.bookingId(), data.email());
 
         LocalDate apptDate = appt.getAppointmentDate()
                 .toInstant()
@@ -82,7 +82,7 @@ public class PaypalController {
         LocalDate today = LocalDate.now();
 
         long daysUntil = ChronoUnit.DAYS.between(today, apptDate);
-        if (daysUntil < 0) return ResponseEntity.badRequest().body("Cannot cancel an appointment that has already occurred");
+//        if (daysUntil < 0) return ResponseEntity.badRequest().body("Cannot cancel an appointment that has already occurred");
 
         if (daysUntil >= 2)  paymentIntentService.cancelPayment(appt, Double.parseDouble(CANCELLATION_PERCENT));
         else appointmentService.updateStatus(appt, Status.CANCELED);

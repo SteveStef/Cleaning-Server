@@ -6,11 +6,12 @@ import org.springframework.stereotype.Repository;
 
 import com.mainlineclean.app.entity.Appointment;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
     boolean existsByBookingId(String bookingId);
-    Optional<Appointment> findByBookingIdAndEmailAndStatusNot(String bookingId, String email, Status status);
+    Optional<Appointment> findByBookingIdAndEmailAndStatusNotAndAppointmentDateAfter(String bookingId, String email, Status status, Date today);
 }

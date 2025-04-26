@@ -26,6 +26,12 @@ public class AppointmentController {
 
     @PostMapping("/find-appointment")
     public ResponseEntity<Appointment> findAppointment(@RequestBody Records.FindAppointmentBody data) {
-        return ResponseEntity.ok(appointmentService.findByBookingIdAndEmailAndStatusNotCancel(data.bookingId(), data.email()));
+        return ResponseEntity.ok(appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(data.bookingId(), data.email()));
+    }
+
+    @PostMapping("/reschedule")
+    ResponseEntity<String> rescheduleAppointment(@RequestBody Records.RescheduleAppointmentBody data) {
+        appointmentService.rescheduleAppointment(data);
+        return ResponseEntity.ok("OK");
     }
 }

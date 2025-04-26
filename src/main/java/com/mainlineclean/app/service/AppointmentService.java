@@ -1,6 +1,7 @@
 package com.mainlineclean.app.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mainlineclean.app.dto.Records;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.exception.AppointmentException;
 import com.mainlineclean.app.model.Status;
@@ -45,6 +46,15 @@ public class AppointmentService {
     return appointmentRepo.save(appointment);
   }
 
+  public void rescheduleAppointment(Records.RescheduleAppointmentBody scheduleData) {
+    Appointment appointment = this.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(scheduleData.bookingId(), scheduleData.email());
+
+    appointment.setAppointmentDate(scheduleData.newAppointmentDate());
+    appointment.setTime(scheduleData.newTime());
+
+    appointmentRepo.save(appointment);
+  }
+
   public List<Appointment> getAllAppointments() {
     return appointmentRepo.findAll();
   }
@@ -53,8 +63,8 @@ public class AppointmentService {
     return appointmentRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("No appointment found with ID of" + id));
   }
 
-  public Appointment findByBookingIdAndEmailAndStatusNotCancel(String bookingId, String email) {
-    return appointmentRepo.findByBookingIdAndEmailAndStatusNot(bookingId, email, Status.CANCELED)
+  public Appointment findByBookingIdAndEmailAndStatusNotCancelAndInFuture(String bookingId, String email) {
+    return appointmentRepo.findByBookingIdAndEmailAndStatusNotAndAppointmentDateAfter(bookingId, email, Status.CANCELED, new Date())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment not found"));
   }
 
