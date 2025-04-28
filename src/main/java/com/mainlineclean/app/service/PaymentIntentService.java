@@ -134,8 +134,8 @@ public class PaymentIntentService {
     };
 
     // add sales tax
-    double priceVal = Double.parseDouble(price);
-    double totalPrice = priceVal * 1.06;
+    double priceVal = Double.parseDouble(price); // this will be a rate like 0.10 per squarefeet
+    double totalPrice = priceVal * 1.06; // * square feet
     totalPrice = Math.round(totalPrice * 100.0) / 100.0;
 
     pi.setPrice(Double.toString(totalPrice));

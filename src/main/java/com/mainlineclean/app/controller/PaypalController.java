@@ -41,6 +41,7 @@ public class PaypalController {
 
     @PostMapping("/paypal/createOrder")
     public ResponseEntity<String> createOrder(@RequestParam(value="serviceType") ServiceType serviceType) throws PaymentException {
+        // get the square feet from the body here pass it into the createOrder function
         PaymentIntent intent = paymentIntentService.createOrder(serviceType);
         return ResponseEntity.ok(intent.getOrderId());
     }

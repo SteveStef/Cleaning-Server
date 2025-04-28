@@ -25,8 +25,8 @@ public class Appointment {
   @Column(name = "phone")
   private String phone;
 
-  @Column(name = "city")
-  private String city;
+  @Column(name = "zipcode")
+  private String zipcode;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "service")
@@ -70,14 +70,21 @@ public class Appointment {
   @Column(name = "bookingId", nullable = false, unique = true)
   private String bookingId;
 
+  @Column(name="smsConsent")
+  private boolean smsConsent;
+
+  @Column(name="squareFeet")
+  private int squareFeet;
+
   // Default constructor
   public Appointment() {}
 
-  public Appointment(Long id, String clientName, String email, String phone, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, String city) {
+  public Appointment(Long id, String clientName, String email, String phone, String zipcode, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, boolean smsConsent, int squareFeet) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
     this.phone = phone;
+    this.zipcode = zipcode;
     this.service = service;
     this.appointmentDate = appointmentDate;
     this.createdAt = createdAt;
@@ -91,7 +98,24 @@ public class Appointment {
     this.paypalFee = paypalFee;
     this.netAmount = netAmount;
     this.bookingId = bookingId;
-    this.city = city;
+    this.smsConsent = smsConsent;
+    this.squareFeet = squareFeet;
+  }
+
+  public boolean isSmsConsent() {
+    return smsConsent;
+  }
+
+  public void setSmsConsent(boolean smsConsent) {
+    this.smsConsent = smsConsent;
+  }
+
+  public int getSquareFeet() {
+    return squareFeet;
+  }
+
+  public void setSquareFeet(int squareFeet) {
+    this.squareFeet = squareFeet;
   }
 
   // Getters and Setters
@@ -227,15 +251,13 @@ public class Appointment {
     this.captureId = captureId;
   }
 
-  public String getCity() {
-    return city;
+  public String getZipcode() {
+    return zipcode;
   }
 
-  public void setCity(String city) {
-    this.city = city;
+  public void setZipcode(String zipcode) {
+    this.zipcode = zipcode;
   }
-
-
 
   @Override
   public String toString() {
@@ -257,7 +279,7 @@ public class Appointment {
             ", paypalFee='" + paypalFee + '\'' +
             ", netAmount='" + netAmount + '\'' +
             ", bookingId='" + bookingId + '\'' +
-            ", city='" + city + '\'' +
+            ", zipcode='" + zipcode + '\'' +
             '}';
   }
 }

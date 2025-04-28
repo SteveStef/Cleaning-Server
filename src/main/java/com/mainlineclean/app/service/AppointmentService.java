@@ -82,25 +82,18 @@ public class AppointmentService {
     try {
       JsonNode rootNode = objectMapper.readTree(responseFromPaymentApi);
       JsonNode breakdownNode = rootNode
-              .path("purchase_units")
-              .get(0)
-              .path("payments")
-              .path("captures")
-              .get(0)
+              .path("purchase_units").get(0).path("payments").path("captures").get(0)
               .path("seller_receivable_breakdown");
       CostBreakdown bd = objectMapper.treeToValue(breakdownNode, CostBreakdown.class);
+
       appointment.setChargedAmount(bd.getGrossAmount().toString());
       appointment.setPaypalFee(bd.getPaypalFee().toString());
       appointment.setNetAmount(bd.getNetAmount().toString());
 
       String captureId = rootNode
-              .path("purchase_units")
-              .get(0)
-              .path("payments")
-              .path("captures")
-              .get(0)
+              .path("purchase_units").get(0)
+              .path("payments").path("captures").get(0)
               .path("id").asText();
-
       appointment.setCaptureId(captureId);
       appointmentRepo.save(appointment);
 

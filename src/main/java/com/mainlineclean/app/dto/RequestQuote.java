@@ -7,6 +7,7 @@ public class RequestQuote {
     private String phone;
     private String service;
     private String message;
+    private boolean smsConsent;
 
     public RequestQuote() {}
 
@@ -50,6 +51,14 @@ public class RequestQuote {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isSmsConsent() {
+        return smsConsent;
+    }
+
+    public void setSmsConsent(boolean smsConsent) {
+        this.smsConsent = smsConsent;
     }
 
     @Override
