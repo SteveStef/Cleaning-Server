@@ -19,9 +19,7 @@ import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -39,6 +37,9 @@ public class PaypalController {
 
     @Value("${application.fee}")
     private String APPLICATION_FEE;
+
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService, Finances financesUtil) {
         this.paymentIntentService = paymentIntentService;
@@ -62,20 +63,10 @@ public class PaypalController {
         PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(appointment.getOrderId());
         try {
 
-            String accessToken = paymentIntentService.getAccessToken();
-            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
+            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi);
             appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse); // and saves the amounts to db
             availabilityService.updateAvailability(appointment, false); // false meaning that we are not available
             emailService.notifyAppointment(createdAppointment);
-
-            try {
-                paymentIntentService.sendPayout(pi.getOrderId(), accessToken);
-                appointmentService.updateApplicationFee(appointment, APPLICATION_FEE);
-            } catch(Exception e) {
-                System.out.println("There was a problem sending out the payout to steve!!");
-                System.out.println(e.toString());
-                appointmentService.updateApplicationFee(appointment, "0.00");
-            }
 
         } catch(PaymentException e) {
             appointmentService.deleteAppointment(createdAppointment);
@@ -127,12 +118,21 @@ public class PaypalController {
             @RequestHeader("PayPal-Cert-Url") String certUrl,
             @RequestHeader("PayPal-Auth-Algo") String authAlgo) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        if (!paymentIntentService.verifySignature(transmissionId, transmissionTime, transmissionSig, certUrl, authAlgo, body)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid signature");
+        }
 
         JsonNode event = objectMapper.readTree(body);
         String eventType = event.get("event_type").asText();
 
-        System.out.println(eventType);
+        try {
+            if(eventType.equals("PAYMENT.CAPTURE.COMPLETED")) {
+                paymentIntentService.sendPayout();
+            }
+        } catch(Exception e) {
+            System.out.println("There was a problem sending out the payout to steve!!");
+            System.out.println(e.toString());
+        }
 
         return ResponseEntity.ok("OK");
     }
