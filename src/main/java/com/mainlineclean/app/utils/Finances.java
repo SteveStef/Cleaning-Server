@@ -45,7 +45,7 @@ public class Finances {
         ArrayList<RevenueEntry> monthlyRevenue = new ArrayList<>(); // this is only this year
         ArrayList<YearlyEntry> yearlyRevenue = new ArrayList<>();
         int thisYear = LocalDate.now(ZoneId.systemDefault()).getYear();
-        List<Appointment> appointments = appointmentService.getAllSuccessfulAppointments();
+        List<Appointment> appointments = appointmentService.getAllAppointments();
         Map<String, Double> revMap = new HashMap<>();
         Map<Integer, double[]> yearlyRevMap = new HashMap<>();
 
@@ -56,9 +56,10 @@ public class Finances {
             String month = zdt.format(fmt);
             int year = ld.getYear();
 
-            double grossedForThisAppointment = Double.parseDouble(appointment.getNetAmount().split(" ")[0]);
             double paypalFeeForThisAppointment = Double.parseDouble(appointment.getPaypalFee().split(" ")[0]);
             double baseForThisAppointment = Double.parseDouble(appointment.getChargedAmount().split(" ")[0]) / 1.06;
+            double applicationFee = Double.parseDouble(appointment.getApplicationFee()); // 9.99
+            double grossedForThisAppointment = Double.parseDouble(appointment.getNetAmount().split(" ")[0]) - applicationFee;
 
             if(year == thisYear) {
                 double prev = revMap.getOrDefault(month, 0.0);

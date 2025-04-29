@@ -76,10 +76,13 @@ public class Appointment {
   @Column(name="squareFeet")
   private int squareFeet;
 
+  @Column(name="applicationFee")
+  private String applicationFee = "0.00";
+
   // Default constructor
   public Appointment() {}
 
-  public Appointment(Long id, String clientName, String email, String phone, String zipcode, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, boolean smsConsent, int squareFeet) {
+  public Appointment(Long id, String clientName, String email, String phone, String zipcode, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, boolean smsConsent, int squareFeet, String applicationFee) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
@@ -100,6 +103,15 @@ public class Appointment {
     this.bookingId = bookingId;
     this.smsConsent = smsConsent;
     this.squareFeet = squareFeet;
+    this.applicationFee = applicationFee;
+  }
+
+  public String getApplicationFee() {
+    return applicationFee;
+  }
+
+  public void setApplicationFee(String applicationFee) {
+    this.applicationFee = applicationFee;
   }
 
   public boolean isSmsConsent() {
@@ -266,11 +278,12 @@ public class Appointment {
             ", clientName='" + clientName + '\'' +
             ", email='" + email + '\'' +
             ", phone='" + phone + '\'' +
-            ", service='" + service + '\'' +
+            ", zipcode='" + zipcode + '\'' +
+            ", service=" + service +
             ", appointmentDate=" + appointmentDate +
             ", createdAt=" + createdAt +
-            ", time='" + time + '\'' +
-            ", status='" + status + '\'' +
+            ", time=" + time +
+            ", status=" + status +
             ", address='" + address + '\'' +
             ", notes='" + notes + '\'' +
             ", orderId='" + orderId + '\'' +
@@ -279,7 +292,9 @@ public class Appointment {
             ", paypalFee='" + paypalFee + '\'' +
             ", netAmount='" + netAmount + '\'' +
             ", bookingId='" + bookingId + '\'' +
-            ", zipcode='" + zipcode + '\'' +
+            ", smsConsent=" + smsConsent +
+            ", squareFeet=" + squareFeet +
+            ", applicationFee='" + applicationFee + '\'' +
             '}';
   }
 }

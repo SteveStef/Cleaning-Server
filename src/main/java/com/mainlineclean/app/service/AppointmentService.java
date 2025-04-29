@@ -46,6 +46,11 @@ public class AppointmentService {
     return appointmentRepo.save(appointment);
   }
 
+  public void updateApplicationFee(Appointment appointment, String applicationFee) {
+    appointment.setApplicationFee(applicationFee);
+    appointmentRepo.save(appointment);
+  }
+
   public void rescheduleAppointment(Records.RescheduleAppointmentBody scheduleData) {
     Appointment appointment = this.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(scheduleData.bookingId(), scheduleData.email());
 
@@ -71,10 +76,6 @@ public class AppointmentService {
   public void updateStatus(Appointment appointment, Status status) {
     appointment.setStatus(status);
     appointmentRepo.save(appointment);
-  }
-
-  public List<Appointment> getAllSuccessfulAppointments() {
-    return appointmentRepo.findAll();
   }
 
   public void updateAmountsPaid(Appointment appointment, String responseFromPaymentApi) throws AppointmentException {

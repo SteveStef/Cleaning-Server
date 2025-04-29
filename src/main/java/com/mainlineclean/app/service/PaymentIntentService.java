@@ -2,7 +2,6 @@ package com.mainlineclean.app.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mainlineclean.app.dto.Records;
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
@@ -46,6 +45,15 @@ public class PaymentIntentService {
 
   @Value("${paypal.payment-base-url}")
   private String PAYPAL_PAYMENT_URL;
+
+  @Value("${application.fee}")
+  private String APPLICATION_FEE;
+
+  @Value("${paypal.payout-email}")
+  private String STEVE_PAYPAL_EMAIL;
+
+  @Value("${paypal.payout-url}")
+  private String PAYPAL_PAYOUT_URL;
 
   // Constructor
   public PaymentIntentService (PaymentIntentRepo paymentIntentRepo, AdminDetailsService adminDetailsService, AppointmentService appointmentService) {
@@ -108,15 +116,16 @@ public class PaymentIntentService {
 
       appointmentService.updateStatus(appointment, Status.CANCELED);
     } catch (Exception e) {
+      System.out.println(e.toString());
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
     }
   }
 
-  public PaymentIntent createOrder(ServiceType serviceType) throws PaymentException, EnumConstantNotPresentException {
+  public PaymentIntent createOrder(ServiceType serviceType, int squareFeet) throws PaymentException, EnumConstantNotPresentException {
     PaymentIntent pi = new PaymentIntent();
     AdminDetails details = adminDetailsService.getAdminDetails();
 
-    String price = switch (serviceType) {
+    String ratePerSquareFeet = switch (serviceType) {
       case DEEP               -> details.getDeepCleanPrice();
       case MOVE_IN_OUT        -> details.getMoveInOutPrice();
       case FIRE               -> details.getFirePrice();
@@ -133,9 +142,10 @@ public class PaymentIntentService {
               "Unknown service type: " + serviceType);
     };
 
-    // add sales tax
-    double priceVal = Double.parseDouble(price); // this will be a rate like 0.10 per squarefeet
-    double totalPrice = priceVal * 1.06; // * square feet
+    double priceVal = Double.parseDouble(ratePerSquareFeet) * squareFeet;
+    priceVal += Double.parseDouble(APPLICATION_FEE); // add my fee :)
+
+    double totalPrice = priceVal * 1.06; // adding sales tax
     totalPrice = Math.round(totalPrice * 100.0) / 100.0;
 
     pi.setPrice(Double.toString(totalPrice));
@@ -148,14 +158,52 @@ public class PaymentIntentService {
     return paymentIntentRepo.findByOrderId(orderId);
   }
 
-  public String capturePaymentIntent(PaymentIntent pi) throws PaymentException {
-    String captured = captureOrder(pi);
+  public String capturePaymentIntent(PaymentIntent pi, String accessToken) throws PaymentException {
+    String captured = captureOrder(pi, accessToken);
     paymentIntentRepo.deleteById(pi.getId());
     return captured;
   }
 
-  private String captureOrder(PaymentIntent intent) throws PaymentException {
-    String accessToken = getAccessToken();
+  public void sendPayout(String orderId, String accessToken) {
+    String amount = APPLICATION_FEE; // 9.99
+    String currency = "USD";
+    String batchId = orderId + "-" + UUID.randomUUID();
+
+    String json = "{"
+          + "\"sender_batch_header\":{"
+            + "\"sender_batch_id\":\"" + batchId + "\","
+            + "\"email_subject\":\"You’ve got a payout!\""
+          + "},"
+          + "\"items\":[{"
+            + "\"recipient_type\":\"EMAIL\","
+            + "\"receiver\":\"" + STEVE_PAYPAL_EMAIL + "\","
+            + "\"amount\":{"
+              + "\"value\":\"" + amount + "\","
+              + "\"currency\":\"" + currency + "\""
+            + "},"
+            + "\"note\":\"Here’s your share!\","
+            + "\"sender_item_id\":\"" + batchId + "_item\""
+          + "}]"
+        + "}";
+
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(PAYPAL_PAYOUT_URL))
+            .header("Content-Type", "application/json")
+            .header("Authorization",  "Bearer " + accessToken)
+            .header("PayPal-Request-Id", batchId)
+            .POST(HttpRequest.BodyPublishers.ofString(json))
+            .build();
+    try {
+      HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+      if (resp.statusCode() / 100 != 2) {
+        throw new PaymentException("HTTP error: " + resp.statusCode() + " - " + resp.body());
+      }
+    } catch (Exception e) {
+      throw new PaymentException("Error sending payout: " + e.getMessage(), e);
+    }
+  }
+
+  private String captureOrder(PaymentIntent intent, String accessToken) throws PaymentException {
     String url = PAYPAL_CHECKOUT_URL + intent.getOrderId() + "/capture";
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
@@ -175,7 +223,7 @@ public class PaymentIntentService {
     }
   }
 
-  private String getAccessToken() throws PaymentException {
+  public String getAccessToken() throws PaymentException {
     String auth = clientId + ":" + clientSecret;
     String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
     HttpRequest request = HttpRequest.newBuilder()

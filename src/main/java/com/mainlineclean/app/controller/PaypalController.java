@@ -31,6 +31,9 @@ public class PaypalController {
     @Value("${cancellation.percent}")
     private String CANCELLATION_PERCENT;
 
+    @Value("${application.fee}")
+    private String APPLICATION_FEE;
+
     public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService, Finances financesUtil) {
         this.paymentIntentService = paymentIntentService;
         this.availabilityService = availabilityService;
@@ -40,9 +43,8 @@ public class PaypalController {
     }
 
     @PostMapping("/paypal/createOrder")
-    public ResponseEntity<String> createOrder(@RequestParam(value="serviceType") ServiceType serviceType) throws PaymentException {
-        // get the square feet from the body here pass it into the createOrder function
-        PaymentIntent intent = paymentIntentService.createOrder(serviceType);
+    public ResponseEntity<String> createOrder(@RequestParam(value="serviceType") ServiceType serviceType, @RequestBody int squareFeet) throws PaymentException {
+        PaymentIntent intent = paymentIntentService.createOrder(serviceType, squareFeet);
         return ResponseEntity.ok(intent.getOrderId());
     }
 
@@ -53,10 +55,22 @@ public class PaypalController {
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
         PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(appointment.getOrderId());
         try {
-            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi);
+
+            String accessToken = paymentIntentService.getAccessToken();
+            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
             appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse); // and saves the amounts to db
             availabilityService.updateAvailability(appointment, false);
             emailService.notifyAppointment(createdAppointment);
+
+            try {
+                paymentIntentService.sendPayout(pi.getOrderId(), accessToken);
+                appointmentService.updateApplicationFee(appointment, APPLICATION_FEE);
+            } catch(Exception e) {
+                System.out.println("There was a problem sending out the payout to steve!!");
+                System.out.println(e.toString());
+                appointmentService.updateApplicationFee(appointment, "0.00");
+            }
+
         } catch(PaymentException e) {
             appointmentService.deleteAppointment(createdAppointment);
             throw new PaymentException("The payment was not valid");
@@ -67,8 +81,9 @@ public class PaypalController {
 
     @PostMapping("/cancel-appointment")
     public ResponseEntity<String> cancelAppointment(@RequestBody Appointment appointment) {
-        paymentIntentService.cancelPayment(appointment, 1); // the 1 is for full refund
-        emailService.notifyCancellation(appointment);
+        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(appointment.getBookingId(), appointment.getEmail());
+        paymentIntentService.cancelPayment(appt, 1); // the 1 is for full refund
+        emailService.notifyCancellation(appt);
         return ResponseEntity.ok("OK");
     }
 
