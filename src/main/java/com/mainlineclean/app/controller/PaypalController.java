@@ -1,4 +1,6 @@
 package com.mainlineclean.app.controller;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mainlineclean.app.dto.Records;
 import com.mainlineclean.app.dto.RevenueDetails;
 import com.mainlineclean.app.entity.Appointment;
@@ -8,6 +10,7 @@ import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.utils.Finances;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,8 @@ import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -111,5 +116,24 @@ public class PaypalController {
     @GetMapping("/paypal-info")
     public ResponseEntity<RevenueDetails> getPaypalStats() {
         return ResponseEntity.ok(financesUtil.financeDetails());
+    }
+
+    @PostMapping("/paypal/webhook")
+    public ResponseEntity<String> handleWebhook(
+            @RequestBody String body,
+            @RequestHeader("PayPal-Transmission-Id") String transmissionId,
+            @RequestHeader("PayPal-Transmission-Time") String transmissionTime,
+            @RequestHeader("PayPal-Transmission-Sig") String transmissionSig,
+            @RequestHeader("PayPal-Cert-Url") String certUrl,
+            @RequestHeader("PayPal-Auth-Algo") String authAlgo) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode event = objectMapper.readTree(body);
+        String eventType = event.get("event_type").asText();
+
+        System.out.println(eventType);
+
+        return ResponseEntity.ok("OK");
     }
 }
