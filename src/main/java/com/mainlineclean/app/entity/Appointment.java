@@ -1,11 +1,13 @@
 package com.mainlineclean.app.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.model.Time;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "appointment", uniqueConstraints = @UniqueConstraint(columnNames = "bookingId"))
@@ -58,14 +60,32 @@ public class Appointment {
   @Column(name = "captureId")
   private String captureId;
 
-  @Column(name = "chargedAmount")
-  private String chargedAmount;
+  @Column(
+          name = "charged_amount",
+          precision = 19,
+          scale = 2,
+          nullable = false,
+          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
+  )
+  private BigDecimal chargedAmount = BigDecimal.ZERO;
 
-  @Column(name = "paypalFee")
-  private String paypalFee;
+  @Column(
+          name = "paypal_fee",
+          precision = 19,
+          scale = 2,
+          nullable = false,
+          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
+  )
+  private BigDecimal paypalFee = BigDecimal.ZERO;
 
-  @Column(name = "netAmount")
-  private String netAmount;
+  @Column(
+          name = "gross_amount",
+          precision = 19,
+          scale = 2,
+          nullable = false,
+          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
+  )
+  private BigDecimal grossAmount = BigDecimal.ZERO;
 
   @Column(name = "bookingId", nullable = false, unique = true)
   private String bookingId;
@@ -76,13 +96,14 @@ public class Appointment {
   @Column(name="squareFeet")
   private int squareFeet;
 
-  @Column(name="applicationFee")
-  private String applicationFee = "0.00";
+  @Column(name = "application_fee", precision = 19, scale = 2, nullable = false)
+  @ColumnDefault("0.00")
+  private BigDecimal applicationFee = BigDecimal.ZERO;
 
   // Default constructor
   public Appointment() {}
 
-  public Appointment(Long id, String clientName, String email, String phone, String zipcode, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, String chargedAmount, String paypalFee, String netAmount, String bookingId, boolean smsConsent, int squareFeet, String applicationFee) {
+  public Appointment(Long id, String clientName, String email, String phone, String zipcode, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal grossAmount, String bookingId, boolean smsConsent, int squareFeet, BigDecimal applicationFee) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
@@ -99,41 +120,12 @@ public class Appointment {
     this.captureId = captureId;
     this.chargedAmount = chargedAmount;
     this.paypalFee = paypalFee;
-    this.netAmount = netAmount;
+    this.grossAmount = grossAmount;
     this.bookingId = bookingId;
     this.smsConsent = smsConsent;
     this.squareFeet = squareFeet;
     this.applicationFee = applicationFee;
   }
-
-  public String getApplicationFee() {
-    return applicationFee;
-  }
-
-  public void setApplicationFee(String applicationFee) {
-    this.applicationFee = applicationFee;
-  }
-
-  public boolean isSmsConsent() {
-    return smsConsent;
-  }
-
-  public void setSmsConsent(boolean smsConsent) {
-    this.smsConsent = smsConsent;
-  }
-
-  public int getSquareFeet() {
-    return squareFeet;
-  }
-
-  public void setSquareFeet(int squareFeet) {
-    this.squareFeet = squareFeet;
-  }
-
-  // Getters and Setters
-  public String getBookingId(){return this.bookingId;}
-
-  public void setBookingId(String bookingId){ this.bookingId = bookingId; }
 
   public Long getId() {
     return id;
@@ -167,12 +159,20 @@ public class Appointment {
     this.phone = phone;
   }
 
+  public String getZipcode() {
+    return zipcode;
+  }
+
+  public void setZipcode(String zipcode) {
+    this.zipcode = zipcode;
+  }
+
   public ServiceType getService() {
     return service;
   }
 
-  public void setService(ServiceType serviceType) {
-    this.service = serviceType;
+  public void setService(ServiceType service) {
+    this.service = service;
   }
 
   public Date getAppointmentDate() {
@@ -231,30 +231,6 @@ public class Appointment {
     this.orderId = orderId;
   }
 
-  public String getChargedAmount() {
-    return chargedAmount;
-  }
-
-  public void setChargedAmount(String chargedAmount) {
-    this.chargedAmount = chargedAmount;
-  }
-
-  public String getPaypalFee() {
-    return paypalFee;
-  }
-
-  public void setPaypalFee(String paypalFee) {
-    this.paypalFee = paypalFee;
-  }
-
-  public String getNetAmount() {
-    return netAmount;
-  }
-
-  public void setNetAmount(String netAmount) {
-    this.netAmount = netAmount;
-  }
-
   public String getCaptureId() {
     return captureId;
   }
@@ -263,12 +239,60 @@ public class Appointment {
     this.captureId = captureId;
   }
 
-  public String getZipcode() {
-    return zipcode;
+  public BigDecimal getChargedAmount() {
+    return chargedAmount;
   }
 
-  public void setZipcode(String zipcode) {
-    this.zipcode = zipcode;
+  public void setChargedAmount(BigDecimal chargedAmount) {
+    this.chargedAmount = chargedAmount;
+  }
+
+  public BigDecimal getPaypalFee() {
+    return paypalFee;
+  }
+
+  public void setPaypalFee(BigDecimal paypalFee) {
+    this.paypalFee = paypalFee;
+  }
+
+  public BigDecimal getGrossAmount() {
+    return grossAmount;
+  }
+
+  public void setGrossAmount(BigDecimal grossAmount) {
+    this.grossAmount = grossAmount;
+  }
+
+  public String getBookingId() {
+    return bookingId;
+  }
+
+  public void setBookingId(String bookingId) {
+    this.bookingId = bookingId;
+  }
+
+  public boolean isSmsConsent() {
+    return smsConsent;
+  }
+
+  public void setSmsConsent(boolean smsConsent) {
+    this.smsConsent = smsConsent;
+  }
+
+  public int getSquareFeet() {
+    return squareFeet;
+  }
+
+  public void setSquareFeet(int squareFeet) {
+    this.squareFeet = squareFeet;
+  }
+
+  public BigDecimal getApplicationFee() {
+    return applicationFee;
+  }
+
+  public void setApplicationFee(BigDecimal applicationFee) {
+    this.applicationFee = applicationFee;
   }
 
   @Override
@@ -288,9 +312,9 @@ public class Appointment {
             ", notes='" + notes + '\'' +
             ", orderId='" + orderId + '\'' +
             ", captureId='" + captureId + '\'' +
-            ", chargedAmount='" + chargedAmount + '\'' +
-            ", paypalFee='" + paypalFee + '\'' +
-            ", netAmount='" + netAmount + '\'' +
+            ", chargedAmount=" + chargedAmount +
+            ", paypalFee=" + paypalFee +
+            ", grossAmount=" + grossAmount +
             ", bookingId='" + bookingId + '\'' +
             ", smsConsent=" + smsConsent +
             ", squareFeet=" + squareFeet +

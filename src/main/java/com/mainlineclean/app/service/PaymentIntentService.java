@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import com.mainlineclean.app.exception.PaymentException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 
 import java.net.http.HttpClient;
@@ -62,22 +65,22 @@ public class PaymentIntentService {
     this.appointmentService = appointmentService;
   }
 
-  public void cancelPayment(Appointment appointmentInput, double percentBack) throws PaymentException {
-    Appointment appointment = appointmentService.findById(appointmentInput.getId());
+  public void refundPayment(Appointment appointment, String refundAmountStr) {
+    BigDecimal refundAmount;
+    try {
+        refundAmount = new BigDecimal(refundAmountStr).setScale(2, RoundingMode.HALF_EVEN);
+    } catch (NumberFormatException ex) {
+        throw new PaymentException("Invalid refund amount: " + refundAmountStr, ex);
+    }
+
     String accessToken = getAccessToken();
     String refundUrl = PAYPAL_PAYMENT_URL + appointment.getCaptureId() + "/refund";
-
     Map<String, Object> payloadMap = new HashMap<>();
-    Map<String, String> amount = new HashMap<>();
-    String chargedAmount = appointment.getChargedAmount().split(" ")[0];
-    String netAmount = appointment.getNetAmount().split(" ")[0]; // this is gross amount
+    Map<String, String> amountNode = new HashMap<>();
 
-    double amt = Double.parseDouble(chargedAmount) * percentBack; //this is 75% of the og price that was charged by customer
-    amt = Math.round(amt * 100.0) / 100.0;
-    amount.put("value", Double.toString(amt));
-
-    amount.put("currency_code", "USD");
-    payloadMap.put("amount", amount);
+    amountNode.put("value", refundAmount.toPlainString());
+    amountNode.put("currency_code", "USD");
+    payloadMap.put("amount", amountNode);
 
     String jsonPayload;
     try {
@@ -100,32 +103,37 @@ public class PaymentIntentService {
         throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       }
 
-      String body = response.body();
-      JsonNode root = objectMapper.readTree(body);
+      String refundedText = objectMapper
+              .readTree(response.body())
+              .path("amount")
+              .path("value")
+              .asText();
 
-      JsonNode amountNode  = root.path("amount");
-      String refundedValue = amountNode.path("value").asText();
+      BigDecimal refundedValue = new BigDecimal(refundedText);
 
-      double newChargedAmount = Double.parseDouble(chargedAmount) - Double.parseDouble(refundedValue);
-      newChargedAmount = Math.round(newChargedAmount * 100.0) / 100.0;
-      appointment.setChargedAmount(newChargedAmount + " USD");
-
-      double newNetAmount = Double.parseDouble(netAmount) - Double.parseDouble(refundedValue);
-      newNetAmount = Math.round(newNetAmount * 100.0) / 100.0;
-      appointment.setNetAmount(newNetAmount + " USD");
+      // update the appointment will the new amount that we charged the user
+      appointment.setChargedAmount(appointment.getChargedAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN));
+      appointment.setGrossAmount(appointment.getGrossAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN));
 
       appointmentService.updateStatus(appointment, Status.CANCELED);
     } catch (Exception e) {
       System.out.println(e.toString());
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
     }
+
+  }
+
+  public void customerCancelPayment(Appointment appointment, double percentBack) throws PaymentException {
+    BigDecimal chargedAmount = appointment.getChargedAmount();
+    BigDecimal refundAmount = chargedAmount.multiply(BigDecimal.valueOf(percentBack)).setScale(2, RoundingMode.HALF_EVEN);
+    refundPayment(appointment, refundAmount.toPlainString());
   }
 
   public PaymentIntent createOrder(ServiceType serviceType, int squareFeet) throws PaymentException, EnumConstantNotPresentException {
     PaymentIntent pi = new PaymentIntent();
     AdminDetails details = adminDetailsService.getAdminDetails();
 
-    String ratePerSquareFeet = switch (serviceType) {
+    BigDecimal ratePerSquareFeet = switch (serviceType) {
       case DEEP               -> details.getDeepCleanPrice();
       case MOVE_IN_OUT        -> details.getMoveInOutPrice();
       case FIRE               -> details.getFirePrice();
@@ -134,23 +142,28 @@ public class PaymentIntentService {
       case CONSTRUCTION       -> details.getConstructionPrice();
       case DECEASED           -> details.getDeceasedPrice();
       case ENVIRONMENT        -> details.getEnvironmentPrice();
-      case EXPLOSIVE_RESIDUE  -> details.getExplosiveResidue();
-      case HAZMAT             -> details.getHazmat();
+      case EXPLOSIVE_RESIDUE  -> details.getExplosiveResiduePrice();
+      case HAZMAT             -> details.getHazmatPrice();
       case MOLD               -> details.getMoldPrice();
       case WATER              -> details.getWaterPrice();
       default -> throw new IllegalArgumentException(
               "Unknown service type: " + serviceType);
     };
 
-    double priceVal = Double.parseDouble(ratePerSquareFeet) * squareFeet;
-    priceVal += Double.parseDouble(APPLICATION_FEE); // add my fee :)
+    BigDecimal area = BigDecimal.valueOf(squareFeet);
+    BigDecimal baseCost = ratePerSquareFeet.multiply(area).setScale(2, RoundingMode.HALF_EVEN);
 
-    double totalPrice = priceVal * 1.06; // adding sales tax
-    totalPrice = Math.round(totalPrice * 100.0) / 100.0;
+    BigDecimal appFee = new BigDecimal(APPLICATION_FEE);
+    BigDecimal subtotal = baseCost.add(appFee).setScale(2, RoundingMode.HALF_EVEN);
 
-    pi.setPrice(Double.toString(totalPrice));
+    BigDecimal taxFactor = BigDecimal.valueOf(1.06);
+    BigDecimal totalCost = subtotal.multiply(taxFactor).setScale(2, RoundingMode.HALF_EVEN);
+
+    pi.setPrice(totalCost);
+
     String orderId = createOrder(pi);
     pi.setOrderId(orderId);
+
     return paymentIntentRepo.save(pi);
   }
 

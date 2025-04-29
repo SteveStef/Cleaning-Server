@@ -5,6 +5,8 @@ import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.service.AppointmentService;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -41,13 +43,20 @@ public class Finances {
     }
 
     public RevenueDetails financeDetails() {
-        double gross = 0, baseAmountSum = 0, paypalFee = 0;
+        BigDecimal grossSum       = BigDecimal.ZERO;
+        BigDecimal baseAmountSum  = BigDecimal.ZERO;
+        BigDecimal paypalFeeSum   = BigDecimal.ZERO;
+
         ArrayList<RevenueEntry> monthlyRevenue = new ArrayList<>(); // this is only this year
         ArrayList<YearlyEntry> yearlyRevenue = new ArrayList<>();
         int thisYear = LocalDate.now(ZoneId.systemDefault()).getYear();
+
         List<Appointment> appointments = appointmentService.getAllAppointments();
-        Map<String, Double> revMap = new HashMap<>();
-        Map<Integer, double[]> yearlyRevMap = new HashMap<>();
+
+        Map<String, BigDecimal> revMap = new HashMap<>();
+        Map<Integer, BigDecimal[]> yearlyRevMap = new HashMap<>();
+
+        BigDecimal taxDivisor = BigDecimal.valueOf(1.06);
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
         for (Appointment appointment : appointments) {
@@ -56,57 +65,78 @@ public class Finances {
             String month = zdt.format(fmt);
             int year = ld.getYear();
 
-            double paypalFeeForThisAppointment = Double.parseDouble(appointment.getPaypalFee().split(" ")[0]);
-            double baseForThisAppointment = Double.parseDouble(appointment.getChargedAmount().split(" ")[0]) / 1.06;
-            double applicationFee = Double.parseDouble(appointment.getApplicationFee()); // 9.99
-            double grossedForThisAppointment = Double.parseDouble(appointment.getNetAmount().split(" ")[0]) - applicationFee;
+            BigDecimal paypalFeeForThisAppointment = appointment.getPaypalFee();
+            BigDecimal baseForThisAppointment = appointment.getChargedAmount().divide(taxDivisor, 2, RoundingMode.HALF_EVEN);
+
+            BigDecimal applicationFee = appointment.getApplicationFee(); // 9.99
+            BigDecimal grossedForThisAppointment = appointment.getGrossAmount().subtract(applicationFee);
 
             if(year == thisYear) {
-                double prev = revMap.getOrDefault(month, 0.0);
-                revMap.put(month, prev + grossedForThisAppointment);
+                revMap.merge(month, grossedForThisAppointment, BigDecimal::add);
             }
 
-            double[] prev = yearlyRevMap.getOrDefault(year, new double[]{0, 0, 0});
-            yearlyRevMap.put(year, new double[]{prev[0] + grossedForThisAppointment, prev[1] + paypalFeeForThisAppointment, prev[2] + baseForThisAppointment});
+            BigDecimal[] stats = yearlyRevMap.getOrDefault(year, new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO});
+            stats[0] = stats[0].add(grossedForThisAppointment);
+            stats[1] = stats[1].add(paypalFeeForThisAppointment);
+            stats[2] = stats[2].add(baseForThisAppointment);
+            yearlyRevMap.put(year, stats);
 
-            gross += grossedForThisAppointment;
-            paypalFee += paypalFeeForThisAppointment;
-            baseAmountSum += baseForThisAppointment;
+            // grand totals
+            grossSum      = grossSum.add(grossedForThisAppointment);
+            paypalFeeSum  = paypalFeeSum.add(paypalFeeForThisAppointment);
+            baseAmountSum = baseAmountSum.add(baseForThisAppointment);
         }
 
-        for (String month : revMap.keySet()) {
-            double revenue = round(revMap.get(month));
-            monthlyRevenue.add(new RevenueEntry(month, revenue));
+        // build monthlyRevenue DTOs
+        for (Map.Entry<String, BigDecimal> e : revMap.entrySet()) {
+            BigDecimal val = e.getValue().setScale(2, RoundingMode.HALF_EVEN);
+            monthlyRevenue.add(new RevenueEntry(e.getKey(), val.doubleValue()));
         }
 
-        for (int year : yearlyRevMap.keySet()) {
-            double[] stat      = yearlyRevMap.get(year);
-            double grossRaw    = stat[0];
-            double feeRaw      = stat[1];
-            double baseRaw     = stat[2];
+        for (Map.Entry<Integer, BigDecimal[]> entry : yearlyRevMap.entrySet()) {
+            int year        = entry.getKey();
+            BigDecimal[] s  = entry.getValue();
 
-            double taxRaw      = 0.06 * baseRaw;
-            double profitRaw   = grossRaw - taxRaw;
+            BigDecimal grossRaw = s[0].setScale(2, RoundingMode.HALF_EVEN);
+            BigDecimal feeRaw   = s[1].setScale(2, RoundingMode.HALF_EVEN);
+            BigDecimal baseRaw  = s[2].setScale(2, RoundingMode.HALF_EVEN);
 
-            double grss       = round(grossRaw);
-            double fee         = round(feeRaw);
-            double tax         = round(taxRaw);
-            double prof = round(profitRaw);
+            BigDecimal taxRaw    = baseRaw
+                    .multiply(BigDecimal.valueOf(0.06))
+                    .setScale(2, RoundingMode.HALF_EVEN);
+            BigDecimal profitRaw = grossRaw.subtract(taxRaw)
+                    .setScale(2, RoundingMode.HALF_EVEN);
 
-            yearlyRevenue.add(new YearlyEntry(year, grss, prof, tax, fee));
+            yearlyRevenue.add(new YearlyEntry(
+                    year,
+                    grossRaw.doubleValue(),
+                    profitRaw.doubleValue(),
+                    taxRaw.doubleValue(),
+                    feeRaw.doubleValue()
+            ));
         }
 
-        double salesTax = 0.06 * baseAmountSum;
-        double profit = gross - salesTax;
+        // compute overall salesTax & profit
+        BigDecimal salesTax = baseAmountSum
+                .multiply(BigDecimal.valueOf(0.06))
+                .setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal profit   = grossSum
+                .subtract(salesTax)
+                .setScale(2, RoundingMode.HALF_EVEN);
 
-        gross     = round(gross);
-        salesTax  = round(salesTax);
-        profit    = round(profit);
-        paypalFee = round(paypalFee);
+        // final doubles for DTO
+        double grossD     = grossSum.setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        double salesTaxD  = salesTax.doubleValue();
+        double profitD    = profit.doubleValue();
+        double paypalFeeD = paypalFeeSum.setScale(2, RoundingMode.HALF_EVEN).doubleValue();
 
-        return new RevenueDetails(profit, gross, salesTax, paypalFee, yearlyRevenue, monthlyRevenue);
-    }
-    private double round(double amount) {
-        return Math.round(amount * 100) / 100.0;
+        return new RevenueDetails(
+                profitD,
+                grossD,
+                salesTaxD,
+                paypalFeeD,
+                yearlyRevenue,
+                monthlyRevenue
+        );
     }
 }

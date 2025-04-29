@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -24,8 +25,8 @@ public class PaymentIntent {
   @Column(name = "request_id")
   private String requestId = UUID.randomUUID().toString();
 
-  @Column(name = "price")
-  private String price;
+  @Column(name = "price", precision = 19, scale = 2)
+  private BigDecimal price;
 
   public PaymentIntent() {}
 
@@ -53,11 +54,11 @@ public class PaymentIntent {
     this.requestId = requestId;
   }
 
-  public String getPrice() {
+  public BigDecimal getPrice() {
     return price;
   }
 
-  public void setPrice(String price) {
+  public void setPrice(BigDecimal price) {
     this.price = price;
   }
 

@@ -3,6 +3,8 @@ package com.mainlineclean.app.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "admin")
 public class AdminDetails {
@@ -13,41 +15,41 @@ public class AdminDetails {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "regular")
-    private String regularPrice;
+    @Column(name = "regular", precision = 19, scale = 2)
+    private BigDecimal regularPrice;
 
-    @Column(name = "move_in_out")
-    private String moveInOutPrice;
+    @Column(name = "move_in_out", precision = 19, scale = 2)
+    private BigDecimal moveInOutPrice;
 
-    @Column(name = "environment")
-    private String environmentPrice;
+    @Column(name = "environment", precision = 19, scale = 2)
+    private BigDecimal environmentPrice;
 
-    @Column(name = "fire")
-    private String firePrice;
+    @Column(name = "fire", precision = 19, scale = 2)
+    private BigDecimal firePrice;
 
-    @Column(name = "water")
-    private String waterPrice;
+    @Column(name = "water", precision = 19, scale = 2)
+    private BigDecimal waterPrice;
 
-    @Column(name = "deceased")
-    private String deceasedPrice;
+    @Column(name = "deceased", precision = 19, scale = 2)
+    private BigDecimal deceasedPrice;
 
-    @Column(name = "hazmat")
-    private String hazmat;
+    @Column(name = "hazmat", precision = 19, scale = 2)
+    private BigDecimal hazmatPrice;
 
-    @Column(name = "explosive_residue")
-    private String explosiveResidue;
+    @Column(name = "explosive_residue", precision = 19, scale = 2)
+    private BigDecimal explosiveResiduePrice;
 
-    @Column(name = "mold")
-    private String moldPrice;
+    @Column(name = "mold", precision = 19, scale = 2)
+    private BigDecimal moldPrice;
 
-    @Column(name = "construction")
-    private String constructionPrice;
+    @Column(name = "construction", precision = 19, scale = 2)
+    private BigDecimal constructionPrice;
 
-    @Column(name = "commercial")
-    private String commercialPrice;
+    @Column(name = "commercial", precision = 19, scale = 2)
+    private BigDecimal commercialPrice;
 
-    @Column(name = "deep")
-    private String deepCleanPrice;
+    @Column(name = "deep", precision = 19, scale = 2)
+    private BigDecimal deepCleanPrice;
 
     @Column(name = "email")
     private String email;
@@ -67,91 +69,99 @@ public class AdminDetails {
         this.id = id;
     }
 
-    public String getRegularPrice() {
+    public BigDecimal getRegularPrice() {
         return regularPrice;
     }
 
-    public void setRegularPrice(String regularPrice) {
+    public void setRegularPrice(BigDecimal regularPrice) {
         this.regularPrice = regularPrice;
     }
 
-    public String getEnvironmentPrice() {
+    public BigDecimal getMoveInOutPrice() {
+        return moveInOutPrice;
+    }
+
+    public void setMoveInOutPrice(BigDecimal moveInOutPrice) {
+        this.moveInOutPrice = moveInOutPrice;
+    }
+
+    public BigDecimal getEnvironmentPrice() {
         return environmentPrice;
     }
 
-    public void setEnvironmentPrice(String environmentPrice) {
+    public void setEnvironmentPrice(BigDecimal environmentPrice) {
         this.environmentPrice = environmentPrice;
     }
 
-    public String getFirePrice() {
+    public BigDecimal getFirePrice() {
         return firePrice;
     }
 
-    public void setFirePrice(String firePrice) {
+    public void setFirePrice(BigDecimal firePrice) {
         this.firePrice = firePrice;
     }
 
-    public String getWaterPrice() {
+    public BigDecimal getWaterPrice() {
         return waterPrice;
     }
 
-    public void setWaterPrice(String waterPrice) {
+    public void setWaterPrice(BigDecimal waterPrice) {
         this.waterPrice = waterPrice;
     }
 
-    public String getDeceasedPrice() {
+    public BigDecimal getDeceasedPrice() {
         return deceasedPrice;
     }
 
-    public void setDeceasedPrice(String deceasedPrice) {
+    public void setDeceasedPrice(BigDecimal deceasedPrice) {
         this.deceasedPrice = deceasedPrice;
     }
 
-    public String getHazmat() {
-        return hazmat;
+    public BigDecimal getHazmatPrice() {
+        return hazmatPrice;
     }
 
-    public void setHazmat(String hazmat) {
-        this.hazmat = hazmat;
+    public void setHazmatPrice(BigDecimal hazmatPrice) {
+        this.hazmatPrice = hazmatPrice;
     }
 
-    public String getExplosiveResidue() {
-        return explosiveResidue;
+    public BigDecimal getExplosiveResiduePrice() {
+        return explosiveResiduePrice;
     }
 
-    public void setExplosiveResidue(String explosiveResidue) {
-        this.explosiveResidue = explosiveResidue;
+    public void setExplosiveResiduePrice(BigDecimal explosiveResiduePrice) {
+        this.explosiveResiduePrice = explosiveResiduePrice;
     }
 
-    public String getMoldPrice() {
+    public BigDecimal getMoldPrice() {
         return moldPrice;
     }
 
-    public void setMoldPrice(String moldPrice) {
+    public void setMoldPrice(BigDecimal moldPrice) {
         this.moldPrice = moldPrice;
     }
 
-    public String getConstructionPrice() {
+    public BigDecimal getConstructionPrice() {
         return constructionPrice;
     }
 
-    public void setConstructionPrice(String constructionPrice) {
+    public void setConstructionPrice(BigDecimal constructionPrice) {
         this.constructionPrice = constructionPrice;
     }
 
-    public String getCommercialPrice() {
+    public BigDecimal getCommercialPrice() {
         return commercialPrice;
     }
 
-    public void setCommercialPrice(String commercialPrice) {
+    public void setCommercialPrice(BigDecimal commercialPrice) {
         this.commercialPrice = commercialPrice;
     }
 
-    public String getDeepCleanPrice() {
+    public BigDecimal getDeepCleanPrice() {
         return deepCleanPrice;
     }
 
-    public void setDeepCleanPrice(String deepCleanPrice) {
+    public void setDeepCleanPrice(BigDecimal deepCleanPrice) {
         this.deepCleanPrice = deepCleanPrice;
     }
 
@@ -169,13 +179,5 @@ public class AdminDetails {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public void setMoveInOutPrice(String moveInOutPrice) {
-        this.moveInOutPrice = moveInOutPrice;
-    }
-
-    public String getMoveInOutPrice() {
-        return moveInOutPrice;
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class AdminDetailsInit implements CommandLineRunner {
 
@@ -23,18 +25,18 @@ public class AdminDetailsInit implements CommandLineRunner {
         if(!adminDetailsRepo.existsById((long)1)) {
             AdminDetails details = new AdminDetails();
 
-            details.setRegularPrice("0.12");
-            details.setMoveInOutPrice("0.18");
-            details.setEnvironmentPrice("0.20");
-            details.setFirePrice("0.30");
-            details.setWaterPrice("0.25");
-            details.setDeceasedPrice("0.30");
-            details.setHazmat("0.40");
-            details.setExplosiveResidue("0.50");
-            details.setMoldPrice("0.20");
-            details.setConstructionPrice("0.20");
-            details.setCommercialPrice("0.20");
-            details.setDeepCleanPrice("0.15");
+            details.setRegularPrice          (new BigDecimal("0.12"));
+            details.setMoveInOutPrice       (new BigDecimal("0.18"));
+            details.setEnvironmentPrice     (new BigDecimal("0.20"));
+            details.setFirePrice            (new BigDecimal("0.30"));
+            details.setWaterPrice           (new BigDecimal("0.25"));
+            details.setDeceasedPrice        (new BigDecimal("0.30"));
+            details.setHazmatPrice          (new BigDecimal("0.40"));
+            details.setExplosiveResiduePrice(new BigDecimal("0.50"));
+            details.setMoldPrice            (new BigDecimal("0.20"));
+            details.setConstructionPrice    (new BigDecimal("0.20"));
+            details.setCommercialPrice      (new BigDecimal("0.20"));
+            details.setDeepCleanPrice       (new BigDecimal("0.15"));
 
             details.setEmail(adminEmail);
             details.setCode("");

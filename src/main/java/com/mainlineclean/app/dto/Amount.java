@@ -21,6 +21,6 @@ public class Amount {
         this.value = value;
     }
     public String toString() {
-       return this.value + " " + this.currencyCode;
+       return this.value;
     }
 }

@@ -16,6 +16,7 @@ import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -59,7 +60,7 @@ public class PaypalController {
             String accessToken = paymentIntentService.getAccessToken();
             String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
             appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse); // and saves the amounts to db
-            availabilityService.updateAvailability(appointment, false);
+            availabilityService.updateAvailability(appointment, false); // false meaning that we are not available
             emailService.notifyAppointment(createdAppointment);
 
             try {
@@ -79,10 +80,11 @@ public class PaypalController {
         return ResponseEntity.ok(createdAppointment);
     }
 
+    // this is for admin cancelling
     @PostMapping("/cancel-appointment")
-    public ResponseEntity<String> cancelAppointment(@RequestBody Appointment appointment) {
-        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(appointment.getBookingId(), appointment.getEmail());
-        paymentIntentService.cancelPayment(appt, 1); // the 1 is for full refund
+    public ResponseEntity<String> cancelAppointment(@RequestBody Records.AdminCancelAppointmentBody data) {
+        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(data.appointment().getBookingId(), data.appointment().getEmail());
+        paymentIntentService.refundPayment(appt, data.refundAmount());
         emailService.notifyCancellation(appt);
         return ResponseEntity.ok("OK");
     }
@@ -98,9 +100,8 @@ public class PaypalController {
         LocalDate today = LocalDate.now();
 
         long daysUntil = ChronoUnit.DAYS.between(today, apptDate);
-//        if (daysUntil < 0) return ResponseEntity.badRequest().body("Cannot cancel an appointment that has already occurred");
 
-        if (daysUntil >= 2)  paymentIntentService.cancelPayment(appt, Double.parseDouble(CANCELLATION_PERCENT));
+        if (daysUntil >= 2)  paymentIntentService.customerCancelPayment(appt, Double.parseDouble(CANCELLATION_PERCENT));
         else appointmentService.updateStatus(appt, Status.CANCELED);
 
         availabilityService.updateAvailability(appt, true);

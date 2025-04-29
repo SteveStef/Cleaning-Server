@@ -1,4 +1,5 @@
 package com.mainlineclean.app.dto;
+import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.model.Time;
 import java.util.Date;
 
@@ -6,4 +7,5 @@ public class Records {
     public record FindAppointmentBody(String bookingId, String email){};
     public record CustomerCancelAppointmentBody(String bookingId, String email, String reason){};
     public record RescheduleAppointmentBody(String bookingId, String email, Date newAppointmentDate, Time newTime){};
+    public record AdminCancelAppointmentBody(Appointment appointment, String refundAmount){};
 }

@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -47,8 +49,13 @@ public class AppointmentService {
   }
 
   public void updateApplicationFee(Appointment appointment, String applicationFee) {
-    appointment.setApplicationFee(applicationFee);
-    appointmentRepo.save(appointment);
+    try {
+      BigDecimal fee = new BigDecimal(applicationFee).setScale(2, RoundingMode.HALF_EVEN);
+      appointment.setApplicationFee(fee);
+      appointmentRepo.save(appointment);
+    } catch(Exception e) {
+      throw new IllegalArgumentException("invalid application fee, check env");
+    }
   }
 
   public void rescheduleAppointment(Records.RescheduleAppointmentBody scheduleData) {
@@ -87,14 +94,19 @@ public class AppointmentService {
               .path("seller_receivable_breakdown");
       CostBreakdown bd = objectMapper.treeToValue(breakdownNode, CostBreakdown.class);
 
-      appointment.setChargedAmount(bd.getGrossAmount().toString());
-      appointment.setPaypalFee(bd.getPaypalFee().toString());
-      appointment.setNetAmount(bd.getNetAmount().toString());
+      appointment.setChargedAmount(new BigDecimal(bd.getGrossAmount().getValue()));
+      appointment.setPaypalFee(new BigDecimal(bd.getPaypalFee().getValue()));
+      appointment.setGrossAmount(new BigDecimal(bd.getNetAmount().getValue()));
+
+      System.out.println(appointment.getChargedAmount());
+      System.out.println(appointment.getGrossAmount());
+      System.out.println(appointment.getPaypalFee());
 
       String captureId = rootNode
               .path("purchase_units").get(0)
               .path("payments").path("captures").get(0)
               .path("id").asText();
+
       appointment.setCaptureId(captureId);
       appointmentRepo.save(appointment);
 
