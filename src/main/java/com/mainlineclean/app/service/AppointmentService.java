@@ -98,10 +98,6 @@ public class AppointmentService {
       appointment.setPaypalFee(new BigDecimal(bd.getPaypalFee().getValue()));
       appointment.setGrossAmount(new BigDecimal(bd.getNetAmount().getValue()));
 
-      System.out.println(appointment.getChargedAmount());
-      System.out.println(appointment.getGrossAmount());
-      System.out.println(appointment.getPaypalFee());
-
       String captureId = rootNode
               .path("purchase_units").get(0)
               .path("payments").path("captures").get(0)
