@@ -57,16 +57,20 @@ public class EmailService {
         adminDetailsService.setVerificationCode(code);
     }
 
-    public void notifyAppointment(Appointment appointment) throws EmailException {
+    public void notifyAppointment(Appointment appointment) {
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
         String senderEmail = adminDetailsService.getAdminEmail();
 
-        String from = "Mainline Clean <" +  senderEmail + ">";
+        String from = "Dos Chicas <" + senderEmail + ">";
         String clientSubject = "Cleaning Appointment Confirmed!";
 
-        sendTemplatedEmail(encodedAuth, from, appointment.getEmail(), clientSubject, getConfirmationJson(appointment), "booking confirmed");
-        sendTemplatedEmail(encodedAuth, from, appointment.getEmail(), "Tienes una nueva cita!", getDetailsJson(appointment), "you have a new cleaning client");
+        try {
+            sendTemplatedEmail(encodedAuth, from, appointment.getEmail(), clientSubject, getConfirmationJson(appointment), "booking confirmed");
+            sendTemplatedEmail(encodedAuth, from, appointment.getEmail(), "Tienes una nueva cita!", getDetailsJson(appointment), "you have a new cleaning client");
+        } catch(Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     private void sendEmail(String encodedAuth, String from, String to, String subject, String text) throws EmailException {

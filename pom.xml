@@ -11,7 +11,7 @@
 	<groupId>com.mainlineclean</groupId>
 	<artifactId>mainlineclean</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>MainLine-Cleaners</name>
+	<name>Dos-Chicas</name>
 	<description>Server for cleaning site</description>
 	<url/>
 	<licenses>
@@ -56,11 +56,11 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
-		<dependency>
-			<groupId>com.twilio.sdk</groupId>
-			<artifactId>twilio</artifactId>
-			<version>10.7.2</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.twilio.sdk</groupId>-->
+<!--			<artifactId>twilio</artifactId>-->
+<!--			<version>10.7.2</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>mysql</groupId>

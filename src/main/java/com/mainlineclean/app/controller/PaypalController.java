@@ -10,7 +10,6 @@ import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.utils.Finances;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,6 @@ import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -37,9 +35,6 @@ public class PaypalController {
 
     @Value("${application.fee}")
     private String APPLICATION_FEE;
-
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService, Finances financesUtil) {
         this.paymentIntentService = paymentIntentService;
@@ -62,11 +57,20 @@ public class PaypalController {
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
         PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(appointment.getOrderId());
         try {
-
-            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi);
+            String accessToken = paymentIntentService.getAccessToken();
+            String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
             appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse); // and saves the amounts to db
             availabilityService.updateAvailability(appointment, false); // false meaning that we are not available
-            emailService.notifyAppointment(createdAppointment);
+            emailService.notifyAppointment(createdAppointment); // this does not throw error
+
+            try {
+                paymentIntentService.sendPayout(accessToken); // add more params to this
+                appointmentService.updateApplicationFee(appointment, APPLICATION_FEE);
+            } catch(Exception e) {
+                appointmentService.updateApplicationFee(appointment, "0.00");
+                System.out.println("Didn't get the money"); // send email here
+                System.out.println(e.toString());
+            }
 
         } catch(PaymentException e) {
             appointmentService.deleteAppointment(createdAppointment);
@@ -107,33 +111,5 @@ public class PaypalController {
     @GetMapping("/paypal-info")
     public ResponseEntity<RevenueDetails> getPaypalStats() {
         return ResponseEntity.ok(financesUtil.financeDetails());
-    }
-
-    @PostMapping("/paypal/webhook")
-    public ResponseEntity<String> handleWebhook(
-            @RequestBody String body,
-            @RequestHeader("PayPal-Transmission-Id") String transmissionId,
-            @RequestHeader("PayPal-Transmission-Time") String transmissionTime,
-            @RequestHeader("PayPal-Transmission-Sig") String transmissionSig,
-            @RequestHeader("PayPal-Cert-Url") String certUrl,
-            @RequestHeader("PayPal-Auth-Algo") String authAlgo) throws IOException {
-
-        if (!paymentIntentService.verifySignature(transmissionId, transmissionTime, transmissionSig, certUrl, authAlgo, body)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid signature");
-        }
-
-        JsonNode event = objectMapper.readTree(body);
-        String eventType = event.get("event_type").asText();
-
-        try {
-            if(eventType.equals("PAYMENT.CAPTURE.COMPLETED")) {
-                paymentIntentService.sendPayout();
-            }
-        } catch(Exception e) {
-            System.out.println("There was a problem sending out the payout to steve!!");
-            System.out.println(e.toString());
-        }
-
-        return ResponseEntity.ok("OK");
     }
 }

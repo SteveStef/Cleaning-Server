@@ -177,15 +177,13 @@ public class PaymentIntentService {
     return paymentIntentRepo.findByOrderId(orderId);
   }
 
-  public String capturePaymentIntent(PaymentIntent pi) throws PaymentException {
-    String accessToken = getAccessToken();
+  public String capturePaymentIntent(PaymentIntent pi, String accessToken) throws PaymentException {
     String captured = captureOrder(pi, accessToken);
     paymentIntentRepo.deleteById(pi.getId());
     return captured;
   }
 
-  public void sendPayout() {
-    String accessToken = getAccessToken();
+  public void sendPayout(String accessToken) {
     String amount = APPLICATION_FEE;
     String currency = "USD";
     String batchId = UUID.randomUUID().toString();
@@ -304,48 +302,4 @@ public class PaymentIntentService {
       throw new PaymentException("HTTP error, cannot create order", e);
     }
   }
-
-  public boolean verifySignature(
-          String transmissionId,
-          String transmissionTime,
-          String transmissionSig,
-          String certUrl,
-          String authAlgo,
-          String bodyJson
-  ) {
-    try {
-      // Build the verification request payload
-      ObjectNode payload = objectMapper.createObjectNode();
-      payload.put("transmission_id",   transmissionId);
-      payload.put("transmission_time", transmissionTime);
-      payload.put("cert_url",          certUrl);
-      payload.put("auth_algo",         authAlgo);
-      payload.put("transmission_sig",  transmissionSig);
-      payload.put("webhook_id",        WEBHOOK_ID);
-      payload.set("webhook_event",     objectMapper.readTree(bodyJson));
-
-      // Choose sandbox vs live
-      String base = PAYPAL_URL;
-      String url = base + "/v1/notifications/verify-webhook-signature";
-
-      HttpRequest req = HttpRequest.newBuilder()
-              .uri(URI.create(url))
-              .header("Content-Type", "application/json")
-              .header("Authorization", "Bearer " + getAccessToken())
-              .POST(HttpRequest.BodyPublishers.ofString(payload.toString()))
-              .build();
-
-      HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
-      if (resp.statusCode() / 100 != 2) return false;
-
-      String status = objectMapper.readTree(resp.body()).get("verification_status").asText();
-      return "SUCCESS".equals(status);
-    } catch (Exception ex) {
-      System.out.println(("Webhook verification failed" + ex.toString()));
-      return false;
-    }
-  }
-
-
-
 }
