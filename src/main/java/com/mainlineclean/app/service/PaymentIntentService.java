@@ -58,13 +58,6 @@ public class PaymentIntentService {
   @Value("${paypal.payout-url}")
   private String PAYPAL_PAYOUT_URL;
 
-  @Value("${paypal.webhook-id}")
-  private String WEBHOOK_ID;
-
-  @Value("${paypal.url}")
-  private String PAYPAL_URL;
-
-  // Constructor
   public PaymentIntentService (PaymentIntentRepo paymentIntentRepo, AdminDetailsService adminDetailsService, AppointmentService appointmentService) {
     this.paymentIntentRepo = paymentIntentRepo;
     this.adminDetailsService = adminDetailsService;
