@@ -1,6 +1,5 @@
 package com.mainlineclean.app.controller;
 
-import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.dto.RequestQuote;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ public class MainController {
   }
 
   @PostMapping("/requestQuote")
-  public ResponseEntity<String> requestQuote(@RequestBody RequestQuote userInfo) throws EmailException {
+  public ResponseEntity<String> requestQuote(@RequestBody RequestQuote userInfo) {
     emailService.sendQuote(userInfo);
     return ResponseEntity.ok("OK");
   }

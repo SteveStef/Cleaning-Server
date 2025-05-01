@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +48,7 @@ public class PaypalController {
     }
 
     @PostMapping("/paypal/captureOrder")
-    public ResponseEntity<Appointment> captureOrder(@RequestBody Appointment appointment) throws PaymentException, EmailException {
+    public ResponseEntity<Appointment> captureOrder(@RequestBody Appointment appointment) throws PaymentException {
         availabilityService.isAvailableAt(appointment.getAppointmentDate()); // throws if not available
 
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
@@ -59,7 +58,7 @@ public class PaypalController {
             String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
             appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse); // and saves the amounts to db
             availabilityService.updateAvailability(appointment, false); // false meaning that we are not available
-            emailService.notifyAppointment(createdAppointment); // this does not throw error
+            emailService.notifyAppointment(createdAppointment);
 
             try {
                 paymentIntentService.sendPayout(accessToken); // add more params to this
@@ -103,6 +102,8 @@ public class PaypalController {
         else appointmentService.updateStatus(appt, Status.CANCELED);
 
         availabilityService.updateAvailability(appt, true);
+
+        emailService.notifyCancellation(appt);
         return ResponseEntity.ok("OK");
     }
 

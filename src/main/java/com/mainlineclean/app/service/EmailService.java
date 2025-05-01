@@ -1,9 +1,9 @@
 package com.mainlineclean.app.service;
 
 import com.mainlineclean.app.entity.Appointment;
-import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.dto.RequestQuote;
 import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.Time;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.mainlineclean.app.model.EmailTemplates;
@@ -61,6 +61,12 @@ public class EmailService {
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.CONSTRUCTION,      "Limpieza Post-Construcción");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.COMMERCIAL,        "Limpieza Comercial");
     }
+    private static final Map<Time, String> TIME_DESCRIPTION_ES = new EnumMap<>(Time.class);
+    static {
+        TIME_DESCRIPTION_ES .put(Time.MORNING,   "Mañana");
+        TIME_DESCRIPTION_ES .put(Time.AFTERNOON, "Tarde");
+        TIME_DESCRIPTION_ES  .put(Time.NIGHT,     "Noche");
+    }
 
     public EmailService(AdminDetailsService adminDetailsService) {
         this.adminDetailsService = adminDetailsService;
@@ -78,9 +84,11 @@ public class EmailService {
         String senderEmail = adminDetailsService.getAdminEmail();
         String from = "Dos Chicas <" + senderEmail + ">";
         String subject = "Your cleaning appointment has been canceled";
-        String allVars = getCancellationJson(appointment);
 
+        String allVars = getCancellationJson(appointment, true);
         sendTemplatedEmail(appointment.getEmail(), from, subject, allVars, EmailTemplates.CANCELLED_APPOINTMENT_ENGLISH);
+
+        allVars = getCancellationJson(appointment, false);
         sendTemplatedEmail(senderEmail, from, "Una cita ha sido cancelada", allVars, EmailTemplates.CANCELLED_APPOINTMENT_SPANISH);
     }
 
@@ -108,17 +116,17 @@ public class EmailService {
         sendTemplatedEmail(senderEmail, from, clientSubject, body, EmailTemplates.VERIFICATION_CODE);
     }
 
-    public void sendQuote(RequestQuote userInfo) throws EmailException {
+    public void sendQuote(RequestQuote userInfo) {
         String senderEmail = adminDetailsService.getAdminEmail();
 
-        String from = userInfo.getEmail();
+        String from = "Dos Chicas <" + userInfo.getEmail() + ">";
         String subject = userInfo.getFirstName() + " " + userInfo.getLastName() + " te ha enviado un mensaje a través de Dos Chicas";
 
         String allVars = getRequestQuoteJson(userInfo);
         sendTemplatedEmail(senderEmail, from, subject, allVars, EmailTemplates.REQUEST_QUOTE);
     }
 
-    public void sendTemplatedEmail(String to, String from, String subject, String allVars, EmailTemplates template) throws EmailException {
+    public void sendTemplatedEmail(String to, String from, String subject, String allVars, EmailTemplates template) {
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
 
@@ -138,10 +146,10 @@ public class EmailService {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() / 100 != 2) {
-                throw new EmailException("Got a non-200 response: " + response.statusCode());
+                System.out.println("Email failed to send, got a non 200 status code");
             }
         } catch (Exception e) {
-            throw new EmailException("HTTP request error for Mailgun: " + e.toString());
+            System.out.println("HTTP request error for Mailgun: " + e.toString());
         }
     }
 
@@ -153,10 +161,10 @@ public class EmailService {
                 + "\"address\":\""       + appointment.getAddress() + "\","
                 + "\"amountCharged\":\"" + "$"+appointment.getChargedAmount() + "\","
                 + "\"bookingId\":\""     + appointment.getBookingId() + "\","
-                + "\"cleaningType\":\""  + appointment.getService() + "\","
+                + "\"cleaningType\":\""  + SERVICE_DESCRIPTIONS.get(appointment.getService()) + "\","
                 + "\"date\":\""          + formattedDate + "\","
                 + "\"supportEmail\":\""  + adminEmail + "\","
-                + "\"time\":\""          + appointment.getTime() + "\""
+                + "\"time\":\""          + appointment.getTime().toString().toLowerCase() + "\""
                 + "}";
     }
 
@@ -170,19 +178,25 @@ public class EmailService {
                 + "\"address\":\""       + appointment.getAddress()       + "\","
                 + "\"amountCharged\":\"" + "$"+appointment.getChargedAmount() + "\","
                 + "\"bookingId\":\""     + appointment.getBookingId()     + "\","
-                + "\"cleaningType\":\""  + appointment.getService() + "\","
+                + "\"cleaningType\":\""  + SERVICE_DESCRIPTIONS_ES.get(appointment.getService()) + "\","
                 + "\"clientContact\":\"" + appointment.getEmail() + " | " +  appointment.getPhone() + "\","
-                + "\"dateTime\":\""      + formattedDate   + " | " +  appointment.getTime()         + "\","
+                + "\"dateTime\":\""      + formattedDate   + " | " +  TIME_DESCRIPTION_ES .get(appointment.getTime()) + "\","
                 + "\"notes\":\""         + appointment.getNotes()         + "\""
                 + "}";
     }
 
-    private String getCancellationJson(Appointment appointment) {
+    private String getCancellationJson(Appointment appointment, boolean inEnglish) {
+        String cleaningType = inEnglish ? SERVICE_DESCRIPTIONS.get(appointment.getService()) : SERVICE_DESCRIPTIONS_ES.get(appointment.getService());
+        SimpleDateFormat sdf = inEnglish ? new SimpleDateFormat("EEEE MMMM d, yyyy", Locale.ENGLISH) :
+                new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        String time = inEnglish ? appointment.getTime().toString().toLowerCase() : TIME_DESCRIPTION_ES.get(appointment.getTime());
+
+        String formattedDate = sdf.format(appointment.getAppointmentDate());
         return "{"
             + "\"address\":\""      + appointment.getAddress() + "\","
             + "\"bookingId\":\""    + appointment.getBookingId() + "\","
-            + "\"cleaningType\":\"" + appointment.getService() + "\","
-            + "\"dateTime\":\""     + appointment.getAppointmentDate() + " " + appointment.getTime() + "\""
+            + "\"cleaningType\":\"" + cleaningType + "\","
+            + "\"dateTime\":\""     + formattedDate + " | " + time + "\""
             + "}";
     }
 
