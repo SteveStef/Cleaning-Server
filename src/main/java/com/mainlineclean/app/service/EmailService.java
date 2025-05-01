@@ -3,21 +3,21 @@ package com.mainlineclean.app.service;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.dto.RequestQuote;
+import com.mainlineclean.app.model.ServiceType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import com.mainlineclean.app.model.EmailTemplates;
 
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Base64;
+import java.util.*;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Locale;
-import java.util.Random;
 
 @Service
 public class EmailService {
@@ -31,6 +31,37 @@ public class EmailService {
     private final AdminDetailsService adminDetailsService;
     private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
+    private static final Map<ServiceType, String> SERVICE_DESCRIPTIONS = new EnumMap<>(ServiceType.class);
+    static {
+        SERVICE_DESCRIPTIONS.put(ServiceType.REGULAR,           "Regular Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.ENVIRONMENT,       "Eco-Friendly Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.DEEP,              "Deep Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.HAZMAT,            "Hazardous Materials Cleanup");
+        SERVICE_DESCRIPTIONS.put(ServiceType.FIRE,              "Fire Damage Restoration");
+        SERVICE_DESCRIPTIONS.put(ServiceType.WATER,             "Water Damage Restoration");
+        SERVICE_DESCRIPTIONS.put(ServiceType.MOVE_IN_OUT,       "Move-In/Out Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.DECEASED,          "Deceased Estate Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.EXPLOSIVE_RESIDUE, "Explosive Residue Cleanup");
+        SERVICE_DESCRIPTIONS.put(ServiceType.MOLD,              "Mold Remediation");
+        SERVICE_DESCRIPTIONS.put(ServiceType.CONSTRUCTION,      "Construction Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.COMMERCIAL,        "Commercial Cleaning");
+    }
+    private static final Map<ServiceType, String> SERVICE_DESCRIPTIONS_ES = new EnumMap<>(ServiceType.class);
+    static {
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.REGULAR,           "Limpieza Regular");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.ENVIRONMENT,       "Limpieza Ecológica");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.DEEP,              "Limpieza Profunda");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.HAZMAT,            "Limpieza de Materiales Peligrosos");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.FIRE,              "Restauración de Daños por Incendio");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.WATER,             "Restauración de Daños por Agua");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.MOVE_IN_OUT,       "Limpieza de Entrada/Salida");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.DECEASED,          "Limpieza de Propiedad de Fallecido");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.EXPLOSIVE_RESIDUE, "Limpieza de Residuos Explosivos");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.MOLD,              "Remediación de Moho");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.CONSTRUCTION,      "Limpieza Post-Construcción");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.COMMERCIAL,        "Limpieza Comercial");
+    }
+
     public EmailService(AdminDetailsService adminDetailsService) {
         this.adminDetailsService = adminDetailsService;
     }
@@ -42,91 +73,59 @@ public class EmailService {
         return sb.toString();
     }
 
-    public void sendVerificationCode() throws EmailException {
-        String auth = "api:" + apiKey;
-        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+
+    public void notifyCancellation(Appointment appointment) {
         String senderEmail = adminDetailsService.getAdminEmail();
-        String code = generateAuthCode();
+        String from = "Dos Chicas <" + senderEmail + ">";
+        String subject = "Your cleaning appointment has been canceled";
+        String allVars = getCancellationJson(appointment);
 
-        String from = "Mainline Clean <" +  senderEmail + ">";
-        String clientSubject = "Here is your admin verification code";
-        String clientText = "Your verification code is: " + code;
-
-        sendEmail(encodedAuth, from, senderEmail, clientSubject, clientText);
-
-        adminDetailsService.setVerificationCode(code);
+        sendTemplatedEmail(appointment.getEmail(), from, subject, allVars, EmailTemplates.CANCELLED_APPOINTMENT_ENGLISH);
+        sendTemplatedEmail(senderEmail, from, "Una cita ha sido cancelada", allVars, EmailTemplates.CANCELLED_APPOINTMENT_SPANISH);
     }
 
     public void notifyAppointment(Appointment appointment) {
-        String auth = "api:" + apiKey;
-        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
         String senderEmail = adminDetailsService.getAdminEmail();
-
         String from = "Dos Chicas <" + senderEmail + ">";
-        String clientSubject = "Cleaning Appointment Confirmed!";
 
-        try {
-            sendTemplatedEmail(encodedAuth, from, appointment.getEmail(), clientSubject, getConfirmationJson(appointment), "booking confirmed");
-            sendTemplatedEmail(encodedAuth, from, appointment.getEmail(), "Tienes una nueva cita!", getDetailsJson(appointment), "you have a new cleaning client");
-        } catch(Exception e) {
-            System.out.println(e.toString());
-        }
+        String clientSubject = "Your Cleaning Appointment is Scheduled!";
+        String allVars = getConfirmationJson(appointment);
+        sendTemplatedEmail(appointment.getEmail(), from, clientSubject, allVars, EmailTemplates.APPOINTMENT_CONFIRMED);
+
+        String cleaningLadySubject = "Tienes una nueva cita de limpieza";
+        allVars = getDetailsJson(appointment);
+        sendTemplatedEmail(senderEmail, from, cleaningLadySubject, allVars, EmailTemplates.NEW_APPOINTMENT);
     }
 
-    private void sendEmail(String encodedAuth, String from, String to, String subject, String text) throws EmailException {
-        String postData = "from=" + URLEncoder.encode(from, StandardCharsets.UTF_8)
-                + "&to=" + URLEncoder.encode(to, StandardCharsets.UTF_8)
-                + "&subject=" + URLEncoder.encode(subject, StandardCharsets.UTF_8)
-                + "&text=" + URLEncoder.encode(text, StandardCharsets.UTF_8);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(mailgunURL))
-                .header("Authorization", "Basic " + encodedAuth)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(postData))
-                .build();
-
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() / 100 != 2) {
-                throw new EmailException("Got a non-200 response: " + response.statusCode());
-            }
-        } catch (Exception e) {
-            throw new EmailException("HTTP request error for Mailgun: " + e.toString());
-        }
-    }
-
-    public void notifyCancellation(Appointment appointment) {
-        String auth = "api:" + apiKey;
-        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+    public void sendVerificationCode() {
         String senderEmail = adminDetailsService.getAdminEmail();
+        String code = generateAuthCode();
+        String clientSubject = "Dos Chicas Verification Code";
+        String from = "Dos Chicas <" + senderEmail + ">";
 
-        String from = "Mainline Clean <" +  senderEmail + ">";
-        String subject = "Your cleaning appointment has been canceled";
-        String text = "Your cleaning appointment with booking ID: " + appointment.getBookingId()
-                + " has been canceled. You have been refunded $" + appointment.getChargedAmount();
-
-        sendEmail(encodedAuth, from, senderEmail, subject, text);
+        adminDetailsService.setVerificationCode(code);
+        String body = "{"+"\"code\":\"" + code + "\"" + "}";
+        sendTemplatedEmail(senderEmail, from, clientSubject, body, EmailTemplates.VERIFICATION_CODE);
     }
 
     public void sendQuote(RequestQuote userInfo) throws EmailException {
-        String auth = "api:" + apiKey;
-        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
         String senderEmail = adminDetailsService.getAdminEmail();
 
         String from = userInfo.getEmail();
-        String subject = userInfo.getFirstName() + " " + userInfo.getLastName() +
-                " sent you a message via Main Line Cleaners";
-        String text = userInfo.getMessage() + "\n\nPhone: " + userInfo.getPhone() + "\n";
+        String subject = userInfo.getFirstName() + " " + userInfo.getLastName() + " te ha enviado un mensaje a través de Dos Chicas";
 
-        sendEmail(encodedAuth, from, senderEmail, subject, text);
+        String allVars = getRequestQuoteJson(userInfo);
+        sendTemplatedEmail(senderEmail, from, subject, allVars, EmailTemplates.REQUEST_QUOTE);
     }
 
-    public void sendTemplatedEmail(String encodedAuth, String from, String to, String subject, String allVars, String template) throws EmailException {
+    public void sendTemplatedEmail(String to, String from, String subject, String allVars, EmailTemplates template) throws EmailException {
+        String auth = "api:" + apiKey;
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+
         String postData = "from="  + URLEncoder.encode(from,  StandardCharsets.UTF_8)
                 + "&to="    + URLEncoder.encode(to, StandardCharsets.UTF_8)
                 + "&subject="+ URLEncoder.encode(subject, StandardCharsets.UTF_8)
-                + "&template=" + URLEncoder.encode(template, StandardCharsets.UTF_8)
+                + "&template=" + URLEncoder.encode(template.toString().toLowerCase(), StandardCharsets.UTF_8)
                 + "&h:X-Mailgun-Variables=" + URLEncoder.encode(allVars, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -175,6 +174,25 @@ public class EmailService {
                 + "\"clientContact\":\"" + appointment.getEmail() + " | " +  appointment.getPhone() + "\","
                 + "\"dateTime\":\""      + formattedDate   + " | " +  appointment.getTime()         + "\","
                 + "\"notes\":\""         + appointment.getNotes()         + "\""
+                + "}";
+    }
+
+    private String getCancellationJson(Appointment appointment) {
+        return "{"
+            + "\"address\":\""      + appointment.getAddress() + "\","
+            + "\"bookingId\":\""    + appointment.getBookingId() + "\","
+            + "\"cleaningType\":\"" + appointment.getService() + "\","
+            + "\"dateTime\":\""     + appointment.getAppointmentDate() + " " + appointment.getTime() + "\""
+            + "}";
+    }
+
+    private String getRequestQuoteJson(RequestQuote quote) {
+        return "{"
+                + "\"name\":\"" + quote.getFirstName() + " " + quote.getLastName() + "\","
+                + "\"email\":\""    + quote.getEmail() + "\","
+                + "\"serviceType\":\""    + SERVICE_DESCRIPTIONS_ES.get(quote.getService()) + "\","
+                + "\"phone\":\"" + quote.getPhone() + "\","
+                + "\"message\":\"" + quote.getMessage() + "\""
                 + "}";
     }
 }

@@ -1,11 +1,13 @@
 package com.mainlineclean.app.dto;
 
+import com.mainlineclean.app.model.ServiceType;
+
 public class RequestQuote {
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
-    private String service;
+    private ServiceType service;
     private String message;
     private boolean smsConsent;
 
@@ -39,10 +41,10 @@ public class RequestQuote {
         this.phone = phone;
     }
 
-    public String getService() {
+    public ServiceType getService() {
         return service;
     }
-    public void setService(String service) {
+    public void setService(ServiceType service) {
         this.service = service;
     }
 
@@ -63,6 +65,14 @@ public class RequestQuote {
 
     @Override
     public String toString() {
-        return "Quote from " + firstName + " " + lastName;
+        return "RequestQuote{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", service='" + service + '\'' +
+                ", message='" + message + '\'' +
+                ", smsConsent=" + smsConsent +
+                '}';
     }
 }

@@ -1,0 +1,11 @@
+package com.mainlineclean.app.model;
+
+public enum EmailTemplates {
+    APPOINTMENT_CONFIRMED,
+    CANCELLED_APPOINTMENT_ENGLISH,
+
+    VERIFICATION_CODE,
+    NEW_APPOINTMENT,
+    CANCELLED_APPOINTMENT_SPANISH,
+    REQUEST_QUOTE
+}
