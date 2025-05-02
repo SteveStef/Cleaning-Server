@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -93,6 +94,8 @@ public class Finances {
             monthlyRevenue.add(new RevenueEntry(e.getKey(), val.doubleValue()));
         }
 
+        monthlyRevenue.sort(Comparator.comparingInt(e -> Month.from(fmt.parse(e.month())).getValue()));
+
         for (Map.Entry<Integer, BigDecimal[]> entry : yearlyRevMap.entrySet()) {
             int year        = entry.getKey();
             BigDecimal[] s  = entry.getValue();
@@ -101,11 +104,8 @@ public class Finances {
             BigDecimal feeRaw   = s[1].setScale(2, RoundingMode.HALF_EVEN);
             BigDecimal baseRaw  = s[2].setScale(2, RoundingMode.HALF_EVEN);
 
-            BigDecimal taxRaw    = baseRaw
-                    .multiply(BigDecimal.valueOf(0.06))
-                    .setScale(2, RoundingMode.HALF_EVEN);
-            BigDecimal profitRaw = grossRaw.subtract(taxRaw)
-                    .setScale(2, RoundingMode.HALF_EVEN);
+            BigDecimal taxRaw = baseRaw.multiply(BigDecimal.valueOf(0.06)).setScale(2, RoundingMode.HALF_EVEN);
+            BigDecimal profitRaw = grossRaw.subtract(taxRaw).setScale(2, RoundingMode.HALF_EVEN);
 
             yearlyRevenue.add(new YearlyEntry(
                     year,
@@ -116,13 +116,11 @@ public class Finances {
             ));
         }
 
+        yearlyRevenue.sort(Comparator.comparingInt(YearlyEntry::year).reversed());
+
         // compute overall salesTax & profit
-        BigDecimal salesTax = baseAmountSum
-                .multiply(BigDecimal.valueOf(0.06))
-                .setScale(2, RoundingMode.HALF_EVEN);
-        BigDecimal profit   = grossSum
-                .subtract(salesTax)
-                .setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal salesTax = baseAmountSum.multiply(BigDecimal.valueOf(0.06)).setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal profit   = grossSum.subtract(salesTax).setScale(2, RoundingMode.HALF_EVEN);
 
         // final doubles for DTO
         double grossD     = grossSum.setScale(2, RoundingMode.HALF_EVEN).doubleValue();
