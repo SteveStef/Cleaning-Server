@@ -30,6 +30,9 @@ public class Appointment {
   @Column(name = "zipcode")
   private String zipcode;
 
+  @Column(name="state")
+  private String state;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "service")
   private ServiceType service;
@@ -103,12 +106,13 @@ public class Appointment {
   // Default constructor
   public Appointment() {}
 
-  public Appointment(Long id, String clientName, String email, String phone, String zipcode, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal grossAmount, String bookingId, boolean smsConsent, int squareFeet, BigDecimal applicationFee) {
+  public Appointment(Long id, String clientName, String email, String phone, String zipcode, String state, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal grossAmount, String bookingId, boolean smsConsent, int squareFeet, BigDecimal applicationFee) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
     this.phone = phone;
     this.zipcode = zipcode;
+    this.state = state;
     this.service = service;
     this.appointmentDate = appointmentDate;
     this.createdAt = createdAt;
@@ -295,6 +299,14 @@ public class Appointment {
     this.applicationFee = applicationFee;
   }
 
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+
   @Override
   public String toString() {
     return "Appointment{" +
@@ -303,6 +315,7 @@ public class Appointment {
             ", email='" + email + '\'' +
             ", phone='" + phone + '\'' +
             ", zipcode='" + zipcode + '\'' +
+            ", state='" + state + '\'' +
             ", service=" + service +
             ", appointmentDate=" + appointmentDate +
             ", createdAt=" + createdAt +
@@ -318,7 +331,7 @@ public class Appointment {
             ", bookingId='" + bookingId + '\'' +
             ", smsConsent=" + smsConsent +
             ", squareFeet=" + squareFeet +
-            ", applicationFee='" + applicationFee + '\'' +
+            ", applicationFee=" + applicationFee +
             '}';
   }
 }

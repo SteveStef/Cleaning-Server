@@ -52,13 +52,13 @@ public class EmailService {
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.ENVIRONMENT,       "Limpieza Ecológica");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.DEEP,              "Limpieza Profunda");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.HAZMAT,            "Limpieza de Materiales Peligrosos");
-        SERVICE_DESCRIPTIONS_ES.put(ServiceType.FIRE,              "Restauración de Daños por Incendio");
-        SERVICE_DESCRIPTIONS_ES.put(ServiceType.WATER,             "Restauración de Daños por Agua");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.FIRE,              "Restauración por Daños de Incendio");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.WATER,             "Restauración por Daños de Agua");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.MOVE_IN_OUT,       "Limpieza de Entrada/Salida");
-        SERVICE_DESCRIPTIONS_ES.put(ServiceType.DECEASED,          "Limpieza de Propiedad de Fallecido");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.DECEASED,          "Limpieza de Bienes de Difuntos");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.EXPLOSIVE_RESIDUE, "Limpieza de Residuos Explosivos");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.MOLD,              "Remediación de Moho");
-        SERVICE_DESCRIPTIONS_ES.put(ServiceType.CONSTRUCTION,      "Limpieza Post-Construcción");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.CONSTRUCTION,      "Limpieza de Construcción");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.COMMERCIAL,        "Limpieza Comercial");
     }
     private static final Map<Time, String> TIME_DESCRIPTION_ES = new EnumMap<>(Time.class);
