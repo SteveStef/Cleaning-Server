@@ -3,21 +3,31 @@ package com.mainlineclean.app.controller;
 import com.mainlineclean.app.entity.Client;
 import com.mainlineclean.app.service.ClientService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class ClientController {
+    private final ClientService clientService;
 
-    @GetMapping("/clients")
-    public ResponseEntity<Client> getClients() {
-        return null;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
-    @PostMapping("/clients")
+    @GetMapping("/clients")
+    public ResponseEntity<List<Client>> getClients() {
+        return ResponseEntity.ok(clientService.getAllClients());
+    }
+
+    @PostMapping("/client")
     public ResponseEntity<Client> addClient(@RequestBody Client client) {
-        return null;
+        return ResponseEntity.ok(clientService.createClient(client));
+    }
+
+    @DeleteMapping("/client")
+    public ResponseEntity<String> updateClient(@RequestBody Client client) {
+        clientService.deleteClient(client);
+        return ResponseEntity.ok("OK");
     }
 }

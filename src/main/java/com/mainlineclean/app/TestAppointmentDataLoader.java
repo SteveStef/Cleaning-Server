@@ -1,10 +1,12 @@
 package com.mainlineclean.app;
 
 import com.mainlineclean.app.entity.Appointment;
+import com.mainlineclean.app.entity.Client;
 import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.model.Time;
 import com.mainlineclean.app.repository.AppointmentRepo;
+import com.mainlineclean.app.repository.ClientRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -29,6 +31,7 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(TestAppointmentDataLoader.class);
     private final AppointmentRepo appointmentRepository;
+    private final ClientRepo clientRepo;
 
     // Constants for more realistic test data
     private static final String[] FIRST_NAMES = {
@@ -84,8 +87,9 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
             "aol.com", "icloud.com", "comcast.net", "verizon.net"
     };
 
-    public TestAppointmentDataLoader(AppointmentRepo appointmentRepository) {
+    public TestAppointmentDataLoader(AppointmentRepo appointmentRepository, ClientRepo clientRepo) {
         this.appointmentRepository = appointmentRepository;
+        this.clientRepo = clientRepo;
     }
 
     @Override
@@ -95,6 +99,8 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
             logger.info("Test appointments already exist. Skipping data load.");
             return;
         }
+
+        createTestClients();
 
         logger.info("Loading test appointment data...");
         List<Appointment> appointments = new ArrayList<>();
@@ -106,6 +112,18 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
 
         appointmentRepository.saveAll(appointments);
         logger.info("Successfully loaded {} test appointments.", appointments.size());
+    }
+
+    private void createTestClients() {
+        for (int i = 1; i <= 10; i++) {
+            Client client = new Client();
+            client.setName("Client " + i);
+            client.setEmail("client" + i + "@example.com");
+            client.setPhone("555-555-5555");
+            client.setAddress("123 Main St, Philadelphia, PA 19101");
+            client.setZipcode("19095");
+            clientRepo.save(client);
+        }
     }
 
     private void createPastAppointments(List<Appointment> appointments, int count) {
