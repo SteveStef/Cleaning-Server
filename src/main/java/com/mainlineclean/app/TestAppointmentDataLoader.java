@@ -3,6 +3,7 @@ package com.mainlineclean.app;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.Client;
 import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.State;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.model.Time;
 import com.mainlineclean.app.repository.AppointmentRepo;
@@ -26,7 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * It is only active in the "dev" profile to prevent accidental data loading in production.
  */
 @Component
-@Profile("dev")
+@Profile("deve")
 public class TestAppointmentDataLoader implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(TestAppointmentDataLoader.class);
@@ -227,7 +228,7 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
 
         appt.setAddress(streetNumber + " " + street + ", " + city + ", PA");
         appt.setZipcode(zipcode);
-        appt.setState("PA");
+        appt.setState(State.PA);
 
         // Service details
         ServiceType[] services = ServiceType.values();

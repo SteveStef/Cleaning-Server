@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.State;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.model.Time;
 import jakarta.persistence.*;
@@ -30,8 +31,9 @@ public class Appointment {
   @Column(name = "zipcode")
   private String zipcode;
 
+  @Enumerated(EnumType.STRING)
   @Column(name="state")
-  private String state;
+  private State state;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "service")
@@ -106,7 +108,7 @@ public class Appointment {
   // Default constructor
   public Appointment() {}
 
-  public Appointment(Long id, String clientName, String email, String phone, String zipcode, String state, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal grossAmount, String bookingId, boolean smsConsent, int squareFeet, BigDecimal applicationFee) {
+  public Appointment(Long id, String clientName, String email, String phone, String zipcode, State state, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal grossAmount, String bookingId, boolean smsConsent, int squareFeet, BigDecimal applicationFee) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
@@ -299,11 +301,11 @@ public class Appointment {
     this.applicationFee = applicationFee;
   }
 
-  public String getState() {
+  public State getState() {
     return state;
   }
 
-  public void setState(String state) {
+  public void setState(State state) {
     this.state = state;
   }
 

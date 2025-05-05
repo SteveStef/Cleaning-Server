@@ -3,6 +3,7 @@ package com.mainlineclean.app.dto;
 import com.mainlineclean.app.utils.Finances;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RevenueDetails {
 
@@ -10,10 +11,10 @@ public class RevenueDetails {
     private double gross;
     private double paypalFee;
     private double salesTax;
-    private ArrayList<Finances.YearlyEntry> yearlyRevenue;
-    private ArrayList<Finances.RevenueEntry> monthlyRevenue;
+    private List<Finances.YearlyEntry> yearlyRevenue;
+    private List<Finances.RevenueEntry> monthlyRevenue;
 
-    public RevenueDetails(double profit, double gross, double salesTax, double paypalFee, ArrayList<Finances.YearlyEntry> yearlyRevenue, ArrayList<Finances.RevenueEntry> monthlyRevenue) {
+    public RevenueDetails(double profit, double gross, double salesTax, double paypalFee, List<Finances.YearlyEntry> yearlyRevenue, List<Finances.RevenueEntry> monthlyRevenue) {
         this.profit = profit;
         this.gross = gross;
         this.paypalFee = paypalFee;
@@ -54,15 +55,15 @@ public class RevenueDetails {
         this.salesTax = salesTax;
     }
 
-    public ArrayList<Finances.YearlyEntry> getYearlyRevenue() {
+    public List<Finances.YearlyEntry> getYearlyRevenue() {
         return yearlyRevenue;
     }
 
-    public void setYearlyRevenue(ArrayList<Finances.YearlyEntry> yearlyRevenue) {
+    public void setYearlyRevenue(List<Finances.YearlyEntry> yearlyRevenue) {
         this.yearlyRevenue = yearlyRevenue;
     }
 
-    public ArrayList<Finances.RevenueEntry> getMonthlyRevenue() {
+    public List<Finances.RevenueEntry> getMonthlyRevenue() {
         return monthlyRevenue;
     }
 

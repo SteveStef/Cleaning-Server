@@ -5,6 +5,7 @@ import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
 import com.mainlineclean.app.exception.PaymentException;
 import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.State;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.utils.Finances;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,8 +45,11 @@ public class PaypalController {
     }
 
     @PostMapping("/paypal/createOrder")
-    public ResponseEntity<String> createOrder(@RequestParam(value="serviceType") ServiceType serviceType, @RequestBody int squareFeet) throws PaymentException {
-        PaymentIntent intent = paymentIntentService.createOrder(serviceType, squareFeet);
+    public ResponseEntity<String> createOrder(
+            @RequestParam(value="serviceType") ServiceType serviceType,
+            @RequestParam(value="state") State state,
+            @RequestBody int squareFeet) throws PaymentException {
+        PaymentIntent intent = paymentIntentService.createOrder(serviceType, squareFeet, state);
         return ResponseEntity.ok(intent.getOrderId());
     }
 

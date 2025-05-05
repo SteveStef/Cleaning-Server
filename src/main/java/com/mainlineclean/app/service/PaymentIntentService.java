@@ -6,8 +6,10 @@ import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
 import com.mainlineclean.app.model.ServiceType;
+import com.mainlineclean.app.model.State;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.repository.PaymentIntentRepo;
+import com.mainlineclean.app.utils.Finances;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import com.mainlineclean.app.exception.PaymentException;
@@ -128,7 +130,7 @@ public class PaymentIntentService {
     refundPayment(appointment, refundAmount.toPlainString());
   }
 
-  public PaymentIntent createOrder(ServiceType serviceType, int squareFeet) throws PaymentException, EnumConstantNotPresentException {
+  public PaymentIntent createOrder(ServiceType serviceType, int squareFeet, State state) throws PaymentException, EnumConstantNotPresentException {
     PaymentIntent pi = new PaymentIntent();
     AdminDetails details = adminDetailsService.getAdminDetails();
 
@@ -150,12 +152,12 @@ public class PaymentIntentService {
     };
 
     BigDecimal area = BigDecimal.valueOf(squareFeet);
-    BigDecimal baseCost = ratePerSquareFeet.multiply(area).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal baseCost = ratePerSquareFeet.multiply(area);
 
     BigDecimal appFee = new BigDecimal(APPLICATION_FEE);
-    BigDecimal subtotal = baseCost.add(appFee).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal subtotal = baseCost.add(appFee);
 
-    BigDecimal taxFactor = BigDecimal.valueOf(1.06);
+    BigDecimal taxFactor = Finances.taxMap.get(state); // 1.06 or ...
     BigDecimal totalCost = subtotal.multiply(taxFactor).setScale(2, RoundingMode.HALF_EVEN);
 
     pi.setPrice(totalCost);
