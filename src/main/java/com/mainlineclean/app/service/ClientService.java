@@ -1,5 +1,6 @@
 package com.mainlineclean.app.service;
 
+import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.Client;
 import com.mainlineclean.app.repository.ClientRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -10,11 +11,20 @@ import java.util.List;
 @Service
 public class ClientService {
     private final EmailService emailService;
-    ClientRepo clientRepo;
+    private final ClientRepo clientRepo;
 
     public ClientService(ClientRepo clientRepo, EmailService emailService) {
         this.clientRepo = clientRepo;
         this.emailService = emailService;
+    }
+
+    public void createClient(Appointment appointment) {
+        try {
+            Client client = new Client(appointment);
+            clientRepo.save(client);
+        } catch(Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     public Client createClient(Client client) {

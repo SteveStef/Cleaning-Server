@@ -27,13 +27,21 @@ public class Client {
 
     public Client() {}
 
-    public Client(Long id, Long clientId, String name, String address, String email, String phone, String zipcode) {
+    public Client(Long id, String name, String address, String email, String phone, String zipcode) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.zipcode = zipcode;
+    }
+
+    public Client(Appointment appointment) {
+        this.name = appointment.getClientName();
+        this.address = appointment.getAddress();
+        this.email = appointment.getEmail();
+        this.phone = appointment.getPhone();
+        this.zipcode = appointment.getZipcode();
     }
 
     public Long getId() {

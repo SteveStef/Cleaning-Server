@@ -26,6 +26,7 @@ public class PaypalController {
     private final AppointmentService appointmentService;
     private final EmailService emailService;
     private final Finances financesUtil;
+    private final ClientService clientService;
 
     @Value("${cancellation.percent}")
     private String CANCELLATION_PERCENT;
@@ -33,12 +34,13 @@ public class PaypalController {
     @Value("${application.fee}")
     private String APPLICATION_FEE;
 
-    public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService, Finances financesUtil) {
+    public PaypalController(PaymentIntentService paymentIntentService, AvailabilityService availabilityService, AppointmentService appointmentService, EmailService emailService, Finances financesUtil, ClientService clientService) {
         this.paymentIntentService = paymentIntentService;
         this.availabilityService = availabilityService;
         this.appointmentService = appointmentService;
         this.emailService = emailService;
         this.financesUtil = financesUtil;
+        this.clientService = clientService;
     }
 
     @PostMapping("/paypal/createOrder")
@@ -52,6 +54,8 @@ public class PaypalController {
         availabilityService.isAvailableAt(appointment.getAppointmentDate()); // throws if not available
 
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
+        clientService.createClient(createdAppointment);
+
         PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(appointment.getOrderId());
         try {
             String accessToken = paymentIntentService.getAccessToken();
