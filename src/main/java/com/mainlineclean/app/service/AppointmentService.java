@@ -26,9 +26,11 @@ import java.util.Random;
 public class AppointmentService {
 
   private final AppointmentRepo appointmentRepo;
+  private final AvailabilityService availabilityService;
 
-  public AppointmentService(AppointmentRepo appointmentRepository) {
+  public AppointmentService(AppointmentRepo appointmentRepository, AvailabilityService availabilityService) {
     this.appointmentRepo = appointmentRepository;
+    this.availabilityService = availabilityService;
   }
 
   public void deleteAppointment(Appointment appointment) {
@@ -61,8 +63,14 @@ public class AppointmentService {
   public void rescheduleAppointment(Records.RescheduleAppointmentBody scheduleData) {
     Appointment appointment = this.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(scheduleData.bookingId(), scheduleData.email());
 
+    // making the old appointment available
+    availabilityService.updateAvailability(appointment, true);
+
     appointment.setAppointmentDate(scheduleData.newAppointmentDate());
     appointment.setTime(scheduleData.newTime());
+
+    // making the new appointment not an available time anymore
+    availabilityService.updateAvailability(appointment, false);
 
     appointmentRepo.save(appointment);
   }

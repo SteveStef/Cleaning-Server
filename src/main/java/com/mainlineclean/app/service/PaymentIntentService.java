@@ -1,7 +1,6 @@
 package com.mainlineclean.app.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.PaymentIntent;
@@ -66,13 +65,7 @@ public class PaymentIntentService {
     this.appointmentService = appointmentService;
   }
 
-  public void refundPayment(Appointment appointment, String refundAmountStr) {
-    BigDecimal refundAmount;
-    try {
-        refundAmount = new BigDecimal(refundAmountStr).setScale(2, RoundingMode.HALF_EVEN);
-    } catch (NumberFormatException ex) {
-        throw new PaymentException("Invalid refund amount: " + refundAmountStr, ex);
-    }
+  public void refundPayment(Appointment appointment, BigDecimal refundAmount) {
 
     String accessToken = getAccessToken();
     String refundUrl = PAYPAL_PAYMENT_URL + appointment.getCaptureId() + "/refund";
@@ -124,10 +117,10 @@ public class PaymentIntentService {
 
   }
 
-  public void customerCancelPayment(Appointment appointment, double percentBack) throws PaymentException {
+  public void customerCancelPayment(Appointment appointment, BigDecimal percentBack) throws PaymentException {
     BigDecimal chargedAmount = appointment.getChargedAmount();
-    BigDecimal refundAmount = chargedAmount.multiply(BigDecimal.valueOf(percentBack)).setScale(2, RoundingMode.HALF_EVEN);
-    refundPayment(appointment, refundAmount.toPlainString());
+    BigDecimal refundAmount = chargedAmount.multiply(percentBack).setScale(2, RoundingMode.HALF_EVEN);
+    refundPayment(appointment, refundAmount);
   }
 
   public PaymentIntent createOrder(ServiceType serviceType, int squareFeet, State state) throws PaymentException, EnumConstantNotPresentException {

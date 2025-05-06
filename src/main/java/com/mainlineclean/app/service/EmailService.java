@@ -181,7 +181,6 @@ public class EmailService {
                 + "\"cleaningType\":\""  + SERVICE_DESCRIPTIONS_ES.get(appointment.getService()) + "\","
                 + "\"clientContact\":\"" + appointment.getEmail() + " | " +  appointment.getPhone() + "\","
                 + "\"dateTime\":\""      + formattedDate   + " | " +  TIME_DESCRIPTION_ES .get(appointment.getTime()) + "\","
-                + "\"notes\":\""         + appointment.getNotes()         + "\""
                 + "}";
     }
 

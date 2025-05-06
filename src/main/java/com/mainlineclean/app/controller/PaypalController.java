@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -29,8 +30,11 @@ public class PaypalController {
     private final Finances financesUtil;
     private final ClientService clientService;
 
-    @Value("${cancellation.percent}")
-    private String CANCELLATION_PERCENT;
+    @Value("${full.cancellation.percent}")
+    private String FULL_CANCELLATION_PERCENT;
+
+    @Value("${partial.cancellation.percent}")
+    private String PARTIAL_CANCELLATION_PERCENT;
 
     @Value("${application.fee}")
     private String APPLICATION_FEE;
@@ -98,16 +102,13 @@ public class PaypalController {
     public ResponseEntity<String> customerCancelAppointment(@RequestBody Records.CustomerCancelAppointmentBody data) {
         Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(data.bookingId(), data.email());
 
-        LocalDate apptDate = appt.getAppointmentDate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        LocalDate apptDate = appt.getAppointmentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate today = LocalDate.now();
 
         long daysUntil = ChronoUnit.DAYS.between(today, apptDate);
 
-        if (daysUntil >= 2)  paymentIntentService.customerCancelPayment(appt, Double.parseDouble(CANCELLATION_PERCENT));
-        else appointmentService.updateStatus(appt, Status.CANCELED);
+        if(daysUntil >= 2)  paymentIntentService.customerCancelPayment(appt, new BigDecimal(FULL_CANCELLATION_PERCENT));
+        else paymentIntentService.customerCancelPayment(appt, new BigDecimal(PARTIAL_CANCELLATION_PERCENT));
 
         availabilityService.updateAvailability(appt, true);
 
