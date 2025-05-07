@@ -9,6 +9,7 @@ import com.mainlineclean.app.model.State;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.repository.PaymentIntentRepo;
 import com.mainlineclean.app.utils.Finances;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import com.mainlineclean.app.exception.PaymentException;
@@ -26,6 +27,7 @@ import java.time.Duration;
 import java.util.*;
 
 @Service
+@Slf4j
 public class PaymentIntentService {
 
   private final PaymentIntentRepo paymentIntentRepo;
@@ -66,6 +68,7 @@ public class PaymentIntentService {
   }
 
   public void refundPayment(Appointment appointment, BigDecimal refundAmount) {
+    log.info("Refunding payment for appointment {} for a refund of {}", appointment.getId(), refundAmount.toPlainString());
 
     String accessToken = getAccessToken();
     String refundUrl = PAYPAL_PAYMENT_URL + appointment.getCaptureId() + "/refund";
@@ -110,8 +113,9 @@ public class PaymentIntentService {
       appointment.setGrossAmount(appointment.getGrossAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN));
 
       appointmentService.updateStatus(appointment, Status.CANCELED);
+      log.info("Payment for appointment {} refunded successfully", appointment.getId());
     } catch (Exception e) {
-      System.out.println(e.toString());
+      log.error("Error refunding payment for appointment {} for a refund of {}", appointment.getId(), refundAmount.toPlainString(), e);
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
     }
 
@@ -124,6 +128,8 @@ public class PaymentIntentService {
   }
 
   public PaymentIntent createOrder(ServiceType serviceType, int squareFeet, State state) throws PaymentException, EnumConstantNotPresentException {
+    log.info("Creating payment intent for service type {} and square feet {}", serviceType, squareFeet);
+
     PaymentIntent pi = new PaymentIntent();
     AdminDetails details = adminDetailsService.getAdminDetails();
 
@@ -224,8 +230,10 @@ public class PaymentIntentService {
       if(response.statusCode() / 100 != 2) {
         throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       }
+      log.info("Captured order {} successfully", intent.getOrderId());
       return response.body();
     } catch(Exception e) {
+      log.error("Error capturing order {}", intent.getOrderId(), e);
       throw new PaymentException("Error capturing order " + e.getMessage(), e);
     }
   }
@@ -244,11 +252,13 @@ public class PaymentIntentService {
       if(response.statusCode() / 100 != 2) throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
       return objectMapper.readValue(response.body(), Map.class).get("access_token").toString();
     } catch(Exception e) {
+      log.error("Error getting access token", e);
       throw new PaymentException("Error getting access token", e);
     }
   }
 
   public String createOrder(PaymentIntent intent) throws PaymentException {
+    log.info("Creating order for payment intent {}", intent.getId());
     String accessToken = getAccessToken();
 
     Map<String, Object> payloadMap = new HashMap<>();
@@ -269,6 +279,7 @@ public class PaymentIntentService {
     try {
       jsonPayload = objectMapper.writeValueAsString(payloadMap);
     } catch (Exception e) {
+      log.error("Error creating payload for payment intent {}", intent.getId(), e);
       throw new PaymentException("Failed to serialize payload", e);
     }
 
@@ -287,6 +298,7 @@ public class PaymentIntentService {
       if(orderIdObj == null) throw new PaymentException("Order ID response came back differently than expected");
       return (String) orderIdObj;
     } catch(Exception e) {
+      log.error("Error creating order for payment intent {}", intent.getId(), e);
       throw new PaymentException("HTTP error, cannot create order", e);
     }
   }

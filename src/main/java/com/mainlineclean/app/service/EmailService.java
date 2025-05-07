@@ -2,12 +2,15 @@ package com.mainlineclean.app.service;
 
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.dto.RequestQuote;
+import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.Time;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.mainlineclean.app.model.EmailTemplates;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -18,8 +21,10 @@ import java.util.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${mailgun.api-key}")
@@ -127,6 +132,7 @@ public class EmailService {
     }
 
     public void sendTemplatedEmail(String to, String from, String subject, String allVars, EmailTemplates template) {
+        log.info("Sending email to {} with subject {}", to, subject);
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
 
@@ -143,14 +149,44 @@ public class EmailService {
                 .POST(HttpRequest.BodyPublishers.ofString(postData))
                 .build();
 
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() / 100 != 2) {
-                System.out.println("Email failed to send, got a non 200 status code");
+        final long BASE_DELAY = 1_000L;
+        final int MAX_RETRIES = 3;
+
+        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                int status = response.statusCode();
+                if (status >= 200 && status < 300) {
+                    log.info("Email sent successfully");
+                    return;
+                }
+                // retryable HTTP statuses
+                if (status == 429 || (status >= 500 && status < 600)) {
+                    long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
+                    log.warn("Retrying in {}ms (attempt {})", backoff, attempt);
+                    Thread.sleep(backoff);
+                    continue;
+                }
+                throw new EmailException("Permanent HTTP error: " + status + " – " + response.body());
+            } catch (IOException e) {
+                if (attempt == MAX_RETRIES) {
+                    log.error("Network failure after {} attempts", MAX_RETRIES, e);
+                    throw new EmailException("Network failure after " + MAX_RETRIES + " attempts\n" + e.toString());
+                }
+                long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
+                log.warn("Retrying in {}ms (attempt {})", backoff, attempt);
+                try { Thread.sleep(backoff); }
+                catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new EmailException("Interrupted during backoff" + ie.toString());
+                }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                log.warn("Interrupted during email send");
+                throw new EmailException("Send interrupted" + ie.toString());
             }
-        } catch (Exception e) {
-            System.out.println("HTTP request error for Mailgun: " + e.toString());
         }
+        throw new EmailException("Exceeded max retries without success");
     }
 
     private String getConfirmationJson(Appointment appointment) {

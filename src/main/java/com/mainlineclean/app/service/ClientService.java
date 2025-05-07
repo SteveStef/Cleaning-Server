@@ -4,11 +4,13 @@ import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.entity.Client;
 import com.mainlineclean.app.repository.ClientRepo;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class ClientService {
     private final EmailService emailService;
     private final ClientRepo clientRepo;
@@ -23,7 +25,7 @@ public class ClientService {
             Client client = new Client(appointment);
             clientRepo.save(client);
         } catch(Exception e) {
-            System.out.println(e.toString());
+            log.warn("Client already exists for appointment {}", appointment.getId());
         }
     }
 

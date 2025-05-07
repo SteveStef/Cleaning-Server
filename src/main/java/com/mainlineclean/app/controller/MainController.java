@@ -7,9 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 public class MainController {
-
   private final EmailService emailService;
-
   public MainController(EmailService emailService) {
     this.emailService = emailService;
   }

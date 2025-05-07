@@ -6,8 +6,8 @@ import com.mainlineclean.app.entity.PaymentIntent;
 import com.mainlineclean.app.exception.PaymentException;
 import com.mainlineclean.app.model.ServiceType;
 import com.mainlineclean.app.model.State;
-import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.utils.Finances;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +22,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @RestController
+@Slf4j
 public class PaypalController {
     private final PaymentIntentService paymentIntentService;
     private final AvailabilityService availabilityService;
@@ -77,12 +78,12 @@ public class PaypalController {
                 appointmentService.updateApplicationFee(appointment, APPLICATION_FEE);
             } catch(Exception e) {
                 appointmentService.updateApplicationFee(appointment, "0.00");
-                System.out.println("Didn't get the money"); // send email here
-                System.out.println(e.toString());
+                log.error("Error sending payout for appointment {} you were supposed to get paid: {}", appointment.getId(), APPLICATION_FEE, e);
             }
 
         } catch(PaymentException e) {
             appointmentService.deleteAppointment(createdAppointment);
+            log.error("Error capturing payment for appointment {}: {}", appointment.getId(), e.getMessage(), e);
             throw new PaymentException("The payment was not valid");
         }
 
