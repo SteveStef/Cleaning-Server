@@ -821,130 +821,6 @@
           <option name="workspaceId" value="drafts" />
         </requestHistoryState>
         <requestHistoryState>
-          <option name="dateTime" value="1743874753044" />
-          <option name="id" value="e7e39e8c-236b-4ac2-b974-9507e483277c" />
-          <option name="request">
-            <requestState>
-              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
-              <option name="method" value="GET" />
-              <option name="name" value="Draft" />
-              <option name="url" value="http://localhost:9080/service-details" />
-            </requestState>
-          </option>
-          <option name="response">
-            <responseState>
-              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA0LTA1VDE3OjM5OjEzLjAxNSswMDowMCIsInN0YXR1cyI6NTAwLCJlcnJvciI6IkludGVybmFsIFNlcnZlciBFcnJvciIsInBhdGgiOiIvc2VydmljZS1kZXRhaWxzIn0=" />
-              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-04-05T17:39:13.015+00:00&quot;,&#10;  &quot;status&quot;: 500,&#10;  &quot;error&quot;: &quot;Internal Server Error&quot;,&#10;  &quot;path&quot;: &quot;/service-details&quot;&#10;}" />
-              <option name="code" value="500" />
-              <option name="connectionEstablishingTime" value="51" />
-              <option name="contentType" value="application/json" />
-              <option name="headers">
-                <list>
-                  <headerState>
-                    <option name="key" value="Vary" />
-                    <option name="value" value="Origin" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Vary" />
-                    <option name="value" value="Access-Control-Request-Method" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Vary" />
-                    <option name="value" value="Access-Control-Request-Headers" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Content-Type" />
-                    <option name="value" value="application/json" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Transfer-Encoding" />
-                    <option name="value" value="chunked" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Date" />
-                    <option name="value" value="Sat, 05 Apr 2025 17:39:13 GMT" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Connection" />
-                    <option name="value" value="close" />
-                  </headerState>
-                </list>
-              </option>
-              <option name="id" value="e7e39e8c-236b-4ac2-b974-9507e483277c" />
-              <option name="message" value="Internal Server Error" />
-              <option name="prettyResponseType" value="JSON" />
-              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-04-05T17:39:13.015+00:00&quot;,&quot;status&quot;:500,&quot;error&quot;:&quot;Internal Server Error&quot;,&quot;path&quot;:&quot;/service-details&quot;}" />
-              <option name="size" value="116" />
-              <option name="time" value="120" />
-            </responseState>
-          </option>
-          <option name="workspaceId" value="drafts" />
-        </requestHistoryState>
-        <requestHistoryState>
-          <option name="dateTime" value="1743874865229" />
-          <option name="id" value="59588c8d-f75b-4a78-9497-7964dc0edb0c" />
-          <option name="request">
-            <requestState>
-              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
-              <option name="method" value="GET" />
-              <option name="name" value="Admin Details" />
-              <option name="url" value="http://localhost:9080/service-details" />
-            </requestState>
-          </option>
-          <option name="response">
-            <responseState>
-              <option name="bodyBytesBase64" value="eyJpZCI6MSwicmVndWxhclNlcnZpY2VQcmljZSI6IjE1MC4wMCIsIm1vdmVJbk91dFByaWNlIjoiMjUwLjAwIiwiZGVlcENsZWFuUHJpY2UiOiIzNTAuMDAiLCJlbWFpbCI6InN0ZXZlc3RlZjIyNkBnbWFpbC5jb20ifQ==" />
-              <option name="bodyString" value="{&#10;  &quot;id&quot;: 1,&#10;  &quot;regularServicePrice&quot;: &quot;150.00&quot;,&#10;  &quot;moveInOutPrice&quot;: &quot;250.00&quot;,&#10;  &quot;deepCleanPrice&quot;: &quot;350.00&quot;,&#10;  &quot;email&quot;: &quot;stevestef226@gmail.com&quot;&#10;}" />
-              <option name="code" value="200" />
-              <option name="connectionEstablishingTime" value="1" />
-              <option name="contentType" value="application/json" />
-              <option name="headers">
-                <list>
-                  <headerState>
-                    <option name="key" value="Vary" />
-                    <option name="value" value="Origin" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Vary" />
-                    <option name="value" value="Access-Control-Request-Method" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Vary" />
-                    <option name="value" value="Access-Control-Request-Headers" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Content-Type" />
-                    <option name="value" value="application/json" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Transfer-Encoding" />
-                    <option name="value" value="chunked" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Date" />
-                    <option name="value" value="Sat, 05 Apr 2025 17:41:05 GMT" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Keep-Alive" />
-                    <option name="value" value="timeout=60" />
-                  </headerState>
-                  <headerState>
-                    <option name="key" value="Connection" />
-                    <option name="value" value="keep-alive" />
-                  </headerState>
-                </list>
-              </option>
-              <option name="id" value="59588c8d-f75b-4a78-9497-7964dc0edb0c" />
-              <option name="message" value="OK" />
-              <option name="prettyResponseType" value="JSON" />
-              <option name="rawBodyString" value="{&quot;id&quot;:1,&quot;regularServicePrice&quot;:&quot;150.00&quot;,&quot;moveInOutPrice&quot;:&quot;250.00&quot;,&quot;deepCleanPrice&quot;:&quot;350.00&quot;,&quot;email&quot;:&quot;stevestef226@gmail.com&quot;}" />
-              <option name="size" value="124" />
-              <option name="time" value="63" />
-            </responseState>
-          </option>
-          <option name="workspaceId" value="drafts" />
-        </requestHistoryState>
-        <requestHistoryState>
           <option name="dateTime" value="1743876143368" />
           <option name="id" value="536b0c74-41f8-4daa-abef-df5b161a43f9" />
           <option name="request">
@@ -4235,6 +4111,358 @@
               <option name="rawBodyString" value="[]" />
               <option name="size" value="2" />
               <option name="time" value="95" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746715352488" />
+          <option name="id" value="e855bafb-29f1-41c1-be94-1c83d24b67f4" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="W10=" />
+              <option name="bodyString" value="[]" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="41" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Thu, 08 May 2025 14:42:32 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="e855bafb-29f1-41c1-be94-1c83d24b67f4" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="[]" />
+              <option name="size" value="2" />
+              <option name="time" value="107" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746715354957" />
+          <option name="id" value="32a29c1d-fb84-4e25-ad9c-b06edaca94fa" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="W10=" />
+              <option name="bodyString" value="[]" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Thu, 08 May 2025 14:42:34 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="32a29c1d-fb84-4e25-ad9c-b06edaca94fa" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="[]" />
+              <option name="size" value="2" />
+              <option name="time" value="5" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746715356772" />
+          <option name="id" value="33ecb906-559d-4e8d-a997-617dfecb4431" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="W10=" />
+              <option name="bodyString" value="[]" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Thu, 08 May 2025 14:42:36 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="33ecb906-559d-4e8d-a997-617dfecb4431" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="[]" />
+              <option name="size" value="2" />
+              <option name="time" value="9" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746715359621" />
+          <option name="id" value="b3d9b267-efc0-4abc-9216-a58400b2d034" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="W10=" />
+              <option name="bodyString" value="[]" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Thu, 08 May 2025 14:42:39 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="b3d9b267-efc0-4abc-9216-a58400b2d034" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="[]" />
+              <option name="size" value="2" />
+              <option name="time" value="7" />
             </responseState>
           </option>
           <option name="workspaceId" value="drafts" />

@@ -27,7 +27,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * It is only active in the "dev" profile to prevent accidental data loading in production.
  */
 @Component
-@Profile("deve")
 public class TestAppointmentDataLoader implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(TestAppointmentDataLoader.class);
