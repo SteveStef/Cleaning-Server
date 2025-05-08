@@ -106,9 +106,9 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
         List<Appointment> appointments = new ArrayList<>();
 
         // Create a mix of past, current, and future appointments with realistic statuses
-        createPastAppointments(appointments, 25);      // Past appointments (completed or canceled)
-        createCurrentAppointments(appointments, 10);   // Appointments for today and tomorrow
-        createFutureAppointments(appointments, 15);    // Future appointments
+        createPastAppointments(appointments, 4);      // Past appointments (completed or canceled)
+        createCurrentAppointments(appointments, 3);   // Appointments for today and tomorrow
+        createFutureAppointments(appointments, 5);    // Future appointments
 
         appointmentRepository.saveAll(appointments);
         logger.info("Successfully loaded {} test appointments.", appointments.size());
