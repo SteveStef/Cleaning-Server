@@ -1,6 +1,7 @@
 package com.mainlineclean.app.service;
 
 import com.mainlineclean.app.model.Time;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mainlineclean.app.entity.Availability;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
+@Slf4j
 public class AvailabilityService {
 
   private final AvailabilityRepo availabilityRepo;
@@ -41,7 +43,8 @@ public class AvailabilityService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String formattedDate = sdf.format(date);
     Optional<Availability> availabilityOpt = availabilityRepo.findById(formattedDate);
-    if (availabilityOpt.isEmpty()) { // if we are making less availability and already found no availability
+    if (!isAvailable && availabilityOpt.isEmpty()) { // if we are making less availability and already found no availability
+      log.warn("No availability found for date: {}, we cannot create less availability if there is already non", formattedDate);
       throw new AvailabilityException("No availability found for date: " + formattedDate);
     }
     Availability availability = availabilityOpt.get();
@@ -62,7 +65,10 @@ public class AvailabilityService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String formattedDate = sdf.format(appointmentDate);
     Optional<Availability> availabilityObj = availabilityRepo.findById(formattedDate);
-    if(availabilityObj.isEmpty() || !availabilityObj.get().isAvailable()) throw new AvailabilityException("This date is no longer available");
+    if(availabilityObj.isEmpty() || !availabilityObj.get().isAvailable()) {
+      log.warn("Date {} is no longer available", formattedDate);
+      throw new AvailabilityException("This date is no longer available");
+    }
   }
 
   public List<Availability> getAllAvailability() {

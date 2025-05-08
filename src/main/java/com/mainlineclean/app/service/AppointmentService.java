@@ -9,6 +9,7 @@ import com.mainlineclean.app.repository.AppointmentRepo;
 import com.mainlineclean.app.dto.CostBreakdown;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class AppointmentService {
 
   private final AppointmentRepo appointmentRepo;
@@ -56,7 +58,7 @@ public class AppointmentService {
       appointment.setApplicationFee(fee);
       appointmentRepo.save(appointment);
     } catch(Exception e) {
-      throw new IllegalArgumentException("invalid application fee, check env");
+      throw new IllegalArgumentException(e.getMessage());
     }
   }
 
@@ -113,11 +115,14 @@ public class AppointmentService {
 
       appointment.setCaptureId(captureId);
       appointmentRepo.save(appointment);
+      log.info("The amounts paid for appointment {} were updated successfully, here was the charged amount: {}", appointment.getId(), appointment.getChargedAmount());
 
     } catch (JsonProcessingException e) {
-      throw new AppointmentException("Failed to update amounts paid", e);
+      log.error("Failed to update amounts paid for appointment {}: {}", appointment.getId(), e.getMessage());
+      throw new AppointmentException("Failed to update amounts paid: " + e.getMessage());
     }
   }
+
   private String generateBookingId() {
     StringBuilder b = new StringBuilder("BK-");
     String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

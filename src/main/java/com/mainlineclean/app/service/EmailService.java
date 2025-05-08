@@ -1,5 +1,6 @@
 package com.mainlineclean.app.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mainlineclean.app.entity.Appointment;
 import com.mainlineclean.app.dto.RequestQuote;
 import com.mainlineclean.app.exception.EmailException;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.mainlineclean.app.model.EmailTemplates;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
-
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -35,6 +34,7 @@ public class EmailService {
 
     private final AdminDetailsService adminDetailsService;
     private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private static final Map<ServiceType, String> SERVICE_DESCRIPTIONS = new EnumMap<>(ServiceType.class);
     static {
@@ -132,7 +132,6 @@ public class EmailService {
     }
 
     public void sendTemplatedEmail(String to, String from, String subject, String allVars, EmailTemplates template) {
-        log.info("Sending email to {} with subject {}", to, subject);
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
 
@@ -157,91 +156,120 @@ public class EmailService {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 int status = response.statusCode();
                 if (status >= 200 && status < 300) {
-                    log.info("Email sent successfully");
+                    log.info("Email with template of {} sent successfully to {}", template.toString().toLowerCase(), to);
                     return;
                 }
                 // retryable HTTP statuses
                 if (status == 429 || (status >= 500 && status < 600)) {
                     long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
-                    log.warn("Retrying in {}ms (attempt {})", backoff, attempt);
+                    log.warn("Retrying from non-200 status code in {}ms (attempt {})", backoff, attempt);
                     Thread.sleep(backoff);
                     continue;
                 }
                 throw new EmailException("Permanent HTTP error: " + status + " – " + response.body());
             } catch (IOException e) {
                 if (attempt == MAX_RETRIES) {
-                    log.error("Network failure after {} attempts", MAX_RETRIES, e);
+                    log.error("Network failure after {} attempts {}", MAX_RETRIES, e.getMessage());
                     throw new EmailException("Network failure after " + MAX_RETRIES + " attempts\n" + e.toString());
                 }
                 long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
-                log.warn("Retrying in {}ms (attempt {})", backoff, attempt);
+                log.warn("Retrying from exception in {}ms (attempt {})", backoff, attempt);
                 try { Thread.sleep(backoff); }
                 catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
-                    throw new EmailException("Interrupted during backoff" + ie.toString());
+                    throw new EmailException("Interrupted during backoff" + ie.getMessage());
                 }
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
                 log.warn("Interrupted during email send");
-                throw new EmailException("Send interrupted" + ie.toString());
+                throw new EmailException("Send interrupted" + ie.getMessage());
             }
         }
         throw new EmailException("Exceeded max retries without success");
     }
 
+    private record ConfirmationEmailBody(String address, String amountCharged, String bookingId, String cleaningType, String date, String supportEmail, String time){};
     private String getConfirmationJson(Appointment appointment) {
         String adminEmail = adminDetailsService.getAdminEmail();
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE MMMM d, yyyy", Locale.ENGLISH);
         String formattedDate = sdf.format(appointment.getAppointmentDate());
-        return "{"
-                + "\"address\":\""       + appointment.getAddress() + "\","
-                + "\"amountCharged\":\"" + "$"+appointment.getChargedAmount() + "\","
-                + "\"bookingId\":\""     + appointment.getBookingId() + "\","
-                + "\"cleaningType\":\""  + SERVICE_DESCRIPTIONS.get(appointment.getService()) + "\","
-                + "\"date\":\""          + formattedDate + "\","
-                + "\"supportEmail\":\""  + adminEmail + "\","
-                + "\"time\":\""          + appointment.getTime().toString().toLowerCase() + "\""
-                + "}";
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonPayload;
+        try {
+            jsonPayload = mapper.writeValueAsString(new ConfirmationEmailBody(
+                    appointment.getAddress(),
+                    "$"+appointment.getChargedAmount(),
+                    appointment.getBookingId(),
+                    SERVICE_DESCRIPTIONS.get(appointment.getService()),
+                    formattedDate,
+                    adminEmail,
+                    appointment.getTime().toString().toLowerCase()
+            ));
+        } catch(Exception e) {
+            log.error("Error serializing confirmation email: {}", e.getMessage());
+            throw new EmailException("Error serializing appointment to JSON: " + e.getMessage());
+        }
+        return jsonPayload;
     }
 
+    private record AppointmentEmailBody(String address, String chargedAmount, String bookingId, String cleaningType, String clientContact, String dateTime){};
     private String getDetailsJson(Appointment appointment) {
-        SimpleDateFormat sdf = new SimpleDateFormat(
-                "EEEE d 'de' MMMM 'de' yyyy",
-                new Locale("es", "ES")
-        );
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
         String formattedDate = sdf.format(appointment.getAppointmentDate());
-        return "{"
-                + "\"address\":\""       + appointment.getAddress()       + "\","
-                + "\"amountCharged\":\"" + "$"+appointment.getChargedAmount() + "\","
-                + "\"bookingId\":\""     + appointment.getBookingId()     + "\","
-                + "\"cleaningType\":\""  + SERVICE_DESCRIPTIONS_ES.get(appointment.getService()) + "\","
-                + "\"clientContact\":\"" + appointment.getEmail() + " | " +  appointment.getPhone() + "\","
-                + "\"dateTime\":\""      + formattedDate   + " | " +  TIME_DESCRIPTION_ES .get(appointment.getTime()) + "\","
-                + "}";
+        String jsonPayload;
+        try {
+            jsonPayload = mapper.writeValueAsString(new AppointmentEmailBody(
+                    appointment.getAddress(),
+                    "$"+appointment.getChargedAmount(),
+                    appointment.getBookingId(),
+                    SERVICE_DESCRIPTIONS_ES.get(appointment.getService()),
+                    appointment.getEmail() + " | " +  appointment.getPhone(),
+                    formattedDate + " | " +  TIME_DESCRIPTION_ES.get(appointment.getTime())
+            ));
+        } catch(Exception e) {
+            log.error("Error when creating the appointment into the record: {}", e.getMessage());
+            throw new EmailException("Error serializing appointment to JSON: " + e.getMessage());
+        }
+        return jsonPayload;
     }
 
+    private record CancellationEmailBody(String address, String bookingId, String cleaningType, String dateTime){};
     private String getCancellationJson(Appointment appointment, boolean inEnglish) {
         String cleaningType = inEnglish ? SERVICE_DESCRIPTIONS.get(appointment.getService()) : SERVICE_DESCRIPTIONS_ES.get(appointment.getService());
         SimpleDateFormat sdf = inEnglish ? new SimpleDateFormat("EEEE MMMM d, yyyy", Locale.ENGLISH) :
                 new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
         String time = inEnglish ? appointment.getTime().toString().toLowerCase() : TIME_DESCRIPTION_ES.get(appointment.getTime());
-
         String formattedDate = sdf.format(appointment.getAppointmentDate());
-        return "{"
-            + "\"address\":\""      + appointment.getAddress() + "\","
-            + "\"bookingId\":\""    + appointment.getBookingId() + "\","
-            + "\"cleaningType\":\"" + cleaningType + "\","
-            + "\"dateTime\":\""     + formattedDate + " | " + time + "\""
-            + "}";
+
+        String jsonPayload;
+        try {
+            jsonPayload = mapper.writeValueAsString(new CancellationEmailBody(
+                    appointment.getAddress(),
+                    appointment.getBookingId(),
+                    cleaningType,
+                    formattedDate + " | " + time
+            ));
+        } catch(Exception e) {
+            log.error("Error when creating the cancellation into the record: {}", e.getMessage());
+            throw new EmailException("Error serializing appointment to JSON: " + e.getMessage());
+        }
+        return jsonPayload;
     }
 
+
+    private record QuoteEmailBody(String name, String email, String serviceType, String phone, String message){};
     private String getRequestQuoteJson(RequestQuote quote) {
-        return "{"
-                + "\"name\":\"" + quote.getFirstName() + " " + quote.getLastName() + "\","
-                + "\"email\":\""    + quote.getEmail() + "\","
-                + "\"serviceType\":\""    + SERVICE_DESCRIPTIONS_ES.get(quote.getService()) + "\","
-                + "\"phone\":\"" + quote.getPhone() + "\","
-                + "\"message\":\"" + quote.getMessage() + "\""
-                + "}";
+        String jsonPayload;
+        try {
+            jsonPayload = mapper.writeValueAsString(new QuoteEmailBody(
+                    quote.getFirstName() + " " + quote.getLastName(),
+                    quote.getEmail(), SERVICE_DESCRIPTIONS_ES.get(quote.getService()),
+                    quote.getPhone(), quote.getMessage()
+            ));
+        } catch(Exception e) {
+            log.error("Error when creating the quote into the record: {}", e.getMessage());
+            throw new EmailException("Error serializing appointment to JSON: " + e.getMessage());
+        }
+        return jsonPayload;
     }
 }

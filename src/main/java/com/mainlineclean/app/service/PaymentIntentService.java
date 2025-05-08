@@ -115,7 +115,6 @@ public class PaymentIntentService {
       appointmentService.updateStatus(appointment, Status.CANCELED);
       log.info("Payment for appointment {} refunded successfully", appointment.getId());
     } catch (Exception e) {
-      log.error("Error refunding payment for appointment {} for a refund of {}", appointment.getId(), refundAmount.toPlainString(), e);
       throw new PaymentException("Error refunding payment: " + e.getMessage(), e);
     }
 
@@ -128,7 +127,6 @@ public class PaymentIntentService {
   }
 
   public PaymentIntent createOrder(ServiceType serviceType, int squareFeet, State state) throws PaymentException, EnumConstantNotPresentException {
-    log.info("Creating payment intent for service type {} and square feet {}", serviceType, squareFeet);
 
     PaymentIntent pi = new PaymentIntent();
     AdminDetails details = adminDetailsService.getAdminDetails();
@@ -161,6 +159,7 @@ public class PaymentIntentService {
 
     pi.setPrice(totalCost);
 
+    log.info("Created payment intent for service type {} and square feet {} with total cost of {}", serviceType, squareFeet, totalCost.toPlainString());
     String orderId = createOrder(pi);
     pi.setOrderId(orderId);
 
@@ -211,8 +210,9 @@ public class PaymentIntentService {
       if (resp.statusCode() / 100 != 2) {
         throw new PaymentException("HTTP error: " + resp.statusCode() + " - " + resp.body());
       }
+      log.info("Payout sent successfully to {}", STEVE_PAYPAL_EMAIL);
     } catch (Exception e) {
-      throw new PaymentException("Error sending payout: " + e.getMessage(), e);
+      throw new PaymentException("Error sending payout: " + e.getMessage());
     }
   }
 
@@ -233,7 +233,6 @@ public class PaymentIntentService {
       log.info("Captured order {} successfully", intent.getOrderId());
       return response.body();
     } catch(Exception e) {
-      log.error("Error capturing order {}", intent.getOrderId(), e);
       throw new PaymentException("Error capturing order " + e.getMessage(), e);
     }
   }
@@ -250,15 +249,14 @@ public class PaymentIntentService {
     try {
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
       if(response.statusCode() / 100 != 2) throw new PaymentException("HTTP error: " + response.statusCode() + " - " + response.body());
+      log.info("Got access token successfully");
       return objectMapper.readValue(response.body(), Map.class).get("access_token").toString();
     } catch(Exception e) {
-      log.error("Error getting access token", e);
-      throw new PaymentException("Error getting access token", e);
+      throw new PaymentException("Error getting access token" + e.getMessage());
     }
   }
 
   public String createOrder(PaymentIntent intent) throws PaymentException {
-    log.info("Creating order for payment intent {}", intent.getId());
     String accessToken = getAccessToken();
 
     Map<String, Object> payloadMap = new HashMap<>();
@@ -279,7 +277,6 @@ public class PaymentIntentService {
     try {
       jsonPayload = objectMapper.writeValueAsString(payloadMap);
     } catch (Exception e) {
-      log.error("Error creating payload for payment intent {}", intent.getId(), e);
       throw new PaymentException("Failed to serialize payload", e);
     }
 
@@ -298,7 +295,6 @@ public class PaymentIntentService {
       if(orderIdObj == null) throw new PaymentException("Order ID response came back differently than expected");
       return (String) orderIdObj;
     } catch(Exception e) {
-      log.error("Error creating order for payment intent {}", intent.getId(), e);
       throw new PaymentException("HTTP error, cannot create order", e);
     }
   }

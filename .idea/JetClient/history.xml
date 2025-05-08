@@ -1982,9 +1982,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZS5nZW51aW5lY29kZXIuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDI5ODAzMywiZXhwIjoxNzQ0Mjk5ODMzfQ.Mnb0-jlQNECTQ7uC2Vxgfgy9fHq_3uBvB37r2tPlhOSjM_6ECbXawDDz4Jswh4Ymq5sPpgPbFJtBrOuF2RDGpQ" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2085,9 +2085,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZS5nZW51aW5lY29kZXIuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDI5ODAzMywiZXhwIjoxNzQ0Mjk5ODMzfQ.Mnb0-jlQNECTQ7uC2Vxgfgy9fHq_3uBvB37r2tPlhOSjM_6ECbXawDDz4Jswh4Ymq5sPpgPbFJtBrOuF2RDGpQ" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2177,9 +2177,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZS5nZW51aW5lY29kZXIuY2tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDI5ODAzMywiZXhwIjoxNzQ0Mjk5ODMzfQ.Mnb0-jlQNECTQ7uC2Vxgfgy9fHq_3uBvB37r2tPlhOSjM_6ECbXawDDz4Jswh4Ymq5sPpgPbFJtBrOuF2RDGpQ" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2370,9 +2370,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2476,9 +2476,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2582,9 +2582,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2680,9 +2680,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2778,9 +2778,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2876,9 +2876,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -2974,9 +2974,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3072,9 +3072,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3170,9 +3170,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3270,9 +3270,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3370,9 +3370,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3474,9 +3474,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3579,9 +3579,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3685,9 +3685,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3789,9 +3789,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -3883,6 +3883,270 @@
               <option name="rawBodyString" value="[{&quot;id&quot;:1,&quot;clientName&quot;:&quot;John Doe&quot;,&quot;email&quot;:&quot;johndoe@example.com&quot;,&quot;phone&quot;:&quot;+1-555-123-4567&quot;,&quot;service&quot;:&quot;REGULAR&quot;,&quot;appointmentDate&quot;:&quot;2025-05-01T09:00:00.000+00:00&quot;,&quot;createdAt&quot;:&quot;2025-04-20T15:56:26.976+00:00&quot;,&quot;time&quot;:&quot;09:00 AM&quot;,&quot;status&quot;:&quot;confirmed&quot;,&quot;address&quot;:&quot;123 Main St, Springfield, IL 62704&quot;,&quot;notes&quot;:&quot;Customer requests eco-friendly products.&quot;,&quot;orderId&quot;:null,&quot;captureId&quot;:&quot;CAP-ABC123XYZ&quot;,&quot;chargedAmount&quot;:null,&quot;paypalFee&quot;:null,&quot;netAmount&quot;:null,&quot;bookingId&quot;:&quot;BK-YLBHN-J3I&quot;}]" />
               <option name="size" value="466" />
               <option name="time" value="22" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746656282930" />
+          <option name="id" value="dcda445b-f59e-49a4-a122-fa749e5b1c47" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availabilty" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA1LTA3VDIyOjE4OjAyLjkwMyswMDowMCIsInN0YXR1cyI6NDA0LCJlcnJvciI6Ik5vdCBGb3VuZCIsInBhdGgiOiIvYXZhaWxhYmlsdHkifQ==" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-05-07T22:18:02.903+00:00&quot;,&#10;  &quot;status&quot;: 404,&#10;  &quot;error&quot;: &quot;Not Found&quot;,&#10;  &quot;path&quot;: &quot;/availabilty&quot;&#10;}" />
+              <option name="code" value="404" />
+              <option name="connectionEstablishingTime" value="40" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 07 May 2025 22:18:02 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="dcda445b-f59e-49a4-a122-fa749e5b1c47" />
+              <option name="message" value="Not Found" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-05-07T22:18:02.903+00:00&quot;,&quot;status&quot;:404,&quot;error&quot;:&quot;Not Found&quot;,&quot;path&quot;:&quot;/availabilty&quot;}" />
+              <option name="size" value="100" />
+              <option name="time" value="100" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746656307459" />
+          <option name="id" value="1fe79175-f10c-45e6-a704-662f9988a9c7" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="W10=" />
+              <option name="bodyString" value="[]" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 07 May 2025 22:18:27 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="1fe79175-f10c-45e6-a704-662f9988a9c7" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="[]" />
+              <option name="size" value="2" />
+              <option name="time" value="40" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746656489613" />
+          <option name="id" value="9669fbc3-3970-47a9-a956-ecacfcc23708" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
+              <option name="method" value="GET" />
+              <option name="name" value="Admin Details" />
+              <option name="url" value="http://localhost:9080/availability" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="W10=" />
+              <option name="bodyString" value="[]" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 07 May 2025 22:21:29 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="9669fbc3-3970-47a9-a956-ecacfcc23708" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="[]" />
+              <option name="size" value="2" />
+              <option name="time" value="70" />
             </responseState>
           </option>
           <option name="workspaceId" value="drafts" />

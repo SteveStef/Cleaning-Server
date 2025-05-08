@@ -35,9 +35,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZS5nZW51aW5lY29kZXIuY2tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDI5ODAzMywiZXhwIjoxNzQ0Mjk5ODMzfQ.Mnb0-jlQNECTQ7uC2Vxgfgy9fHq_3uBvB37r2tPlhOSjM_6ECbXawDDz4Jswh4Ymq5sPpgPbFJtBrOuF2RDGpQ" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -69,15 +69,15 @@
               <option name="id" value="600e22e7-45bc-48e1-99e9-836deee94e4e" />
               <option name="method" value="GET" />
               <option name="name" value="Admin Details" />
-              <option name="url" value="http://localhost:9080/service-details" />
+              <option name="url" value="http://localhost:9080/availability" />
             </requestState>
             <requestState>
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDMwMTI1MiwiZXhwIjoxNzQ0MzAzMDUyfQ.aCvAoS3hVe7_5moatybnUJe4pNetQYeawN2C-lTEPeisA0Xs0npmhY6Qc_ZzL6LWd7yP-Ul0HO5lmwSPNXuslg" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>
@@ -99,9 +99,9 @@
               <option name="auth">
                 <authState>
                   <option name="bearer">
-                    <pE>
+                    <pF>
                       <option name="token" value="eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL21haW5saW5lY2xlYW5lcnMuY29tIiwic3ViIjoiQWRtaW4gVXNlciIsImlhdCI6MTc0NDUwMjMxOSwiZXhwIjoxNzQ0NTA5NTE5fQ.kARCdJ0ZMRDSuZgHbg7Fu3tH4LlSDiOUM-YKpzFJAdmQEVMCp_ko3OPTQAc44cLIRQf8rE8vasFkD7MNN6jcSA" />
-                    </pE>
+                    </pF>
                   </option>
                   <option name="type" value="BEARER" />
                 </authState>

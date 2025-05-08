@@ -61,7 +61,6 @@ public class PaypalController {
     @PostMapping("/paypal/captureOrder")
     public ResponseEntity<Appointment> captureOrder(@RequestBody Appointment appointment) throws PaymentException {
         availabilityService.isAvailableAt(appointment.getAppointmentDate()); // throws if not available
-
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
         clientService.createClient(createdAppointment);
 
@@ -83,8 +82,8 @@ public class PaypalController {
 
         } catch(PaymentException e) {
             appointmentService.deleteAppointment(createdAppointment);
-            log.error("Error capturing payment for appointment {}: {}", appointment.getId(), e.getMessage(), e);
-            throw new PaymentException("The payment was not valid");
+            log.warn("The payment capture failed so I am deleting the created appointment with bookingID: {}", createdAppointment.getBookingId());
+            throw new PaymentException("The payment was not valid " + e.getMessage());
         }
 
         return ResponseEntity.ok(createdAppointment);
@@ -108,17 +107,23 @@ public class PaypalController {
 
         long daysUntil = ChronoUnit.DAYS.between(today, apptDate);
 
-        if(daysUntil >= 2)  paymentIntentService.customerCancelPayment(appt, new BigDecimal(FULL_CANCELLATION_PERCENT));
-        else paymentIntentService.customerCancelPayment(appt, new BigDecimal(PARTIAL_CANCELLATION_PERCENT));
+        if(daysUntil >= 2)  {
+            log.info("Appointment {} is more than 2 days away from today. Cancelling with full refund.", appt.getId());
+            paymentIntentService.customerCancelPayment(appt, new BigDecimal(FULL_CANCELLATION_PERCENT));
+        } else {
+            log.info("Appointment {} is less than 2 days away from today. Cancelling with partial refund.", appt.getId());
+            paymentIntentService.customerCancelPayment(appt, new BigDecimal(PARTIAL_CANCELLATION_PERCENT));
+        }
 
         availabilityService.updateAvailability(appt, true);
-
         emailService.notifyCancellation(appt);
+
         return ResponseEntity.ok("OK");
     }
 
     @GetMapping("/paypal-info")
     public ResponseEntity<RevenueDetails> getPaypalStats() {
-        return ResponseEntity.ok(financesUtil.financeDetails());
+        RevenueDetails details = financesUtil.financeDetails();
+        return ResponseEntity.ok(details);
     }
 }
