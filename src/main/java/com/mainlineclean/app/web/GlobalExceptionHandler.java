@@ -5,6 +5,7 @@ import com.mainlineclean.app.exception.AvailabilityException;
 import com.mainlineclean.app.exception.EmailException;
 import com.mainlineclean.app.exception.PaymentException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,6 +47,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> onIllegalArgumentException(Exception e) {
         log.error("IllegalArgumentException: {}", e.getMessage());
         var body = new ErrorResponse("ILLEGAL_ARGUMENT", e.getMessage());
+        return ResponseEntity.status(400).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> onDataIntegrityViolationException(Exception e) {
+        log.error("DataIntegrityViolationException: {}", e.getMessage());
+        var body = new ErrorResponse("DATA_INTEGRITY_VIOLATION", e.getMessage());
         return ResponseEntity.status(400).body(body);
     }
 }

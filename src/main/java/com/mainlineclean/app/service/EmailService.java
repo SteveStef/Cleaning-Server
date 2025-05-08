@@ -83,7 +83,9 @@ public class EmailService {
         for(int i = 0; i < 6; i++) sb.append(random.nextInt(10));
         return sb.toString();
     }
+    public void sendEmailToClients(List<String> emails, String message) {
 
+    }
 
     public void notifyCancellation(Appointment appointment) {
         String senderEmail = adminDetailsService.getAdminEmail();

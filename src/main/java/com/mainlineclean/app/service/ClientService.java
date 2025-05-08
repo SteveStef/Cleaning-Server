@@ -5,8 +5,10 @@ import com.mainlineclean.app.entity.Client;
 import com.mainlineclean.app.repository.ClientRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -30,7 +32,12 @@ public class ClientService {
     }
 
     public Client createClient(Client client) {
-        return clientRepo.save(client);
+        try {
+            return clientRepo.save(client);
+        } catch(Exception e) {
+            log.warn("Tried to add a new client that already exists: {} {}", client.getEmail(), e.getMessage());
+            throw new DataIntegrityViolationException(e.getMessage());
+        }
     }
 
     public Client getClient(String email) {
@@ -41,8 +48,8 @@ public class ClientService {
        return clientRepo.findAll();
     }
 
-    public void deleteClient(Client client) {
-        clientRepo.delete(client);
+    public void deleteClients(List<Long> clients) {
+        clientRepo.deleteAllById(clients);
     }
 
     public void sendEmailsToClients(List<Client> clients) {

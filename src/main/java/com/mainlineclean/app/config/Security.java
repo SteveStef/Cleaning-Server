@@ -61,7 +61,7 @@ public class Security {
                         new AntPathRequestMatcher("/paypal-info", "GET"),
                         new AntPathRequestMatcher("/clients", "GET"),
                         new AntPathRequestMatcher("/client", "POST"),
-                        new AntPathRequestMatcher("/client", "DELETE")
+                        new AntPathRequestMatcher("/clients", "DELETE")
                 ))
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
