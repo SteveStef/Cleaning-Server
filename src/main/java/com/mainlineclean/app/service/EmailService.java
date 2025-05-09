@@ -32,6 +32,9 @@ public class EmailService {
     @Value("${mailgun.http-endpoint}")
     private String mailgunURL;
 
+    @Value("${mailgun.support-email}")
+    private String supportEmail;
+
     private final AdminDetailsService adminDetailsService;
     private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -83,13 +86,15 @@ public class EmailService {
         for(int i = 0; i < 6; i++) sb.append(random.nextInt(10));
         return sb.toString();
     }
-    public void sendEmailToClients(List<String> emails, String message) {
 
+    public void sendEmailToClients(List<String> emails, String subject, String message) {
+        String from = "Dos Chicas <" + supportEmail + ">";
     }
 
     public void notifyCancellation(Appointment appointment) {
         String senderEmail = adminDetailsService.getAdminEmail();
-        String from = "Dos Chicas <" + senderEmail + ">";
+
+        String from = "Dos Chicas <" + supportEmail + ">";
         String subject = "Your cleaning appointment has been canceled";
 
         String allVars = getCancellationJson(appointment, true);
@@ -101,7 +106,7 @@ public class EmailService {
 
     public void notifyAppointment(Appointment appointment) {
         String senderEmail = adminDetailsService.getAdminEmail();
-        String from = "Dos Chicas <" + senderEmail + ">";
+        String from = "Dos Chicas <" + supportEmail + ">";
 
         String clientSubject = "Your Cleaning Appointment is Scheduled!";
         String allVars = getConfirmationJson(appointment);
@@ -114,19 +119,21 @@ public class EmailService {
 
     public void sendVerificationCode() {
         String senderEmail = adminDetailsService.getAdminEmail();
+
         String code = generateAuthCode();
         String clientSubject = "Dos Chicas Verification Code";
-        String from = "Dos Chicas <" + senderEmail + ">";
+        String from = "Dos Chicas <" + supportEmail + ">";
 
         adminDetailsService.setVerificationCode(code);
         String body = "{"+"\"code\":\"" + code + "\"" + "}";
         sendTemplatedEmail(senderEmail, from, clientSubject, body, EmailTemplates.VERIFICATION_CODE);
     }
 
+    // this gets sent to cleaning-lady
     public void sendQuote(RequestQuote userInfo) {
         String senderEmail = adminDetailsService.getAdminEmail();
 
-        String from = "Dos Chicas <" + userInfo.getEmail() + ">";
+        String from = "Dos Chicas <" + supportEmail + ">";
         String subject = userInfo.getFirstName() + " " + userInfo.getLastName() + " te ha enviado un mensaje a través de Dos Chicas";
 
         String allVars = getRequestQuoteJson(userInfo);
@@ -158,7 +165,7 @@ public class EmailService {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 int status = response.statusCode();
                 if (status >= 200 && status < 300) {
-                    log.info("Email with template of {} sent successfully to {}", template.toString().toLowerCase(), to);
+                    log.info("Email with template of {} was queued successfully to {}", template.toString().toLowerCase(), to);
                     return;
                 }
                 // retryable HTTP statuses
@@ -214,7 +221,7 @@ public class EmailService {
         return jsonPayload;
     }
 
-    private record AppointmentEmailBody(String address, String chargedAmount, String bookingId, String cleaningType, String clientContact, String dateTime){};
+    private record AppointmentEmailBody(String address, String amountCharged, String bookingId, String cleaningType, String clientContact, String dateTime){};
     private String getDetailsJson(Appointment appointment) {
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
         String formattedDate = sdf.format(appointment.getAppointmentDate());

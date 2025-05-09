@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,27 +28,12 @@ public class ControllerLoggingAspect {
         String query      = request.getQueryString();
         String sig        = pjp.getSignature().toShortString();
 
-        log.info("→ Enter {} {}{}  (handler={})",
+        log.info("{} {}{}  (handler={})",
                 httpMethod,
                 uri,
                 (query != null ? "?" + query : ""),
                 sig);
 
-        Object result = pjp.proceed();
-
-        int status;
-        if (result instanceof ResponseEntity<?> resp) {
-            status = resp.getStatusCode().value();
-        } else {
-            status = (response != null ? response.getStatus() : -1);
-        }
-
-        log.info("← Exit  {} {}{}  → status={}",
-                httpMethod,
-                uri,
-                (query != null ? "?" + query : ""),
-                status);
-
-        return result;
+        return pjp.proceed();
     }
 }

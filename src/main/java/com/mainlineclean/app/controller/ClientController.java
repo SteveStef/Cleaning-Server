@@ -7,7 +7,6 @@ import com.mainlineclean.app.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class ClientController {
 
     @PostMapping("/clients/email")
     public ResponseEntity<String> sendEmailToClients(@RequestBody Records.ClientEmailBody data) {
-        emailService.sendEmailToClients(data.clientEmails(), data.message());
+        emailService.sendEmailToClients(data.clientEmails(), data.subject(), data.message());
         return ResponseEntity.ok("OK");
     }
 }

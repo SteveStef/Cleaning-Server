@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Component
 public class AdminDetailsInit implements CommandLineRunner {
 
-    @Value("${mailgun.sender-email}")
+    @Value("${mailgun.reply-email}")
     private String adminEmail;
 
     final private AdminDetailsRepo adminDetailsRepo;

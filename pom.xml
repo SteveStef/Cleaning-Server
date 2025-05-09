@@ -62,13 +62,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
-<!--		<dependency>-->
-<!--			<groupId>com.twilio.sdk</groupId>-->
-<!--			<artifactId>twilio</artifactId>-->
-<!--			<version>10.7.2</version>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

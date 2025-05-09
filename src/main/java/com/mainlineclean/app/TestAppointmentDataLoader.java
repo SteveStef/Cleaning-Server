@@ -26,7 +26,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * This component loads realistic test data for appointments.
  * It is only active in the "dev" profile to prevent accidental data loading in production.
  */
-@Component
 public class TestAppointmentDataLoader implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(TestAppointmentDataLoader.class);
@@ -261,7 +260,6 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
         appt.setCaptureId("CAPTURE-" + UUID.randomUUID().toString().substring(0, 8));
 
         // Other fields
-        appt.setSmsConsent(ThreadLocalRandom.current().nextBoolean());
         appt.setSquareFeet(ThreadLocalRandom.current().nextInt(500, 3500));
 
         return appt;

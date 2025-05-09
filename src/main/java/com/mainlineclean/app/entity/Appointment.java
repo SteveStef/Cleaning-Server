@@ -8,8 +8,12 @@ import com.mainlineclean.app.model.State;
 import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.model.Time;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "appointment", uniqueConstraints = @UniqueConstraint(columnNames = "bookingId"))
 public class Appointment {
@@ -65,13 +69,7 @@ public class Appointment {
   @Column(name = "captureId")
   private String captureId;
 
-  @Column(
-          name = "charged_amount",
-          precision = 19,
-          scale = 2,
-          nullable = false,
-          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
-  )
+  @Column(name = "charged_amount", precision = 19, scale = 2, nullable = false, columnDefinition = "DECIMAL(19,2) DEFAULT 0.00")
   private BigDecimal chargedAmount = BigDecimal.ZERO;
 
   @Column(
@@ -84,6 +82,15 @@ public class Appointment {
   private BigDecimal paypalFee = BigDecimal.ZERO;
 
   @Column(
+          name = "profit",
+          precision = 19,
+          scale = 2,
+          nullable = false,
+          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
+  )
+  private BigDecimal profit = BigDecimal.ZERO;
+
+  @Column(
           name = "gross_amount",
           precision = 19,
           scale = 2,
@@ -92,11 +99,17 @@ public class Appointment {
   )
   private BigDecimal grossAmount = BigDecimal.ZERO;
 
+  @Column(
+          name = "sales_tax",
+          precision = 19,
+          scale = 2,
+          nullable = false,
+          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
+  )
+  private BigDecimal salesTax = BigDecimal.ZERO;
+
   @Column(name = "bookingId", nullable = false, unique = true)
   private String bookingId;
-
-  @Column(name="smsConsent")
-  private boolean smsConsent;
 
   @Column(name="squareFeet")
   private int squareFeet;
@@ -108,7 +121,7 @@ public class Appointment {
   // Default constructor
   public Appointment() {}
 
-  public Appointment(Long id, String clientName, String email, String phone, String zipcode, State state, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal grossAmount, String bookingId, boolean smsConsent, int squareFeet, BigDecimal applicationFee) {
+  public Appointment(Long id, String clientName, String email, String phone, String zipcode, State state, ServiceType service, Date appointmentDate, Date createdAt, Time time, Status status, String address, String notes, String orderId, String captureId, BigDecimal chargedAmount, BigDecimal paypalFee, BigDecimal profit, BigDecimal grossAmount, BigDecimal salesTax, String bookingId, int squareFeet, BigDecimal applicationFee) {
     this.id = id;
     this.clientName = clientName;
     this.email = email;
@@ -126,187 +139,12 @@ public class Appointment {
     this.captureId = captureId;
     this.chargedAmount = chargedAmount;
     this.paypalFee = paypalFee;
+    this.profit = profit;
     this.grossAmount = grossAmount;
+    this.salesTax = salesTax;
     this.bookingId = bookingId;
-    this.smsConsent = smsConsent;
     this.squareFeet = squareFeet;
     this.applicationFee = applicationFee;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getClientName() {
-    return clientName;
-  }
-
-  public void setClientName(String clientName) {
-    this.clientName = clientName;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public String getZipcode() {
-    return zipcode;
-  }
-
-  public void setZipcode(String zipcode) {
-    this.zipcode = zipcode;
-  }
-
-  public ServiceType getService() {
-    return service;
-  }
-
-  public void setService(ServiceType service) {
-    this.service = service;
-  }
-
-  public Date getAppointmentDate() {
-    return appointmentDate;
-  }
-
-  public void setAppointmentDate(Date appointmentDate) {
-    this.appointmentDate = appointmentDate;
-  }
-
-  public Date getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Time getTime() {
-    return time;
-  }
-
-  public void setTime(Time time) {
-    this.time = time;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public void setStatus(Status status) {
-    this.status = status;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public String getNotes() {
-    return notes;
-  }
-
-  public void setNotes(String notes) {
-    this.notes = notes;
-  }
-
-  public String getOrderId() {
-    return orderId;
-  }
-
-  public void setOrderId(String orderId) {
-    this.orderId = orderId;
-  }
-
-  public String getCaptureId() {
-    return captureId;
-  }
-
-  public void setCaptureId(String captureId) {
-    this.captureId = captureId;
-  }
-
-  public BigDecimal getChargedAmount() {
-    return chargedAmount;
-  }
-
-  public void setChargedAmount(BigDecimal chargedAmount) {
-    this.chargedAmount = chargedAmount;
-  }
-
-  public BigDecimal getPaypalFee() {
-    return paypalFee;
-  }
-
-  public void setPaypalFee(BigDecimal paypalFee) {
-    this.paypalFee = paypalFee;
-  }
-
-  public BigDecimal getGrossAmount() {
-    return grossAmount;
-  }
-
-  public void setGrossAmount(BigDecimal grossAmount) {
-    this.grossAmount = grossAmount;
-  }
-
-  public String getBookingId() {
-    return bookingId;
-  }
-
-  public void setBookingId(String bookingId) {
-    this.bookingId = bookingId;
-  }
-
-  public boolean isSmsConsent() {
-    return smsConsent;
-  }
-
-  public void setSmsConsent(boolean smsConsent) {
-    this.smsConsent = smsConsent;
-  }
-
-  public int getSquareFeet() {
-    return squareFeet;
-  }
-
-  public void setSquareFeet(int squareFeet) {
-    this.squareFeet = squareFeet;
-  }
-
-  public BigDecimal getApplicationFee() {
-    return applicationFee;
-  }
-
-  public void setApplicationFee(BigDecimal applicationFee) {
-    this.applicationFee = applicationFee;
-  }
-
-  public State getState() {
-    return state;
-  }
-
-  public void setState(State state) {
-    this.state = state;
   }
 
   @Override
@@ -328,10 +166,10 @@ public class Appointment {
             ", orderId='" + orderId + '\'' +
             ", captureId='" + captureId + '\'' +
             ", chargedAmount=" + chargedAmount +
+            ", salesTax=" + salesTax+
             ", paypalFee=" + paypalFee +
             ", grossAmount=" + grossAmount +
             ", bookingId='" + bookingId + '\'' +
-            ", smsConsent=" + smsConsent +
             ", squareFeet=" + squareFeet +
             ", applicationFee=" + applicationFee +
             '}';

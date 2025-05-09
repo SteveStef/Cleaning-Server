@@ -64,21 +64,22 @@ public class PaypalController {
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
         clientService.createClient(createdAppointment);
 
-        PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(appointment.getOrderId());
+        PaymentIntent pi = paymentIntentService.findPaymentIntentByOrderId(createdAppointment.getOrderId());
         try {
             String accessToken = paymentIntentService.getAccessToken();
             String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
-            appointmentService.updateAmountsPaid(appointment, paymentCaptureResponse); // and saves the amounts to db
-            availabilityService.updateAvailability(appointment, false); // false meaning that we are not available
-            emailService.notifyAppointment(createdAppointment);
 
             try {
                 paymentIntentService.sendPayout(accessToken); // add more params to this
-                appointmentService.updateApplicationFee(appointment, APPLICATION_FEE);
+                appointmentService.updateApplicationFee(createdAppointment, APPLICATION_FEE);
             } catch(Exception e) {
-                appointmentService.updateApplicationFee(appointment, "0.00");
-                log.error("Error sending payout for appointment {} you were supposed to get paid: {}", appointment.getId(), APPLICATION_FEE, e);
+                appointmentService.updateApplicationFee(createdAppointment, "0.00");
+                log.error("Error sending payout for appointment {} you were supposed to get paid: {}", createdAppointment.getId(), APPLICATION_FEE, e);
             }
+
+            availabilityService.updateAvailability(appointment, false); // false meaning that we are not available
+            appointmentService.updateAmountsPaid(createdAppointment, paymentCaptureResponse); // Updating the appointments gross/profit/paypal_fee
+            emailService.notifyAppointment(createdAppointment);
 
         } catch(PaymentException e) {
             appointmentService.deleteAppointment(createdAppointment);

@@ -148,11 +148,11 @@ public class PaymentIntentService {
               "Unknown service type: " + serviceType);
     };
 
-    BigDecimal area = BigDecimal.valueOf(squareFeet);
-    BigDecimal baseCost = ratePerSquareFeet.multiply(area);
+    BigDecimal area = BigDecimal.valueOf(squareFeet); // 2300
+    BigDecimal baseCost = ratePerSquareFeet.multiply(area); // 0.12 * 2300 = 276 or somthin
 
-    BigDecimal appFee = new BigDecimal(APPLICATION_FEE);
-    BigDecimal subtotal = baseCost.add(appFee);
+    BigDecimal appFee = new BigDecimal(APPLICATION_FEE); // 9.99
+    BigDecimal subtotal = baseCost.add(appFee); // 276 + 9.99 = 285.99
 
     BigDecimal taxFactor = Finances.taxMap.get(state); // 1.06 or ...
     BigDecimal totalCost = subtotal.multiply(taxFactor).setScale(2, RoundingMode.HALF_EVEN);

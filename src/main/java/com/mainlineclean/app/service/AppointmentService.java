@@ -8,6 +8,7 @@ import com.mainlineclean.app.model.Status;
 import com.mainlineclean.app.repository.AppointmentRepo;
 import com.mainlineclean.app.dto.CostBreakdown;
 
+import com.mainlineclean.app.utils.Finances;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -104,9 +105,22 @@ public class AppointmentService {
               .path("seller_receivable_breakdown");
       CostBreakdown bd = objectMapper.treeToValue(breakdownNode, CostBreakdown.class);
 
-      appointment.setChargedAmount(new BigDecimal(bd.getGrossAmount().getValue()));
-      appointment.setPaypalFee(new BigDecimal(bd.getPaypalFee().getValue()));
-      appointment.setGrossAmount(new BigDecimal(bd.getNetAmount().getValue()));
+      // KEEP IN MIND: Gross amount in this case represents the amount of money that the cleaning lady gets before tax
+
+      BigDecimal applicationFee = appointment.getApplicationFee(); // 9.99
+      BigDecimal chargedAmount = new BigDecimal(bd.getGrossAmount().getValue()); // 303.15
+      BigDecimal paypalFee = new BigDecimal(bd.getPaypalFee().getValue()); // 11.07
+      BigDecimal salesTaxForState = Finances.taxMap.get(appointment.getState()).subtract(BigDecimal.valueOf(1)); // 1.06 - 1 = 0.06
+      BigDecimal salesTaxAmount = chargedAmount.multiply(salesTaxForState); // 18.189
+      BigDecimal amountChargedMinusPaypalFee = new BigDecimal(bd.getNetAmount().getValue()); // 292.08
+      BigDecimal grossAmount = amountChargedMinusPaypalFee.subtract(applicationFee); // 282.09
+      BigDecimal profit = grossAmount.subtract(salesTaxAmount); // 263.901
+
+      appointment.setChargedAmount(chargedAmount.setScale(2, RoundingMode.HALF_EVEN));
+      appointment.setPaypalFee(paypalFee.setScale(2, RoundingMode.HALF_EVEN));
+      appointment.setSalesTax(salesTaxAmount.setScale(2, RoundingMode.HALF_EVEN));
+      appointment.setGrossAmount(grossAmount.setScale(2, RoundingMode.HALF_EVEN));
+      appointment.setProfit(profit.setScale(2, RoundingMode.HALF_EVEN));
 
       String captureId = rootNode
               .path("purchase_units").get(0)

@@ -11,5 +11,5 @@ public class Records {
     public record CustomerCancelAppointmentBody(String bookingId, String email, String reason){};
     public record RescheduleAppointmentBody(String bookingId, String email, Date newAppointmentDate, Time newTime){};
     public record AdminCancelAppointmentBody(Appointment appointment, BigDecimal refundAmount){};
-    public record ClientEmailBody(List<String> clientEmails, String message){};
+    public record ClientEmailBody(List<String> clientEmails, String subject, String message){};
 }
