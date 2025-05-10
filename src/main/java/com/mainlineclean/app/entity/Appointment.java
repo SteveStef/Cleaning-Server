@@ -10,10 +10,12 @@ import com.mainlineclean.app.model.Time;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "appointment", uniqueConstraints = @UniqueConstraint(columnNames = "bookingId"))
 public class Appointment {
@@ -72,40 +74,16 @@ public class Appointment {
   @Column(name = "charged_amount", precision = 19, scale = 2, nullable = false, columnDefinition = "DECIMAL(19,2) DEFAULT 0.00")
   private BigDecimal chargedAmount = BigDecimal.ZERO;
 
-  @Column(
-          name = "paypal_fee",
-          precision = 19,
-          scale = 2,
-          nullable = false,
-          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
-  )
+  @Column(name = "paypal_fee", precision = 19, scale = 2, nullable = false, columnDefinition = "DECIMAL(19,2) DEFAULT 0.00")
   private BigDecimal paypalFee = BigDecimal.ZERO;
 
-  @Column(
-          name = "profit",
-          precision = 19,
-          scale = 2,
-          nullable = false,
-          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
-  )
+  @Column(name = "profit", precision = 19, scale = 2, nullable = false, columnDefinition = "DECIMAL(19,2) DEFAULT 0.00")
   private BigDecimal profit = BigDecimal.ZERO;
 
-  @Column(
-          name = "gross_amount",
-          precision = 19,
-          scale = 2,
-          nullable = false,
-          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
-  )
+  @Column(name = "gross_amount", precision = 19, scale = 2, nullable = false, columnDefinition = "DECIMAL(19,2) DEFAULT 0.00")
   private BigDecimal grossAmount = BigDecimal.ZERO;
 
-  @Column(
-          name = "sales_tax",
-          precision = 19,
-          scale = 2,
-          nullable = false,
-          columnDefinition = "DECIMAL(19,2) DEFAULT 0.00"
-  )
+  @Column(name = "sales_tax", precision = 19, scale = 2, nullable = false, columnDefinition = "DECIMAL(19,2) DEFAULT 0.00")
   private BigDecimal salesTax = BigDecimal.ZERO;
 
   @Column(name = "bookingId", nullable = false, unique = true)
@@ -145,33 +123,5 @@ public class Appointment {
     this.bookingId = bookingId;
     this.squareFeet = squareFeet;
     this.applicationFee = applicationFee;
-  }
-
-  @Override
-  public String toString() {
-    return "Appointment{" +
-            "id=" + id +
-            ", clientName='" + clientName + '\'' +
-            ", email='" + email + '\'' +
-            ", phone='" + phone + '\'' +
-            ", zipcode='" + zipcode + '\'' +
-            ", state='" + state + '\'' +
-            ", service=" + service +
-            ", appointmentDate=" + appointmentDate +
-            ", createdAt=" + createdAt +
-            ", time=" + time +
-            ", status=" + status +
-            ", address='" + address + '\'' +
-            ", notes='" + notes + '\'' +
-            ", orderId='" + orderId + '\'' +
-            ", captureId='" + captureId + '\'' +
-            ", chargedAmount=" + chargedAmount +
-            ", salesTax=" + salesTax+
-            ", paypalFee=" + paypalFee +
-            ", grossAmount=" + grossAmount +
-            ", bookingId='" + bookingId + '\'' +
-            ", squareFeet=" + squareFeet +
-            ", applicationFee=" + applicationFee +
-            '}';
   }
 }

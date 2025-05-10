@@ -53,6 +53,7 @@ public class EmailService {
         SERVICE_DESCRIPTIONS.put(ServiceType.MOLD,              "Mold Remediation");
         SERVICE_DESCRIPTIONS.put(ServiceType.CONSTRUCTION,      "Construction Cleaning");
         SERVICE_DESCRIPTIONS.put(ServiceType.COMMERCIAL,        "Commercial Cleaning");
+        SERVICE_DESCRIPTIONS.put(ServiceType.CUSTOM,            "Custom Cleaning");
     }
     private static final Map<ServiceType, String> SERVICE_DESCRIPTIONS_ES = new EnumMap<>(ServiceType.class);
     static {
@@ -68,6 +69,7 @@ public class EmailService {
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.MOLD,              "Remediación de Moho");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.CONSTRUCTION,      "Limpieza de Construcción");
         SERVICE_DESCRIPTIONS_ES.put(ServiceType.COMMERCIAL,        "Limpieza Comercial");
+        SERVICE_DESCRIPTIONS_ES.put(ServiceType.CUSTOM,            "Limpieza Personalizada");
     }
     private static final Map<Time, String> TIME_DESCRIPTION_ES = new EnumMap<>(Time.class);
     static {
@@ -143,58 +145,59 @@ public class EmailService {
     public void sendTemplatedEmail(String to, String from, String subject, String allVars, EmailTemplates template) {
         String auth = "api:" + apiKey;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+        return;
 
-        String postData = "from="  + URLEncoder.encode(from,  StandardCharsets.UTF_8)
-                + "&to="    + URLEncoder.encode(to, StandardCharsets.UTF_8)
-                + "&subject="+ URLEncoder.encode(subject, StandardCharsets.UTF_8)
-                + "&template=" + URLEncoder.encode(template.toString().toLowerCase(), StandardCharsets.UTF_8)
-                + "&h:X-Mailgun-Variables=" + URLEncoder.encode(allVars, StandardCharsets.UTF_8);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(mailgunURL))
-                .header("Authorization", "Basic " + encodedAuth)
-                .header("Content-Type",  "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(postData))
-                .build();
-
-        final long BASE_DELAY = 1_000L;
-        final int MAX_RETRIES = 3;
-
-        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                int status = response.statusCode();
-                if (status >= 200 && status < 300) {
-                    log.info("Email with template of {} was queued successfully to {}", template.toString().toLowerCase(), to);
-                    return;
-                }
-                // retryable HTTP statuses
-                if (status == 429 || (status >= 500 && status < 600)) {
-                    long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
-                    log.warn("Retrying from non-200 status code in {}ms (attempt {})", backoff, attempt);
-                    Thread.sleep(backoff);
-                    continue;
-                }
-                throw new EmailException("Permanent HTTP error: " + status + " – " + response.body());
-            } catch (IOException e) {
-                if (attempt == MAX_RETRIES) {
-                    log.error("Network failure after {} attempts {}", MAX_RETRIES, e.getMessage());
-                    throw new EmailException("Network failure after " + MAX_RETRIES + " attempts\n" + e.toString());
-                }
-                long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
-                log.warn("Retrying from exception in {}ms (attempt {})", backoff, attempt);
-                try { Thread.sleep(backoff); }
-                catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    throw new EmailException("Interrupted during backoff" + ie.getMessage());
-                }
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                log.warn("Interrupted during email send");
-                throw new EmailException("Send interrupted" + ie.getMessage());
-            }
-        }
-        throw new EmailException("Exceeded max retries without success");
+//        String postData = "from="  + URLEncoder.encode(from,  StandardCharsets.UTF_8)
+//                + "&to="    + URLEncoder.encode(to, StandardCharsets.UTF_8)
+//                + "&subject="+ URLEncoder.encode(subject, StandardCharsets.UTF_8)
+//                + "&template=" + URLEncoder.encode(template.toString().toLowerCase(), StandardCharsets.UTF_8)
+//                + "&h:X-Mailgun-Variables=" + URLEncoder.encode(allVars, StandardCharsets.UTF_8);
+//
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create(mailgunURL))
+//                .header("Authorization", "Basic " + encodedAuth)
+//                .header("Content-Type",  "application/x-www-form-urlencoded")
+//                .POST(HttpRequest.BodyPublishers.ofString(postData))
+//                .build();
+//
+//        final long BASE_DELAY = 1_000L;
+//        final int MAX_RETRIES = 3;
+//
+//        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+//            try {
+//                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//                int status = response.statusCode();
+//                if (status >= 200 && status < 300) {
+//                    log.info("Email with template of {} was queued successfully to {}", template.toString().toLowerCase(), to);
+//                    return;
+//                }
+//                // retryable HTTP statuses
+//                if (status == 429 || (status >= 500 && status < 600)) {
+//                    long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
+//                    log.warn("Retrying from non-200 status code in {}ms (attempt {})", backoff, attempt);
+//                    Thread.sleep(backoff);
+//                    continue;
+//                }
+//                throw new EmailException("Permanent HTTP error: " + status + " – " + response.body());
+//            } catch (IOException e) {
+//                if (attempt == MAX_RETRIES) {
+//                    log.error("Network failure after {} attempts {}", MAX_RETRIES, e.getMessage());
+//                    throw new EmailException("Network failure after " + MAX_RETRIES + " attempts\n" + e.toString());
+//                }
+//                long backoff = BASE_DELAY * (1L << (attempt - 1)) + ThreadLocalRandom.current().nextLong(0, 500);
+//                log.warn("Retrying from exception in {}ms (attempt {})", backoff, attempt);
+//                try { Thread.sleep(backoff); }
+//                catch (InterruptedException ie) {
+//                    Thread.currentThread().interrupt();
+//                    throw new EmailException("Interrupted during backoff" + ie.getMessage());
+//                }
+//            } catch (InterruptedException ie) {
+//                Thread.currentThread().interrupt();
+//                log.warn("Interrupted during email send");
+//                throw new EmailException("Send interrupted" + ie.getMessage());
+//            }
+//        }
+//        throw new EmailException("Exceeded max retries without success");
     }
 
     private record ConfirmationEmailBody(String address, String amountCharged, String bookingId, String cleaningType, String date, String supportEmail, String time){};

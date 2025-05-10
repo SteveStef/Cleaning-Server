@@ -37,6 +37,7 @@ public class AdminDetailsInit implements CommandLineRunner {
             details.setConstructionPrice    (new BigDecimal("0.20"));
             details.setCommercialPrice      (new BigDecimal("0.20"));
             details.setDeepCleanPrice       (new BigDecimal("0.15"));
+            details.setCustomPrice          (new BigDecimal("0.10"));
 
             details.setEmail(adminEmail);
             details.setCode("");

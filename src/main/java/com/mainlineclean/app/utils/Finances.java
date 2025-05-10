@@ -57,7 +57,6 @@ public class Finances {
     }
 
     public RevenueDetails financeDetails() {
-        // high-precision accumulators
         BigDecimal grossSum       = BigDecimal.ZERO;
         BigDecimal paypalFeeSum   = BigDecimal.ZERO;
         BigDecimal salesTaxSum    = BigDecimal.ZERO;
@@ -76,42 +75,42 @@ public class Finances {
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH);
 
-        for (Appointment appt : appointments) {
-
-            ZonedDateTime zdt = appt.getCreatedAt().toInstant().atZone(ZoneId.systemDefault());
+        for (Appointment apt : appointments) {
+            ZonedDateTime zdt = apt.getCreatedAt().toInstant().atZone(ZoneId.systemDefault());
             String month = zdt.format(fmt);
             LocalDate ld = zdt.toLocalDate();
             int year = ld.getYear();
 
             if (year == thisYear) {
-                revMap.merge(month, appt.getGrossAmount(), BigDecimal::add);
+                revMap.merge(month, apt.getGrossAmount(), BigDecimal::add);
             }
 
             // yearly buckets: [gross, paypalFee, salesTax, profit, applicationFee]
-            BigDecimal[] stats = yearlyRevMap.computeIfAbsent(year, y -> new BigDecimal[]{ BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO});
-            stats[0] = stats[0].add(appt.getGrossAmount());
-            stats[1] = stats[1].add(appt.getPaypalFee());
-            stats[2] = stats[2].add(appt.getSalesTax());
-            stats[3] = stats[3].add(appt.getProfit());
-            stats[4] = stats[4].add(appt.getApplicationFee());
+            BigDecimal[] stats = yearlyRevMap.computeIfAbsent(
+                    year, y -> new BigDecimal[]{ BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO}
+            );
+            stats[0] = stats[0].add(apt.getGrossAmount());
+            stats[1] = stats[1].add(apt.getPaypalFee());
+            stats[2] = stats[2].add(apt.getSalesTax());
+            stats[3] = stats[3].add(apt.getProfit());
+            stats[4] = stats[4].add(apt.getApplicationFee());
 
             // accumulate overall
-            grossSum     = grossSum.add(appt.getGrossAmount());
-            paypalFeeSum = paypalFeeSum.add(appt.getPaypalFee());
-            salesTaxSum  = salesTaxSum.add(appt.getSalesTax());
-            profitSum    = profitSum.add(appt.getProfit());
+            grossSum     = grossSum.add(apt.getGrossAmount());
+            paypalFeeSum = paypalFeeSum.add(apt.getPaypalFee());
+            salesTaxSum  = salesTaxSum.add(apt.getSalesTax());
+            profitSum    = profitSum.add(apt.getProfit());
         }
 
-        // build monthly revenue list (round at presentation)
         revMap.forEach((m, val) -> {
             BigDecimal rounded = val.setScale(2, RoundingMode.HALF_EVEN);
             monthlyRevenue.add(new RevenueEntry(m, rounded.doubleValue()));
         });
+
         monthlyRevenue.sort(Comparator.comparingInt(e ->
                 Month.from(fmt.parse(e.month())).getValue()
         ));
 
-        // build yearly revenue list (round at presentation)
         for (Map.Entry<Integer, BigDecimal[]> entry : yearlyRevMap.entrySet()) {
             int year = entry.getKey();
             BigDecimal[] s = entry.getValue();

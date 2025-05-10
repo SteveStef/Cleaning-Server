@@ -51,6 +51,7 @@ public class AdminDetailsService {
         existing.setMoldPrice(details.getMoldPrice());
         existing.setHazmatPrice(details.getHazmatPrice());
         existing.setConstructionPrice(details.getConstructionPrice());
+        existing.setCustomPrice(details.getCustomPrice());
 
         return adminDetailsRepo.save(existing);
     }

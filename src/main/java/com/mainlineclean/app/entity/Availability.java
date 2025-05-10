@@ -9,7 +9,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Getter
+@Setter
+@ToString
+@Slf4j
 @Entity
 @Table(name = "availability")
 public class Availability {
@@ -44,80 +52,16 @@ public class Availability {
     syncExpirationDate();
   }
 
-  // Getters and Setters
-  public String getDate() {
-    return date;
-  }
-
-  public void setDate(String date) {
-    this.date = date;
-    syncExpirationDate();
-  }
-
-  public Date getExpirationDate() {
-    return expirationDate;
-  }
-
-  public void setExpirationDate(Date expirationDate) {
-    this.expirationDate = expirationDate;
-  }
-
-  public boolean isMorning() {
-    return morning;
-  }
-
-  public void setMorning(boolean morning) {
-    this.morning = morning;
-  }
-
-  public boolean isAfternoon() {
-    return afternoon;
-  }
-
-  public void setAfternoon(boolean afternoon) {
-    this.afternoon = afternoon;
-  }
-
-  public boolean isNight() {
-    return night;
-  }
-
-  public void setNight(boolean night) {
-    this.night = night;
-  }
-
-  public boolean isAvailable() {
-    return isAvailable;
-  }
-
-  public void setAvailable(boolean isAvailable) {
-    this.isAvailable = isAvailable;
-  }
-
-  @Override
-  public String toString() {
-    return "Availability{" +
-            "date='" + date + '\'' +
-            ", expirationDate=" + expirationDate +
-            ", morning=" + morning +
-            ", afternoon=" + afternoon +
-            ", night=" + night +
-            ", isAvailable=" + isAvailable +
-            '}';
-  }
-
   // This method will be called before the entity is persisted or updated.
   @PrePersist
   @PreUpdate
   private void syncExpirationDate() {
     if (this.date != null) {
       try {
-        // Parse the date string into a Date object.
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         this.expirationDate = sdf.parse(this.date);
       } catch (ParseException e) {
-        // Log or handle the exception as needed.
-        e.printStackTrace();
+          log.error("Error parsing date string: {} {}", this.date, e.getMessage());
       }
     }
   }

@@ -2,9 +2,15 @@ package com.mainlineclean.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "admin")
 public class AdminDetails {
@@ -51,6 +57,9 @@ public class AdminDetails {
     @Column(name = "deep", precision = 19, scale = 2)
     private BigDecimal deepCleanPrice;
 
+    @Column(name = "custom", precision = 19, scale = 2)
+    private BigDecimal customPrice;
+
     @Column(name = "email")
     private String email;
 
@@ -58,126 +67,5 @@ public class AdminDetails {
     @Column(name = "code")
     private String code;
 
-    public AdminDetails() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public BigDecimal getRegularPrice() {
-        return regularPrice;
-    }
-
-    public void setRegularPrice(BigDecimal regularPrice) {
-        this.regularPrice = regularPrice;
-    }
-
-    public BigDecimal getMoveInOutPrice() {
-        return moveInOutPrice;
-    }
-
-    public void setMoveInOutPrice(BigDecimal moveInOutPrice) {
-        this.moveInOutPrice = moveInOutPrice;
-    }
-
-    public BigDecimal getEnvironmentPrice() {
-        return environmentPrice;
-    }
-
-    public void setEnvironmentPrice(BigDecimal environmentPrice) {
-        this.environmentPrice = environmentPrice;
-    }
-
-    public BigDecimal getFirePrice() {
-        return firePrice;
-    }
-
-    public void setFirePrice(BigDecimal firePrice) {
-        this.firePrice = firePrice;
-    }
-
-    public BigDecimal getWaterPrice() {
-        return waterPrice;
-    }
-
-    public void setWaterPrice(BigDecimal waterPrice) {
-        this.waterPrice = waterPrice;
-    }
-
-    public BigDecimal getDeceasedPrice() {
-        return deceasedPrice;
-    }
-
-    public void setDeceasedPrice(BigDecimal deceasedPrice) {
-        this.deceasedPrice = deceasedPrice;
-    }
-
-    public BigDecimal getHazmatPrice() {
-        return hazmatPrice;
-    }
-
-    public void setHazmatPrice(BigDecimal hazmatPrice) {
-        this.hazmatPrice = hazmatPrice;
-    }
-
-    public BigDecimal getExplosiveResiduePrice() {
-        return explosiveResiduePrice;
-    }
-
-    public void setExplosiveResiduePrice(BigDecimal explosiveResiduePrice) {
-        this.explosiveResiduePrice = explosiveResiduePrice;
-    }
-
-    public BigDecimal getMoldPrice() {
-        return moldPrice;
-    }
-
-    public void setMoldPrice(BigDecimal moldPrice) {
-        this.moldPrice = moldPrice;
-    }
-
-    public BigDecimal getConstructionPrice() {
-        return constructionPrice;
-    }
-
-    public void setConstructionPrice(BigDecimal constructionPrice) {
-        this.constructionPrice = constructionPrice;
-    }
-
-    public BigDecimal getCommercialPrice() {
-        return commercialPrice;
-    }
-
-    public void setCommercialPrice(BigDecimal commercialPrice) {
-        this.commercialPrice = commercialPrice;
-    }
-
-    public BigDecimal getDeepCleanPrice() {
-        return deepCleanPrice;
-    }
-
-    public void setDeepCleanPrice(BigDecimal deepCleanPrice) {
-        this.deepCleanPrice = deepCleanPrice;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public AdminDetails() {}
 }
