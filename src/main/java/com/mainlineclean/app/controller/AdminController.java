@@ -3,7 +3,7 @@ import com.mainlineclean.app.dto.LoginForm;
 import com.mainlineclean.app.entity.AdminDetails;
 import com.mainlineclean.app.service.AdminDetailsService;
 import com.mainlineclean.app.service.EmailService;
-import com.mainlineclean.app.utils.JwtUtil;
+import com.mainlineclean.app.utils.HMacSigner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private final AdminDetailsService adminDetailsService;
     private final EmailService emailService;
-    private final JwtUtil jwtUtil;
+    private final HMacSigner hMacSigner;
 
-    public AdminController(AdminDetailsService adminDetailsService, EmailService emailService, JwtUtil jwtUtil) {
+    public AdminController(AdminDetailsService adminDetailsService, EmailService emailService, HMacSigner hMacSigner) {
         this.adminDetailsService = adminDetailsService;
         this.emailService = emailService;
-        this.jwtUtil = jwtUtil;
+        this.hMacSigner = hMacSigner;
     }
 
     @GetMapping("/service-details")
@@ -46,7 +46,7 @@ public class AdminController {
     @PostMapping("/verify-code")
     public ResponseEntity<String> verifyCode(@RequestBody String code) {
         if(!adminDetailsService.verifyCode(code)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        String token = jwtUtil.generateToken();
+        String token = hMacSigner.getSignature(true);
         return ResponseEntity.ok(token);
     }
 

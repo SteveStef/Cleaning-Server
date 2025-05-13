@@ -22,7 +22,7 @@ public class ReviewService {
   }
 
   public List<Review> getAllReviews() {
-    return reviewRepo.findByStarsGreaterThanEqual(3);
+    return reviewRepo.findTop5ByStarsGreaterThanEqualOrderByStarsDesc(3);
   }
 
 }

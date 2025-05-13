@@ -33,14 +33,12 @@ public class ControllerLoggingAspect {
             return pjp.proceed();
         }
 
-        // -- your logging logic --
         String method = request.getMethod();
         String uri    = request.getRequestURI();
         String query  = request.getQueryString();
         String sig    = pjp.getSignature().toShortString();
 
-        log.info("{} {}{}  (handler={})",
-                method, uri, (query != null ? "?" + query : ""), sig);
+        log.info("{} {}{}  (handler={})", method, uri, (query != null ? "?" + query : ""), sig);
 
         return pjp.proceed();
     }

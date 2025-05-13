@@ -149,10 +149,6 @@ public class PaymentIntentService {
               "Unknown service type: " + serviceType);
     };
 
-    System.out.println(ratePerSquareFeet);
-    System.out.println(squareFeet);
-    System.out.println(state);
-
     BigDecimal area = BigDecimal.valueOf(squareFeet); // 2300
     BigDecimal baseCost = ratePerSquareFeet.multiply(area); // 0.12 * 2300 = 276 or somthin
 

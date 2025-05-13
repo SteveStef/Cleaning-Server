@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface ReviewRepo extends JpaRepository<Review, Long> {
     List<Review> findByStarsGreaterThanEqual(int stars);
+    List<Review> findTop5ByStarsGreaterThanEqualOrderByStarsDesc(int stars);
 }

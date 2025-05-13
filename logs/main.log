@@ -1,9 +1,0 @@
-2025-05-10 02:17:45.008 [main] INFO  c.m.app.MainLineCleanersApplication - Starting MainLineCleanersApplication using Java 22.0.2 with PID 22990 (/home/stevestef/Desktop/MainLine-Cleaners/server/target/classes started by stevestef in /home/stevestef/Desktop/MainLine-Cleaners/server)
-2025-05-10 02:17:45.008 [main] INFO  c.m.app.MainLineCleanersApplication - No active profile set, falling back to 1 default profile: "default"
-2025-05-10 02:17:46.535 [main] INFO  c.m.app.MainLineCleanersApplication - Started MainLineCleanersApplication in 1.684 seconds (process running for 1.786)
-2025-05-10 02:17:54.000 [http-nio-9080-exec-1] INFO  c.m.app.aop.ControllerLoggingAspect - GET /service-details  (handler=AdminController.serviceDetails())
-2025-05-10 02:17:54.031 [http-nio-9080-exec-4] INFO  c.m.app.aop.ControllerLoggingAspect - GET /service-details  (handler=AdminController.serviceDetails())
-2025-05-10 02:18:01.852 [http-nio-9080-exec-5] INFO  c.m.app.aop.ControllerLoggingAspect - GET /reviews  (handler=ReviewController.getReviews())
-2025-05-10 02:18:01.858 [http-nio-9080-exec-6] INFO  c.m.app.aop.ControllerLoggingAspect - GET /reviews  (handler=ReviewController.getReviews())
-2025-05-10 02:18:06.260 [http-nio-9080-exec-8] INFO  c.m.app.aop.ControllerLoggingAspect - GET /service-details  (handler=AdminController.serviceDetails())
-2025-05-10 02:18:06.266 [http-nio-9080-exec-10] INFO  c.m.app.aop.ControllerLoggingAspect - GET /service-details  (handler=AdminController.serviceDetails())
