@@ -109,8 +109,15 @@ public class PaymentIntentService {
       BigDecimal refundedValue = new BigDecimal(refundedText);
 
       // update the appointment will the new amount that we charged the user
-      appointment.setChargedAmount(appointment.getChargedAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN));
-      appointment.setGrossAmount(appointment.getGrossAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN));
+      BigDecimal newChargedAmount = appointment.getChargedAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN);
+      BigDecimal taxForState = Finances.taxMap.get(appointment.getState()).subtract(BigDecimal.valueOf(1)); // 0.06
+      BigDecimal newSalesTax = newChargedAmount.multiply(taxForState).setScale(2,RoundingMode.HALF_EVEN);
+      BigDecimal newGrossAmount = newChargedAmount.subtract(appointment.getPaypalFee()).subtract(appointment.getApplicationFee()).setScale(2,RoundingMode.HALF_EVEN);
+
+      appointment.setChargedAmount(newChargedAmount);
+      appointment.setGrossAmount(newGrossAmount);
+      appointment.setSalesTax(newSalesTax);
+      appointment.setProfit(newGrossAmount.subtract(newSalesTax).setScale(2,RoundingMode.HALF_EVEN));
 
       appointmentService.updateStatus(appointment, Status.CANCELED);
       log.info("Payment for appointment {} refunded successfully", appointment.getId());

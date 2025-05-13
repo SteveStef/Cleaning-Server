@@ -40,12 +40,14 @@ public class HMacAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String grantedRole = isAdmin ? "ROLE_ADMIN" : "ROLE_USER";
+        String grantedRole = isAdmin ? "ROLE_ADMIN" : "ROLE_USER"; // this needs to be this ROLE_SOMETHING (can't customize this)
         Authentication authentication = new UsernamePasswordAuthenticationToken(token, null, List.of(new SimpleGrantedAuthority(grantedRole)));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
 
+    // verify has its own type of auth
+    // /token anyone can use
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return "/verify-code".equals(request.getServletPath()) || "/token".equals(request.getServletPath());
