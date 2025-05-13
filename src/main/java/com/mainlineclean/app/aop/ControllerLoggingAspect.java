@@ -28,8 +28,8 @@ public class ControllerLoggingAspect {
         ServletRequestAttributes servletAttrs = (ServletRequestAttributes) attrs;
         HttpServletRequest request = servletAttrs.getRequest();  // now safe
 
-        // -- your existing exclusion logic, e.g. skip GET /availability --
-        if ("GET".equals(request.getMethod()) && "/availability".equals(request.getRequestURI())) {
+        // -- your existing exclusion logic, e.g. skip GET /health
+        if ("GET".equals(request.getMethod()) && "/health".equals(request.getRequestURI())) {
             return pjp.proceed();
         }
 

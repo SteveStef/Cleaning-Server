@@ -91,7 +91,12 @@ public class EmailService {
 
     public void sendEmailToClients(List<String> emails, String subject, String message) {
         String from = "Dos Chicas <" + supportEmail + ">";
-        String allVars = "{\"message\":\"" + message + "\"}";
+        String allVars = "{"
+                + "\"clientName\":\""    + "Dos Chicas Customer" + "\","
+                + "\"ctaUrl\":\""        + "https://chicascleaning.com/" + "\","
+                + "\"message\":\""       + message       + "\","
+                + "\"promoHeadline\":\"" + subject + "\""
+                + "}";
         for (String to : emails) {
             sendTemplatedEmail(to, from, subject, allVars, EmailTemplates.ADVERTISEMENT);
             try { Thread.sleep(2000 + ThreadLocalRandom.current().nextLong(0, 500)); } catch (InterruptedException e) {

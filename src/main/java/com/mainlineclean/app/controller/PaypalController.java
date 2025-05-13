@@ -54,6 +54,7 @@ public class PaypalController {
             @RequestParam(value="serviceType") ServiceType serviceType,
             @RequestParam(value="state") State state,
             @RequestBody int squareFeet) throws PaymentException {
+        if(squareFeet < 500) throw new PaymentException("Square feet must be greater than 500");
         PaymentIntent intent = paymentIntentService.createOrder(serviceType, squareFeet, state);
         return ResponseEntity.ok(intent.getOrderId());
     }
@@ -93,7 +94,9 @@ public class PaypalController {
     // this is for admin cancelling
     @PostMapping("/cancel-appointment")
     public ResponseEntity<String> cancelAppointment(@RequestBody Records.AdminCancelAppointmentBody data) {
-        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(data.appointment().getBookingId(), data.appointment().getEmail());
+        Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(
+                data.appointment().getBookingId(), data.appointment().getEmail()
+        );
         paymentIntentService.refundPayment(appt, data.refundAmount());
         emailService.notifyCancellation(appt);
         return ResponseEntity.ok("OK");
