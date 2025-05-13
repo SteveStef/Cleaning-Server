@@ -56,6 +56,7 @@ public class Security {
                 .addFilterBefore(hMacAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET,  "/token").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/health").permitAll()
                         .requestMatchers(HttpMethod.GET,  "/verify-code").permitAll()
                         .requestMatchers(HttpMethod.GET,    "/authenticate").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,    "/update-admin-pricing").hasRole("ADMIN")

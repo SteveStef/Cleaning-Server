@@ -50,6 +50,6 @@ public class HMacAuthenticationFilter extends OncePerRequestFilter {
     // /token anyone can use
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return "/verify-code".equals(request.getServletPath()) || "/token".equals(request.getServletPath());
+        return "/health".equals(request.getServletPath()) || "/verify-code".equals(request.getServletPath()) || "/token".equals(request.getServletPath());
     }
 }

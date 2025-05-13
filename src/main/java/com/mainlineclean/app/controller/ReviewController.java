@@ -25,6 +25,12 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        reviewService.getAllReviews();
+        return ResponseEntity.ok("OK");
+    }
+
     @PostMapping("/review")
     public ResponseEntity<Review> createReview(@RequestBody Review review) {
         return ResponseEntity.ok(reviewService.createReview(review));
