@@ -3,3 +3,7 @@ application-prod.properties
 target/
 .DS_Store
 test/
+.idea/
+*.log
+*.tmp
+*.bak
