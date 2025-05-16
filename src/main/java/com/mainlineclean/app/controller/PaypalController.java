@@ -55,6 +55,7 @@ public class PaypalController {
             @RequestParam(value="state") State state,
             @RequestBody int squareFeet) throws PaymentException {
         if(squareFeet < 500) throw new PaymentException("Square feet must be greater than 500");
+        if(squareFeet > 999999) throw new PaymentException("Square feet must be less than 1000000");
         PaymentIntent intent = paymentIntentService.createOrder(serviceType, squareFeet, state);
         return ResponseEntity.ok(intent.getOrderId());
     }
@@ -75,7 +76,7 @@ public class PaypalController {
                 appointmentService.updateApplicationFee(createdAppointment, APPLICATION_FEE);
             } catch(Exception e) {
                 appointmentService.updateApplicationFee(createdAppointment, "0.00");
-                log.error("Error sending payout for appointment {} you were supposed to get paid: {}", createdAppointment.getId(), APPLICATION_FEE, e);
+                log.error("Error sending payout for appointment {} you were supposed to get paid: {}\n{}", createdAppointment.getBookingId(), APPLICATION_FEE, e.getMessage());
             }
 
             availabilityService.updateAvailability(appointment, false); // false meaning that we are not available

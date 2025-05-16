@@ -138,9 +138,8 @@ public class EmailService {
         String code = generateAuthCode();
         String clientSubject = "Dos Chicas Verification Code";
         String from = "Dos Chicas <" + supportEmail + ">";
-
+        //System.out.println("Here is the code: " + code);
         adminDetailsService.setVerificationCode(code);
-        System.out.println("Here is the code: " + code);
         String body = "{"+"\"code\":\"" + code + "\"" + "}";
         sendTemplatedEmail(senderEmail, from, clientSubject, body, EmailTemplates.VERIFICATION_CODE);
     }
