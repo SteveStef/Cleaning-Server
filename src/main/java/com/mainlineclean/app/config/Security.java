@@ -82,9 +82,9 @@ public class Security {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(Arrays.asList(
                 allowedOrigin,
-                allowedOrigin.replace("://", "://www.")
+                allowedOrigin.replace("://", "://www."),
                 "http://chicascleaning.pages.dev",
-                "http://www.chicascleaning.pages.dev",
+                "http://www.chicascleaning.pages.dev"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
