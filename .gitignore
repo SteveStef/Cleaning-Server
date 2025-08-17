@@ -7,3 +7,9 @@ test/
 *.log
 *.tmp
 *.bak
+logs/
+.project
+.factorypath
+.classpath
+.settings
+*.md

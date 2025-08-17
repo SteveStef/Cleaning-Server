@@ -68,6 +68,10 @@ public class PaymentIntentService {
   }
 
   public void refundPayment(Appointment appointment, BigDecimal refundAmount) {
+    refundPayment(appointment, refundAmount, false); // Default: not admin refund
+  }
+  
+  public void refundPayment(Appointment appointment, BigDecimal refundAmount, boolean isAdminRefund) {
     log.info("Refunding payment for appointment {} for a refund of {}", appointment.getId(), refundAmount.toPlainString());
 
     String accessToken = getAccessToken();
@@ -108,16 +112,36 @@ public class PaymentIntentService {
 
       BigDecimal refundedValue = new BigDecimal(refundedText);
 
-      // update the appointment will the new amount that we charged the user
-      BigDecimal newChargedAmount = appointment.getChargedAmount().subtract(refundedValue).setScale(2,RoundingMode.HALF_EVEN);
-      BigDecimal taxForState = Finances.taxMap.get(appointment.getState()).subtract(BigDecimal.valueOf(1)); // 0.06
-      BigDecimal newSalesTax = newChargedAmount.multiply(taxForState).setScale(2,RoundingMode.HALF_EVEN);
-      BigDecimal newGrossAmount = newChargedAmount.subtract(appointment.getPaypalFee()).subtract(appointment.getApplicationFee()).setScale(2,RoundingMode.HALF_EVEN);
+      // Implement base cancellation fee policy: PayPal fee + Application fee are non-refundable
+      BigDecimal originalChargedAmount = appointment.getChargedAmount();
+      BigDecimal baseCancellationFee = appointment.getPaypalFee().add(appointment.getApplicationFee());
+      
+      // Validate refund doesn't exceed refundable amount (only for customer cancellations)
+      BigDecimal maxRefundableAmount = originalChargedAmount.subtract(baseCancellationFee);
+
+      if (!isAdminRefund && refundedValue.compareTo(maxRefundableAmount) > 0) { 
+        throw new PaymentException("Refund amount $" + refundedValue + " exceeds maximum refundable amount $" + maxRefundableAmount);
+      }
+      
+      // Update appointment amounts with base fee protection
+      BigDecimal newChargedAmount = originalChargedAmount.subtract(refundedValue).setScale(2, RoundingMode.HALF_EVEN);
+
+      // Get the tax multiplier (1.06 for 6% tax)
+      BigDecimal taxMultiplier = Finances.taxMap.get(appointment.getState());
+
+      // Calculate pre-tax amount for tax calculation: $8.77 ÷ 1.06 = $8.27
+      BigDecimal newPreTaxAmount = newChargedAmount.divide(taxMultiplier, 2, RoundingMode.HALF_EVEN);
+
+      // Calculate tax: $8.27 × 0.06 = $0.50
+      BigDecimal newSalesTax = newPreTaxAmount.multiply(taxMultiplier.subtract(BigDecimal.ONE)).setScale(2, RoundingMode.HALF_EVEN);
+
+
+      BigDecimal newGrossAmount = newChargedAmount.subtract(appointment.getPaypalFee()).subtract(appointment.getApplicationFee());
 
       appointment.setChargedAmount(newChargedAmount);
       appointment.setGrossAmount(newGrossAmount);
       appointment.setSalesTax(newSalesTax);
-      appointment.setProfit(newGrossAmount.subtract(newSalesTax).setScale(2,RoundingMode.HALF_EVEN));
+      appointment.setProfit(newGrossAmount.subtract(newSalesTax).setScale(2, RoundingMode.HALF_EVEN));
 
       appointmentService.updateStatus(appointment, Status.CANCELED);
       log.info("Payment for appointment {} refunded successfully", appointment.getId());
@@ -129,7 +153,15 @@ public class PaymentIntentService {
 
   public void customerCancelPayment(Appointment appointment, BigDecimal percentBack) throws PaymentException {
     BigDecimal chargedAmount = appointment.getChargedAmount();
-    BigDecimal refundAmount = chargedAmount.multiply(percentBack).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal baseCancellationFee = appointment.getPaypalFee().add(appointment.getApplicationFee());
+    
+    // Calculate refund based on refundable portion only (charged amount - base fees)
+    BigDecimal refundableAmount = chargedAmount.subtract(baseCancellationFee);
+    BigDecimal refundAmount = refundableAmount.multiply(percentBack).setScale(2, RoundingMode.HALF_EVEN);
+    
+    log.info("Customer cancellation for appointment {}: {}% of ${} refundable amount = ${} refund (base fee ${} retained)", 
+             appointment.getId(), percentBack.multiply(BigDecimal.valueOf(100)), refundableAmount, refundAmount, baseCancellationFee);
+    
     refundPayment(appointment, refundAmount);
   }
 

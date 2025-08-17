@@ -247,12 +247,12 @@ public class TestAppointmentDataLoader implements CommandLineRunner {
         BigDecimal charged = new BigDecimal(basePrice + priceVariation);
         BigDecimal applicationFee = new BigDecimal(15);
         BigDecimal paypalFee = charged.multiply(new BigDecimal("0.029")).add(new BigDecimal("0.30"))
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(2, RoundingMode.HALF_EVEN);
 
         appt.setChargedAmount(charged);
         appt.setApplicationFee(applicationFee);
         appt.setPaypalFee(paypalFee);
-        appt.setGrossAmount(charged.add(paypalFee).setScale(2, RoundingMode.HALF_UP));
+        appt.setGrossAmount(charged.add(paypalFee).setScale(2, RoundingMode.HALF_EVEN));
 
         // Generate IDs
         appt.setBookingId("BK-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase());

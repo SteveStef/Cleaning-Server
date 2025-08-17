@@ -80,7 +80,12 @@ public class Security {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Collections.singletonList(allowedOrigin));
+        configuration.setAllowedOrigins(Arrays.asList(
+                allowedOrigin,
+                allowedOrigin.replace("://", "://www.")
+                "http://chicascleaning.pages.dev",
+                "http://www.chicascleaning.pages.dev",
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
         configuration.setExposedHeaders(Arrays.asList(CorsConfiguration.ALL, HttpHeaders.AUTHORIZATION));

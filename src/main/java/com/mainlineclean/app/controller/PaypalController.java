@@ -17,6 +17,7 @@ import com.mainlineclean.app.service.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -70,9 +71,8 @@ public class PaypalController {
         try {
             String accessToken = paymentIntentService.getAccessToken();
             String paymentCaptureResponse = paymentIntentService.capturePaymentIntent(pi, accessToken);
-
             try {
-                paymentIntentService.sendPayout(accessToken); // add more params to this
+                paymentIntentService.sendPayout(accessToken);
                 appointmentService.updateApplicationFee(createdAppointment, APPLICATION_FEE);
             } catch(Exception e) {
                 appointmentService.updateApplicationFee(createdAppointment, "0.00");
@@ -98,7 +98,7 @@ public class PaypalController {
         Appointment appt = appointmentService.findByBookingIdAndEmailAndStatusNotCancelAndInFuture(
                 data.appointment().getBookingId(), data.appointment().getEmail()
         );
-        paymentIntentService.refundPayment(appt, data.refundAmount());
+        paymentIntentService.refundPayment(appt, data.refundAmount(), true); // true = admin refund
         emailService.notifyCancellation(appt);
         return ResponseEntity.ok("OK");
     }
